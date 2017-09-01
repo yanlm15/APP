@@ -10,7 +10,7 @@ public class ConstData  extends Application {
     boolean show_image;
     String []item = {"生活","娱乐","军事","游戏"};
     boolean []checkitem = {true,true,true,true};
-    double lightrate = 1;
+    double light_rate = 1;
     // .. 你再看看有哪些需要的参数
 
 }
