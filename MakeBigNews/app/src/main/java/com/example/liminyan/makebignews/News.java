@@ -17,17 +17,22 @@ class News {
 }
 
 class NewsManager{
-    ArrayList<News> mynews = new  ArrayList<News>;
-    ArrayList<News> favonews = new  ArrayList<News>;
+    ArrayList<News> mynews = new  ArrayList<News>();
+    ArrayList<News> favonews = new  ArrayList<News>();
 
     ArrayList<News> init(String str)
     {
+        ArrayList<News> m = new  ArrayList<News>();
 
+
+
+
+        return  m;
     }
 
     ArrayList<News> find_list(String str)
     {
-        ArrayList<News> m = new  ArrayList<News>;
+        ArrayList<News> m = new  ArrayList<News>();
 
 
 
