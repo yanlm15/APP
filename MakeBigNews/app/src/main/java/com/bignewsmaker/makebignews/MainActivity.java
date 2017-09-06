@@ -66,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
             conn.disconnect();
 
             ObjectMapper mapper = new ObjectMapper();
-            News news = mapper.readValue(s, News.class);
+            News news = mapper.readValue(s, News.class);// 这里的解析？用json的话会方便很多
             for (int i = 0; i < news.getList().size(); i++)
                 newsList.add(news.getList().get(i));
 
