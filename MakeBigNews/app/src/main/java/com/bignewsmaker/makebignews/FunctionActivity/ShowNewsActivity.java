@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
 import com.bignewsmaker.makebignews.ConstData;
+import com.bignewsmaker.makebignews.LIST;
 import com.bignewsmaker.makebignews.News;
 import com.bignewsmaker.makebignews.R;
 import com.bignewsmaker.makebignews.Speaker;
@@ -22,28 +23,23 @@ import com.bignewsmaker.makebignews.Speaker;
  */
 
 public class ShowNewsActivity extends AppCompatActivity {
+
     private ConstData const_data = ConstData.getInstance();// 设置访问全局变量接口
     private Speaker speaker = Speaker.getInstance();// 设置语音系统接口
-
-    private News news;
-
-    public void setNews(News news) {
-        this.news = news;
+    private LIST list;
+    public void setNews(LIST list) {
+        this.list = list;
     }
 
     private void first_init()
     {
-        setNews(const_data.getCur_news());
+        setNews(const_data.getCur_list());
     }
-
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        first_init();
-
-
+        first_init(); // 获取当前新闻信息
         //设置输入监控
         //设置更新函数
 

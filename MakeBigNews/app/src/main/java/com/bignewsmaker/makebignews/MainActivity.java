@@ -6,7 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectMapper;//...
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -16,11 +16,14 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+/*
+*重载拖动事件实现拖动更新
+*/
 
 public class MainActivity extends AppCompatActivity {
 
 
-    private List<LIST> newsList = new ArrayList<LIST>();
+    private List<LIST> newsList = new ArrayList<LIST>();//不要这样写，每个界面都有一个newslist太浪费了
     private ConstData const_data = ConstData.getInstance();// 设置访问全局变量接口
     private Speaker speaker = Speaker.getInstance();// 设置语音系统接口
     @Override

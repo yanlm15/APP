@@ -2,7 +2,10 @@ package com.bignewsmaker.makebignews;
 
 import java.util.ArrayList;
 import java.util.List;
-
+/*
+*
+*
+*/
 public class News {
     private List<LIST> list = new ArrayList<LIST>();
     private int pageNo = 0;

@@ -9,6 +9,7 @@ import com.bignewsmaker.makebignews.Speaker;
 
 /**
  * Created by liminyan on 06/09/2017.
+ * 设置界面
  */
 
 public class SetActivity extends AppCompatActivity {
