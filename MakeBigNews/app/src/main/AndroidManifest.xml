@@ -16,6 +16,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".FunctionActivity.SearchActivity"/>
+        <activity android:name=".FunctionActivity.SetActivity"/>
+        <!--添加activity的格式-->
     </application>
 
 </manifest>
