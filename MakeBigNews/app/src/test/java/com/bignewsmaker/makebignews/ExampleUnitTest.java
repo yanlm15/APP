@@ -1,4 +1,4 @@
-package com.example.liminyan.makebignews;
+package com.bignewsmaker.makebignews;
 
 import org.junit.Test;
 

@@ -1,4 +1,4 @@
-package com.example.liminyan.makebignews;
+package com.bignewsmaker.makebignews;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("com.example.liminyan.makebignews", appContext.getPackageName());
+        assertEquals("com.bignewsmaker.makebignews", appContext.getPackageName());
     }
 }
