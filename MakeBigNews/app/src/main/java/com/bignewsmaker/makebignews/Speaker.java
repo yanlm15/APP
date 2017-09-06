@@ -53,7 +53,6 @@ public class Speaker {
         });
     }
 
-
     public static Speaker getInstance() {
 
         if (now == null)
