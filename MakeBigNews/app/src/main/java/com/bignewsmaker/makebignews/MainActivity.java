@@ -21,7 +21,8 @@ public class MainActivity extends AppCompatActivity {
 
 
     private List<LIST> newsList = new ArrayList<LIST>();
-
+    private ConstData const_data = ConstData.getInstance();// 设置访问全局变量接口
+    private Speaker speaker = Speaker.getInstance();// 设置语音系统接口
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
