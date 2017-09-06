@@ -14,12 +14,21 @@ public class ConstData {
     private double ligth_rate = 1; //屏幕亮度比例
     private boolean show_picture = true; //图片显示标签
 
+    private News cur_news = null ;
     private static ConstData cur;
 
     public void init()
     {
         double ligth_rate = 1;
         boolean show_picture = true;
+    }
+
+    public void setCur_news(News cur_news) {
+        this.cur_news = cur_news;
+    }
+
+    public News getCur_news() {
+        return cur_news;
     }
 
     public void setLigth_rate(double ligth_rate) {
