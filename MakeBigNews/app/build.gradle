@@ -1,4 +1,13 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:2.1.3'
+    }
+}
 apply plugin: 'com.android.application'
+
 
 android {
     compileSdkVersion 26
@@ -17,13 +26,14 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
     packagingOptions {
         exclude 'META-INF/LICENSE'
     }
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile fileTree(include: ['*.jar'], dir: 'libs')
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
@@ -32,6 +42,11 @@ dependencies {
     compile 'com.fasterxml.jackson.core:jackson-databind:2.9.0'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile 'com.android.support:cardview-v7:26.+'
-
     testCompile 'junit:junit:4.12'
+    compile files('/Users/liminyan/Desktop/MakeBigNews/libs/android-support-v4.jar')
+    compile files('/Users/liminyan/Desktop/MakeBigNews/libs/jcore-android-1.1.5.jar')
+    compile files('/Users/liminyan/Desktop/MakeBigNews/libs/jshare-android-1.2.1.jar')
+    compile files('/Users/liminyan/Desktop/MakeBigNews/libs/jshare-qq-android-1.2.1.jar')
+    compile files('/Users/liminyan/Desktop/MakeBigNews/libs/jshare-sina-android-1.2.1.jar')
+    compile files('/Users/liminyan/Desktop/MakeBigNews/libs/jshare-wechat-android-1.2.1.jar')
 }
