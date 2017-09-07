@@ -37,17 +37,18 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile 'com.android.support:appcompat-v7:26.+'
-    compile 'com.android.support:recyclerview-v7:26.+'
-    compile 'com.android.support:design:26+'
-    compile 'com.fasterxml.jackson.core:jackson-databind:2.9.0'
-    compile 'com.android.support.constraint:constraint-layout:1.0.2'
-    compile 'com.android.support:cardview-v7:26.+'
-    testCompile 'junit:junit:4.12'
-//    compile files('/Users/liminyan/Desktop/MakeBigNews/libs/android-support-v4.jar')
+    //    compile files('/Users/liminyan/Desktop/MakeBigNews/libs/android-support-v4.jar')
 //    compile files('/Users/liminyan/Desktop/MakeBigNews/libs/jcore-android-1.1.5.jar')
 //    compile files('/Users/liminyan/Desktop/MakeBigNews/libs/jshare-android-1.2.1.jar')
 //    compile files('/Users/liminyan/Desktop/MakeBigNews/libs/jshare-qq-android-1.2.1.jar')
 //    compile files('/Users/liminyan/Desktop/MakeBigNews/libs/jshare-sina-android-1.2.1.jar')
 //    compile files('/Users/liminyan/Desktop/MakeBigNews/libs/jshare-wechat-android-1.2.1.jar')
+    compile 'com.android.support:appcompat-v7:26.+'
+    compile 'com.android.support:recyclerview-v7:26.+'
+    compile 'com.android.support:design:26.+'
+    compile 'com.fasterxml.jackson.core:jackson-databind:2.9.0'
+    compile 'com.android.support.constraint:constraint-layout:1.0.2'
+    compile 'com.android.support:cardview-v7:26.+'
+    compile 'com.android.support:support-v4:26.+'
+    testCompile 'junit:junit:4.12'
 }
