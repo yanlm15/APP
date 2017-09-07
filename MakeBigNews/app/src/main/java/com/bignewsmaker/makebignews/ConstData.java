@@ -23,6 +23,7 @@ public class ConstData {
     private static ConstData cur;
 
     private TreeMap<String,Integer> like = new TreeMap<String,Integer>(); // 喜欢词条
+    private String cur_ID = null;
 
     private TreeMap<String,Integer> dislike = new TreeMap<String,Integer>();// 不喜欢的词条
 
@@ -30,6 +31,14 @@ public class ConstData {
 
     public String getSearch_message() {
         return search_message;
+    }
+
+    public String getCur_ID() {
+        return cur_ID;
+    }
+
+    public static ConstData getCur() {
+        return cur;
     }
 
     public void setSearch_message(String search_message) {

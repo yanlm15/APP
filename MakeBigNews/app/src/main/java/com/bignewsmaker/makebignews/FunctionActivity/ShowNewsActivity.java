@@ -26,14 +26,14 @@ public class ShowNewsActivity extends AppCompatActivity {
 
     private ConstData const_data = ConstData.getInstance();// 设置访问全局变量接口
     private Speaker speaker = Speaker.getInstance();// 设置语音系统接口
-    private LIST list;
-    public void setNews(LIST list) {
+    private String list;
+    public void setNews(String list) {
         this.list = list;
     }
 
     private void first_init()
     {
-        setNews(const_data.getCur_list());
+        setNews(const_data.getCur_ID());
     }
 
     protected void onCreate(Bundle savedInstanceState) {
