@@ -20,7 +20,7 @@ public class SearchActivity  extends AppCompatActivity {
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_search);
 
         //设置输入监控
         //设置更新函数

@@ -3,7 +3,6 @@ package com.bignewsmaker.makebignews;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.os.StrictMode;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -105,9 +104,7 @@ public class NewsFragment extends Fragment {
 
         String s = "";
         try {
-            //暂时性的解决NetworkOnMainThreadException办法
-            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-            StrictMode.setThreadPolicy(policy);
+
 
             HttpURLConnection conn;
             int pageNo;

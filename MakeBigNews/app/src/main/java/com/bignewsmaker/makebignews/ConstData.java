@@ -82,7 +82,7 @@ public class ConstData {
     public static ConstData getInstance() {
 
         if (cur == null)
-           cur = new ConstData();
+            cur = new ConstData();
         return cur;
     }
 }
