@@ -2,11 +2,12 @@ package com.bignewsmaker.makebignews;
 
 import android.os.Bundle;
 import android.os.StrictMode;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
-import com.fasterxml.jackson.databind.ObjectMapper;//...
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -14,34 +15,69 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 /*
 *重载拖动事件实现拖动更新
 */
 
 public class MainActivity extends AppCompatActivity {
 
-
-    private List<LIST> newsList = new ArrayList<LIST>();//不要这样写，每个界面都有一个newslist太浪费了
+    LinearLayoutManager layoutManager;
+    RecyclerView recyclerView;
+    private SwipeRefreshLayout swipeRefresh;
+    private NewsAdapter adapter;
     private ConstData const_data = ConstData.getInstance();// 设置访问全局变量接口
     private Speaker speaker = Speaker.getInstance();// 设置语音系统接口
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
         //获得新闻
-        initNews();
-        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        loadNews();
+        recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
-        NewsAdapter adapter = new NewsAdapter(newsList);
+        adapter = new NewsAdapter(const_data.getCur_news().getList());
         recyclerView.setAdapter(adapter);
 
+        swipeRefresh = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh);
+        swipeRefresh.setColorSchemeResources(R.color.colorPrimary);
+        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.
+                OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                refreshNews();
+            }
+        });
     }
 
-    private void initNews() {
+
+    private void refreshNews(){
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try{
+                            Thread.sleep(300);
+                        }catch (InterruptedException e){
+                            e.printStackTrace();
+                        }
+                        loadNews();
+                        adapter = new NewsAdapter(const_data.getCur_news().getList());
+                        recyclerView.setAdapter(adapter);
+                        swipeRefresh.setRefreshing(false);
+                    }
+                });
+            }
+        }).start();
+    }
+
+    private void loadNews() {
 
         String s = "";
         try {
@@ -50,7 +86,12 @@ public class MainActivity extends AppCompatActivity {
             StrictMode.setThreadPolicy(policy);
 
             HttpURLConnection conn;
-            URL url = new URL("http://166.111.68.66:2042/news/action/query/latest?pageNo=1&pageSize=50");
+            int pageNo;
+            if(const_data.getCur_news()==null)
+                pageNo=1;
+            else
+                pageNo=const_data.getCur_news().getPageNo()+1;
+            URL url = new URL("http://166.111.68.66:2042/news/action/query/latest?pageNo="+pageNo+"&pageSize=20");
             conn = (HttpURLConnection) url.openConnection();
             conn.setConnectTimeout(60 * 1000);
             conn.setReadTimeout(30 * 1000);
@@ -70,9 +111,7 @@ public class MainActivity extends AppCompatActivity {
             conn.disconnect();
 
             ObjectMapper mapper = new ObjectMapper();
-            News news = mapper.readValue(s, News.class);// 这里的解析？用json的话会方便很多
-            for (int i = 0; i < news.getList().size(); i++)
-                newsList.add(news.getList().get(i));
+            const_data.setCur_news(mapper.readValue(s, News.class));
 
         } catch (MalformedURLException e) {
             e.printStackTrace();
