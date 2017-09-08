@@ -28,7 +28,7 @@ public class MyNews {
    public String news_Content;
 //    String news_ID;
 //    String news_Journal;
-//    String news_Pictures;
+   public String news_Pictures;
 //    String news_Source;
 //    String news_Time;
    public String news_Title = "1";
@@ -37,10 +37,35 @@ public class MyNews {
 //    List<item2> organizations;
 //    List<item2> persons;
 //    String repeat_ID;
-////    String seggedPListOfContent;
+    public String seggedPListOfContent;
+    public String seggedTitle;
 //    String wordCountOfContent;
 //    String  wordCountOfTitle;
 
+
+    public String getSeggedPListOfContent() {
+        return seggedPListOfContent;
+    }
+
+    public void setSeggedPListOfContent(String seggedPListOfContent) {
+        this.seggedPListOfContent = seggedPListOfContent;
+    }
+
+    public String getSeggedTitle() {
+        return seggedTitle;
+    }
+
+    public void setSeggedTitle(String seggedTitle) {
+        this.seggedTitle = seggedTitle;
+    }
+
+    public String getNews_Pictures() {
+        return news_Pictures;
+    }
+
+    public void setNews_Pictures(String news_Pictures) {
+        this.news_Pictures = news_Pictures;
+    }
 
     public ArrayList<Item1> getKeywords() {
         return Keywords;

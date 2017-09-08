@@ -15,7 +15,7 @@ import java.util.TreeMap;
 public class ConstData {
     private double ligth_rate = 1; //屏幕亮度比例
     private boolean show_picture = true; //图片显示标签
-
+    private  boolean model_night = true;
     private News cur_news = null ;// 当前新闻列表
     private LIST cur_list = null ;// 当前选中新闻
     private News search_result = null ;// 当前的搜索结果
@@ -32,6 +32,14 @@ public class ConstData {
 
     public void setSearch_class(String search_class) {
         this.search_class = search_class;
+    }
+
+    public void setModel_night(boolean model_night) {
+        this.model_night = model_night;
+    }
+
+    public boolean isModel_night() {
+        return model_night;
     }
 
     public String getSearch_class() {

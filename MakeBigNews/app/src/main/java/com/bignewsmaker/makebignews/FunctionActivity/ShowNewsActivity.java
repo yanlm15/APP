@@ -53,7 +53,7 @@ public class ShowNewsActivity extends AppCompatActivity {
     private ConstData const_data = ConstData.getInstance();// 设置访问全局变量接口
     private Speaker speaker = Speaker.getInstance();// 设置语音系统接口
     private String id;
-    private String[] picture;
+    private ArrayList<String> picture = new ArrayList<String >();
 //    MyNews data = new MyNews();
     public void setNews(String id) {
         this.id = id;
@@ -64,13 +64,17 @@ public class ShowNewsActivity extends AppCompatActivity {
         setNews(const_data.getCur_ID());
     }
 
-    private void picture_init(String str){
-        String s = "http://www.people.com.cn/mediafile/pic/20150819/5/2655964700156489425.jpg http://www.people.com.cn/mediafile/pic/20150819/41/12064259816872364729.jpg";
-
-        Pattern p = Pattern.compile("<[^>]*>");
+    private void picture_init(String str){//获取所有图片
+        String s = str;
+        Pattern p = Pattern.compile("http://(\\w+|\\/|\\.|-)*.(jpg|png)");
         Matcher m = p.matcher(s);
 
+        while( m.find())
+            picture.add(m.group());
+        for (String e : picture) {
+             System.out.println(e);
 
+        }
 
     }
 
@@ -113,18 +117,29 @@ public class ShowNewsActivity extends AppCompatActivity {
                     data = response.body();
                     if (data != null)
                     {
-                        TextView et1 = (TextView) findViewById(R.id.textView);
-                        TextView et2 = (TextView) findViewById(R.id.textView2);
+                        TextView et1 = (TextView) findViewById(R.id.textView);//content
+                        TextView et2 = (TextView) findViewById(R.id.textView2);//title
+
+                        picture_init(data.getNews_Pictures());
+
+                        for (String e:picture)
+                        {
+                            System.out.println(e);
+                        }
+
+                            System.out.println(data.getNews_Pictures());
+
+
                         et2.setText(data.getNews_Title());
                         et1.setText(data.getNews_Content());
                         String myt = data.getNews_Title() + "," + data.getNews_Content();
                         speaker.setText(myt);
                         ArrayList<Item1> a = data.getKeywords();
-                        for (Item1 i : a)//添加关键词
-                        {
-                            const_data.setLike(i.word);
-                            System.out.println(i.word);//用于测试输出
-                        }
+//                        for (Item1 i : a)//添加关键词
+//                        {
+//                            const_data.setLike(i.word);
+//                            System.out.println(i.word);//用于测试输出
+//                        }
 
                     }
                 }
