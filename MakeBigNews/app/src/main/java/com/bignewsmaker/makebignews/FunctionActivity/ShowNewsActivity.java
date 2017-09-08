@@ -2,13 +2,20 @@ package com.bignewsmaker.makebignews.FunctionActivity;
 
 import android.content.ClipData;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Html;
+import android.text.method.LinkMovementMethod;
+import android.text.method.ScrollingMovementMethod;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,6 +29,8 @@ import com.bignewsmaker.makebignews.extra_class.MyNews;
 import com.bignewsmaker.makebignews.extra_class.NewService;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -91,6 +100,53 @@ public class ShowNewsActivity extends AppCompatActivity {
 
     }
 
+
+//    private void getNetworkImg(String url)
+//    {
+//        Log.d(TAG,"url: " + url);
+//        RequestQueue queue = Volley.newRequestQueue(this);
+//        ImageRequest request = new ImageRequest(url,new Response.Listener<Bitmap>()
+//        {
+//            @Override
+//            public void onResponse(Bitmap bitmap){
+//                Log.d(TAG, "onResponse");
+//                saveMyBitmap(url, bitmap);
+//                mTextView03.setText(Html.fromHtml(htmlFor03, mNetWorkImageGetter, null));
+//            }, 0, 0, ImageView.ScaleType.CENTER, Bitmap.Config.RGB_565, new ErrorListener() {
+//
+//            @Override
+//            public void onErrorResponse(VolleyError error) {
+//                Log.d(TAG, "onErrorResponse:" + error);
+//            }
+//        });
+//        queue.add(request);
+//    }
+    public void saveMyBitmap(String bitName, Bitmap mBitmap) {
+        File f = new File("/sdcard/" + bitName);
+        try {
+            f.createNewFile();
+        } catch (IOException e) {
+        }
+        FileOutputStream fOut = null;
+        try {
+            fOut = new FileOutputStream(f);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        mBitmap.compress(Bitmap.CompressFormat.PNG, 100, fOut);
+        try {
+            fOut.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            fOut.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show_news);
@@ -107,11 +163,11 @@ public class ShowNewsActivity extends AppCompatActivity {
         NewService service = retrofit.create(NewService.class);
         Call<MyNews> repos = service.listRepos(id);
 
+
         repos.enqueue(new Callback<MyNews>() {
             @Override
             public void onResponse(Call<MyNews> call, Response<MyNews> response) {
 
-                System.out.println("<>");
                 if (response.isSuccessful())
                 {
                     System.out.println("success");
@@ -126,21 +182,25 @@ public class ShowNewsActivity extends AppCompatActivity {
 
                         for (String e:picture)
                         {
-                            System.out.println(e);
+                            System.out.println(e);//用于测试输出
                         }
 
                             System.out.println(data.getNews_Pictures());
 
 
                         et2.setText(data.getNews_Title());
-                        et1.setText(data.getNews_Content());
+                        String html = "<html><head><title>TextView使用HTML</title></head><body><p><strong>强调</strong></p><p><em>斜体</em></p>"
+
+                                + "下面是网络图片</p><img src=http://up.2cto.com/2013/0128/20130128020940641.jpg\"/></body></html>";
+                        et1.setMovementMethod(LinkMovementMethod.getInstance());
+                        et1.setText(Html.fromHtml(html));
                         String myt = data.getNews_Title() + "," + data.getNews_Content();
                         speaker.setText(myt);
                         ArrayList<Item1> a = data.getKeywords();
                         for (Item1 i : a)//添加关键词
                         {
                             const_data.setLike(i.word);
-                            System.out.println(i.word);//用于测试输出
+//                            System.out.println(i.word);//用于测试输出
                         }
 
                     }
