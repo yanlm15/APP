@@ -10,6 +10,8 @@ import com.bignewsmaker.makebignews.Speaker;
 /**
  * Created by liminyan on 06/09/2017.
  * 这个界面我们讨论一下再决定要不要
+ * 传入的搜索信息储存在const_data.getSearch_message();
+ * 传入的分类（标签）信息储存在const_data.getSearch_class();
  */
 
 public class SearchResultActivity extends AppCompatActivity {
@@ -19,7 +21,7 @@ public class SearchResultActivity extends AppCompatActivity {
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.action_search_result);
 
         //设置输入监控
         //设置更新函数

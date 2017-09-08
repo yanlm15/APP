@@ -5,7 +5,6 @@ import java.util.TreeMap;
 /**
  * Created by liminyan on 06/09/2017.
  * 这个类的作用是储存全局的设置变量
- * 我原来的意思是老张你把这个类写了就行，然后随便画画界面，然后能够交互就行
  * 其他的activity 可以访问这个类
  * 通过set 来设置
  * 通过get 来访问
@@ -22,14 +21,22 @@ public class ConstData {
     private News search_result = null ;// 当前的搜索结果
     private static ConstData cur;
 
-    private TreeMap<String,Integer> like = new TreeMap<String,Integer>(); // 喜欢词条
+    private TreeMap<String,Integer> like = new TreeMap<String,Integer>(); // 喜欢词条，添加历史记录
     private String cur_ID = "201608090432c815a85453c34d8ca43a591258701e9b";
 
     private TreeMap<String,Integer> dislike = new TreeMap<String,Integer>();// 不喜欢的词条
 
-    private String  search_message = null;//用户的输入信息？或者改为添加了参数的字符串？
-
+    private String  search_message = null;//用户的输入信息
+    private String  search_class = null;//用户的搜索标签，默认为空！！
     private String cur_pageSize = "20";
+
+    public void setSearch_class(String search_class) {
+        this.search_class = search_class;
+    }
+
+    public String getSearch_class() {
+        return search_class;
+    }
 
     public String getCur_pageSize() {
         return cur_pageSize;

@@ -1,11 +1,16 @@
 package com.bignewsmaker.makebignews.FunctionActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.SearchView;
+import android.widget.TextView;
 
 import com.bignewsmaker.makebignews.ConstData;
 import com.bignewsmaker.makebignews.R;
 import com.bignewsmaker.makebignews.Speaker;
+
+import static com.bignewsmaker.makebignews.R.id.searchView;
 
 
 /**
@@ -22,8 +27,35 @@ public class SearchActivity  extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
 
+        SearchView my = (SearchView) findViewById(R.id.searchView);
 
+        my.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            // 当点击搜索按钮时触发该方法
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                if (query == null)
+                {
+//                    System.out.println("><");
+                    return false;
+                }
 
+                else
+                {
+                    const_data.setSearch_message(query);
+                    System.out.println(query);
+                    Intent intent=new Intent(SearchActivity.this,SearchResultActivity.class);// 新建一个界面
+                    startActivity(intent);//跳转界面
+                    return true;
+                }
+            }
+
+            // 当搜索内容改变时触发该方法
+            @Override
+            public boolean onQueryTextChange(String newText) {
+
+                return false;
+            }
+        });
         //设置输入监控
         //设置更新函数
 

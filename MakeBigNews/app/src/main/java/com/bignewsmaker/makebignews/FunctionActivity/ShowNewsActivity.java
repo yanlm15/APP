@@ -106,9 +106,6 @@ public class ShowNewsActivity extends AppCompatActivity {
                         }
 
                     }
-
-
-
                 }
                 else
                 {
