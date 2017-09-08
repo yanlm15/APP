@@ -39,7 +39,7 @@ public class Speaker {
             public void onInit(int status) {
                 if (status==TextToSpeech.SUCCESS) {
                     //设置朗读语言
-                    int supported=mTextToSpeech.setLanguage(Locale.CHINA);
+                    int supported=mTextToSpeech.setLanguage(Locale.CHINESE);
 
                     if ((supported!=TextToSpeech.LANG_AVAILABLE)&&(supported!= TextToSpeech.LANG_COUNTRY_AVAILABLE)) {
                         Toast.makeText(cur, "不支持当前语言！", 1).show();

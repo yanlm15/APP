@@ -1,9 +1,9 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/search"
+        android:id="@+id/voice"
         android:icon="@android:drawable/ic_menu_search"
-        android:title="搜索"
+        android:title="朗读"
         app:showAsAction="never" />
     <item
         android:id="@+id/share"

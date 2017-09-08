@@ -106,7 +106,8 @@ public class ShowNewsActivity extends AppCompatActivity {
                         TextView et2 = (TextView) findViewById(R.id.textView2);
                         et2.setText(data.getNews_Title());
                         et1.setText(data.getNews_Content());
-
+                        String myt = data.getNews_Title() + "," + data.getNews_Content();
+                        speaker.setText(myt);
                         ArrayList<Item1> a = data.getKeywords();
                         for (Item1 i : a)//添加关键词
                         {
@@ -175,10 +176,17 @@ public class ShowNewsActivity extends AppCompatActivity {
             case R.id.share:
                 shareMsg("分享图片和文字", "Share", "img and text", null);
                 return true;
+            case R.id.voice:
+                news_voice();
+                break;
             default:
                 Toast.makeText(this, "方法还没定义", Toast.LENGTH_SHORT).show();
                 break;
         }
         return false;
+    }
+    public void news_voice(){
+        speaker.setCur(this);
+        speaker.start();
     }
 }
