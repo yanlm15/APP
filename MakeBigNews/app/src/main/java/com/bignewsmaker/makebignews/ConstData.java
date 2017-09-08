@@ -1,7 +1,5 @@
 package com.bignewsmaker.makebignews;
 
-import com.bignewsmaker.makebignews.extra_class.Item1;
-
 import java.util.TreeMap;
 
 /**
@@ -30,6 +28,16 @@ public class ConstData {
     private TreeMap<String,Integer> dislike = new TreeMap<String,Integer>();// 不喜欢的词条
 
     private String  search_message = null;//用户的输入信息？或者改为添加了参数的字符串？
+
+    private String cur_pageSize = "20";
+
+    public String getCur_pageSize() {
+        return cur_pageSize;
+    }
+
+    public void setCur_pageSize(String cur_pageSize) {
+        this.cur_pageSize = cur_pageSize;
+    }
 
     public String getSearch_message() {
         return search_message;
