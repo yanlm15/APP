@@ -103,19 +103,21 @@ public class ShowNewsActivity extends AppCompatActivity {
 
     public void getpicture(final String url)
     {
-        UrlService service = retrofitTool.getRetrofit().create(UrlService.class);
+        UrlService service = RetrofitTool.getInstance().getRetrofit().create(UrlService.class);
+        System.out.println(">>><<<");
 
         Call<ResponseBody> urepos = service.downloadPicFromNet(url);
 
         urepos.enqueue(new Callback<ResponseBody>() {
+
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response.isSuccessful())
                 {
 //                    File file = new  File(getExternalFilesDir(null) + File.separator+"picture"+File.separator+ url);
+                        System.out.println(">>>");
 
-
-                        writeResponseBodyToDisk(response.body(), url);
+//                        writeResponseBodyToDisk(response.body(), url);
 //                        BitmapFactory.decodeFile(getExternalFilesDir(null) + File.separator + url);
 
                     System.out.println("Url-Success");
@@ -126,9 +128,12 @@ public class ShowNewsActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
-                System.out.println("Url-f-err");
+                System.out.println("Url-f-err"+t.toString());
             }
         });
+
+        System.out.println(">>>|<<<");
+
 
     }
 
@@ -218,6 +223,7 @@ public class ShowNewsActivity extends AppCompatActivity {
                         for (String e:picture)
                         {
                             System.out.println(e);//用于测试输出
+                            getpicture(e);
                         }
 
                             System.out.println(data.getNews_Pictures());
