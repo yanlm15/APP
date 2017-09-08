@@ -1,5 +1,7 @@
 package com.bignewsmaker.makebignews;
 
+import com.bignewsmaker.makebignews.extra_class.Item1;
+
 import java.util.TreeMap;
 
 /**
@@ -54,6 +56,33 @@ public class ConstData {
     public void setSearch_result(News search_result) {
         this.search_result = search_result;
     }//初始化搜索结果
+
+    public TreeMap<String, Integer> getDislike() {
+        return dislike;
+    }
+
+    public TreeMap<String, Integer> getLike() {
+        return like;
+    }
+
+    public void setCur_ID(String cur_ID) {
+        this.cur_ID = cur_ID;
+    }
+
+    public void setDislike(String name) {
+        this.dislike.put(name,1);
+    }
+
+    public void setLike(String name) {
+        boolean e = this.like.containsKey(name);
+        if (e == true)
+        {
+            String s_name = name;
+            int number = this.like.get(s_name);
+            number ++;
+            this.like.put(s_name,number);
+        }
+    }
 
     public void setCur_news(News cur_news) {
         this.cur_news = cur_news;

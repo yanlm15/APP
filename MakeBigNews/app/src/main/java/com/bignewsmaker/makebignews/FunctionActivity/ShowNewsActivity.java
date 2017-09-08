@@ -1,5 +1,6 @@
 package com.bignewsmaker.makebignews.FunctionActivity;
 
+import android.content.ClipData;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.EditText;
@@ -10,10 +11,13 @@ import com.bignewsmaker.makebignews.LIST;
 import com.bignewsmaker.makebignews.News;
 import com.bignewsmaker.makebignews.R;
 import com.bignewsmaker.makebignews.Speaker;
+import com.bignewsmaker.makebignews.extra_class.Item1;
 import com.bignewsmaker.makebignews.extra_class.MyNews;
 import com.bignewsmaker.makebignews.extra_class.NewService;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -80,6 +84,12 @@ public class ShowNewsActivity extends AppCompatActivity {
                         et2.setText(data.getNews_Title());
                         et1.setText(data.getNews_Content());
 
+                        ArrayList<Item1> a = data.getKeywords();
+                        for (Item1 i : a)//添加关键词
+                        {
+                            const_data.setLike(i.word);
+                            System.out.println(i.word);//用于测试输出
+                        }
 
                     }
 
