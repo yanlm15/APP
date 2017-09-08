@@ -54,6 +54,21 @@ public class ShowNewsActivity extends AppCompatActivity {
         setNews(const_data.getCur_ID());
     }
 
+
+
+    void setHighLight(String str) //高亮关键字
+    {
+
+    }
+    void setURL(String str) //关键字超链接
+    {
+
+    }
+    void setPicture(String str)// html 图片解析
+    {
+
+    }
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show_news);
@@ -75,7 +90,6 @@ public class ShowNewsActivity extends AppCompatActivity {
                 if (response.isSuccessful())
                 {
                     MyNews data = new MyNews();
-                    System.out.println("klk");
                     data = response.body();
                     if (data != null)
                     {
