@@ -13,7 +13,7 @@
     <item
         android:id="@+id/save"
         android:icon="@android:drawable/ic_menu_save"
-        android:title="保存"
+        android:title="收藏"
         app:showAsAction="never" />
 
 

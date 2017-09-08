@@ -1,10 +1,16 @@
 package com.bignewsmaker.makebignews.FunctionActivity;
 
 import android.content.ClipData;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bignewsmaker.makebignews.ConstData;
 import com.bignewsmaker.makebignews.LIST;
@@ -15,6 +21,7 @@ import com.bignewsmaker.makebignews.extra_class.Item1;
 import com.bignewsmaker.makebignews.extra_class.MyNews;
 import com.bignewsmaker.makebignews.extra_class.NewService;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -72,6 +79,8 @@ public class ShowNewsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show_news);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar2);
+        setSupportActionBar(toolbar);
         first_init(); // 获取当前新闻信息
         //设置输入监控
         //设置更新函数
@@ -128,5 +137,48 @@ public class ShowNewsActivity extends AppCompatActivity {
 
 //        System.out.println(data.keywords[0].);
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.toolbar_shownews, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+    public void shareMsg(String activityTitle, String msgTitle, String msgText, String imgPath ){
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        if ( imgPath == null || imgPath.equals("")){
+            intent.setType("text/plain");
+            intent.putExtra(Intent.EXTRA_SUBJECT,msgTitle);
+            intent.putExtra(Intent.EXTRA_TEXT,msgText);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(Intent.createChooser(intent, activityTitle));
+        }
+        else{
+            File f = new File(imgPath);
+            if( f != null && f.exists() && f.isFile() ){
+                intent.setType("text/plain");
+                intent.putExtra(Intent.EXTRA_TEXT,msgText);
+                intent.setType("image/*");
+                Uri u = Uri.fromFile(f);
+                intent.putExtra(Intent.EXTRA_STREAM, u);
+
+                intent.putExtra(Intent.EXTRA_SUBJECT,msgTitle);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(Intent.createChooser(intent, activityTitle));
+            }
+        }
+
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.share:
+                shareMsg("分享图片和文字", "Share", "img and text", null);
+                return true;
+            default:
+                Toast.makeText(this, "方法还没定义", Toast.LENGTH_SHORT).show();
+                break;
+        }
+        return false;
     }
 }
