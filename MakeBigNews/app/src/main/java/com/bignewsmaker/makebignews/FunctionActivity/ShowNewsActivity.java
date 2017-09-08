@@ -2,12 +2,25 @@ package com.bignewsmaker.makebignews.FunctionActivity;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.EditText;
+import android.widget.TextView;
 
 import com.bignewsmaker.makebignews.ConstData;
 import com.bignewsmaker.makebignews.LIST;
 import com.bignewsmaker.makebignews.News;
 import com.bignewsmaker.makebignews.R;
 import com.bignewsmaker.makebignews.Speaker;
+import com.bignewsmaker.makebignews.extra_class.MyNews;
+import com.bignewsmaker.makebignews.extra_class.NewService;
+
+import java.io.IOException;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+
+import retrofit2.converter.gson.*;
 
 /**
  * Created by liminyan on 06/09/2017.
@@ -26,9 +39,10 @@ public class ShowNewsActivity extends AppCompatActivity {
 
     private ConstData const_data = ConstData.getInstance();// 设置访问全局变量接口
     private Speaker speaker = Speaker.getInstance();// 设置语音系统接口
-    private String list;
-    public void setNews(String list) {
-        this.list = list;
+    private String id;
+//    MyNews data = new MyNews();
+    public void setNews(String id) {
+        this.id = id;
     }
 
     private void first_init()
@@ -38,10 +52,60 @@ public class ShowNewsActivity extends AppCompatActivity {
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_show_news);
         first_init(); // 获取当前新闻信息
         //设置输入监控
         //设置更新函数
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .addConverterFactory(GsonConverterFactory.create())
+                .baseUrl("http://166.111.68.66:2042/")
+                .build();
+        NewService service = retrofit.create(NewService.class);
+        Call<MyNews> repos = service.listRepos(id);
+
+        repos.enqueue(new Callback<MyNews>() {
+            @Override
+            public void onResponse(Call<MyNews> call, Response<MyNews> response) {
+//
+                if (response.isSuccessful())
+                {
+                    MyNews data = new MyNews();
+                    System.out.println("klk");
+                    data = response.body();
+                    if (data != null)
+                    {
+                        TextView et1 = (TextView) findViewById(R.id.textView);
+                        TextView et2 = (TextView) findViewById(R.id.textView2);
+                        et2.setText(data.getNews_Title());
+                        et1.setText(data.getNews_Content());
+
+
+                    }
+
+
+
+                }
+                else
+                {
+                    System.out.println("fuck");
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<MyNews> call, Throwable t) {
+                t.printStackTrace();
+
+            }
+        });
+
+
+
+//        et1.setText(data.getNews_Title());
+        System.out.println("kk");
+
+//        System.out.println(data.keywords[0].);
 
     }
 }

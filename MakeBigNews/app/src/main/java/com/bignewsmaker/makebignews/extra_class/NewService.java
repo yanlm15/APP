@@ -13,5 +13,5 @@ import retrofit2.http.Query;
 
 public interface NewService {
     @GET("news/action/query/detail")
-    Call<MyNews> listRepos(@Query("newsID")String id);
+    Call<MyNews> listRepos(@Query("newsId")String id);
 }

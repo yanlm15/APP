@@ -23,7 +23,7 @@ public class ConstData {
     private static ConstData cur;
 
     private TreeMap<String,Integer> like = new TreeMap<String,Integer>(); // 喜欢词条
-    private String cur_ID = null;
+    private String cur_ID = "201608090432c815a85453c34d8ca43a591258701e9b";
 
     private TreeMap<String,Integer> dislike = new TreeMap<String,Integer>();// 不喜欢的词条
 

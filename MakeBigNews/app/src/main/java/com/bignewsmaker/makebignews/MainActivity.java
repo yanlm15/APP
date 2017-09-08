@@ -14,9 +14,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 
 import com.bignewsmaker.makebignews.FunctionActivity.SearchActivity;
 import com.bignewsmaker.makebignews.FunctionActivity.SetActivity;
+import com.bignewsmaker.makebignews.FunctionActivity.ShowNewsActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,6 +62,16 @@ public class MainActivity extends AppCompatActivity {
             public boolean onNavigationItemSelected(MenuItem item) {
                 mDrawerLayout.closeDrawers();
                 return true;
+            }
+        });
+
+        Button add = (Button)findViewById(R.id.add);//访问button
+
+        add.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v)
+            {
+                Intent intent=new Intent(MainActivity.this,ShowNewsActivity.class);// 新建一个界面
+                startActivity(intent);//跳转界面
             }
         });
 
