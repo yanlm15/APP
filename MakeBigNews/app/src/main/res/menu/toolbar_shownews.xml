@@ -15,6 +15,11 @@
         android:icon="@android:drawable/ic_menu_save"
         android:title="收藏"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/night"
+        android:icon="@android:drawable/ic_menu_save"
+        android:title="夜间模式"
+        app:showAsAction="never" />
 
 
 </menu>
