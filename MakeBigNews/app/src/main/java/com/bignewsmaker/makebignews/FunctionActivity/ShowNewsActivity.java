@@ -2,6 +2,7 @@ package com.bignewsmaker.makebignews.FunctionActivity;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -12,6 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bignewsmaker.makebignews.Functiontool.ConstData;
+import com.bignewsmaker.makebignews.Functiontool.RetrofitTool;
 import com.bignewsmaker.makebignews.R;
 import com.bignewsmaker.makebignews.Functiontool.Speaker;
 import com.bignewsmaker.makebignews.extra_class.Item1;
@@ -23,7 +25,11 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -54,8 +60,11 @@ public class ShowNewsActivity extends AppCompatActivity {
 
     private ConstData const_data = ConstData.getInstance();// 设置访问全局变量接口
     private Speaker speaker = Speaker.getInstance();// 设置语音系统接口
+    private RetrofitTool retrofitTool = RetrofitTool.getInstance();
+
     private String id;
     private ArrayList<String> picture = new ArrayList<String >();
+    private TreeSet<Bitmap> mybitmap = new TreeSet<>();
     public void setNews(String id) {
         this.id = id;
     }
@@ -92,66 +101,87 @@ public class ShowNewsActivity extends AppCompatActivity {
 
     }
 
-    public void getpicture()
+    public void getpicture(final String url)
+    {
+        UrlService service = retrofitTool.getRetrofit().create(UrlService.class);
+
+        Call<ResponseBody> urepos = service.downloadPicFromNet(url);
+
+        urepos.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful())
+                {
+//                    File file = new  File(getExternalFilesDir(null) + File.separator+"picture"+File.separator+ url);
+
+
+                        writeResponseBodyToDisk(response.body(), url);
+//                        BitmapFactory.decodeFile(getExternalFilesDir(null) + File.separator + url);
+
+                    System.out.println("Url-Success");
+                }else {
+                    System.out.println("Url-err");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                System.out.println("Url-f-err");
+            }
+        });
+
+    }
+
+    private boolean writeResponseBodyToDisk(ResponseBody body,String name)
     {
 
+        try{
+        File futureStudioIconFile = new File(getExternalFilesDir(null) + File.separator+"picture"+File.separator+ name);
+        InputStream inputStream = null;
+        OutputStream outputStream = null;
+
+
+        try {
+            byte[] fileReader = new byte[4096];
+
+            long fileSize = body.contentLength();
+            long fileSizeDownloaded = 0;
+
+            inputStream = body.byteStream();
+            outputStream = new FileOutputStream(futureStudioIconFile);
+            while (true)
+            {
+                int read = inputStream.read(fileReader);
+
+                if (read == -1){
+                    break;
+                }
+
+                outputStream.write(fileReader,0,read);
+
+                fileSizeDownloaded += read;
+
+            }
+            outputStream.flush();
+            return true;
+
+        }catch (Exception e)
+        {
+            return false;
+        }finally {
+            if (inputStream != null){
+                inputStream.close();
+            }
+
+            if (outputStream != null){
+                outputStream.close();
+            }
+        }}catch (IOException e){
+        return  false;
+        }
 
     }
 
-    public void saveMyBitmap(String bitName, Bitmap mBitmap) {
-        File f = new File("/sdcard/" + bitName);
-        try {
-            f.createNewFile();
-        } catch (IOException e) {
-        }
-        FileOutputStream fOut = null;
-        try {
-            fOut = new FileOutputStream(f);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        mBitmap.compress(Bitmap.CompressFormat.PNG, 100, fOut);
-        try {
-            fOut.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        try {
-            fOut.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-    private boolean writeResponseBodyToDisk(ResponseBody body)
-    {
-
-        return true;
-    }
-
-//    private void getpicture(String url)
-//    {
-//        UrlService urlService = retrofit.create(UrlService.class);
-//
-//        Call<ResponseBody> urepos = urlService.downloadPicFromNet(url);
-//
-//        urepos.enqueue(new Callback<ResponseBody>() {
-//            @Override
-//            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-//                if (response.isSuccessful())
-//                {
-//                    boolean writeToDisk = writeResponseBodyToDisk(response.body());
-//                }else {
-//                    System.out.println("func-picture");
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(Call<ResponseBody> call, Throwable t) {
-//                System.out.println("func-picture-err");
-//            }
-//        });
-//
-//    }
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -162,12 +192,11 @@ public class ShowNewsActivity extends AppCompatActivity {
         //设置输入监控
         //设置更新函数
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .addConverterFactory(GsonConverterFactory.create())
-                .baseUrl("http://166.111.68.66:2042/")
-                .build();
-        NewService service = retrofit.create(NewService.class);
+        System.out.println(">asd");
 
+        NewService service = retrofitTool.getRetrofit().create(NewService.class);
+
+        System.out.println("asd<");
         Call<MyNews> repos = service.listRepos(id);
 
         repos.enqueue(new Callback<MyNews>() {
@@ -176,7 +205,7 @@ public class ShowNewsActivity extends AppCompatActivity {
 
                 if (response.isSuccessful())
                 {
-                    System.out.println("success");
+                    System.out.println("news-success");
                     MyNews data = new MyNews();
                     data = response.body();
                     if (data != null)
@@ -193,14 +222,8 @@ public class ShowNewsActivity extends AppCompatActivity {
 
                             System.out.println(data.getNews_Pictures());
 
-
                         et2.setText(data.getNews_Title());
                         et1.setText(data.getNews_Content());
-//                        String html = "<html><head><title>TextView使用HTML</title></head><body><p><strong>强调</strong></p><p><em>斜体</em></p>"
-//
-//                                + "下面是网络图片</p><img src=http://up.2cto.com/2013/0128/20130128020940641.jpg\"/></body></html>";
-//                        et1.setMovementMethod(LinkMovementMethod.getInstance());
-//                        et1.setText(Html.fromHtml(html));
                         String myt = data.getNews_Title() + "," + data.getNews_Content();
                         speaker.setText(myt);
                         ArrayList<Item1> a = data.getKeywords();
@@ -228,8 +251,8 @@ public class ShowNewsActivity extends AppCompatActivity {
 
 
 
-        System.out.println("kk");
-        System.out.println(const_data.getCur_ID());
+//        System.out.println("kk><");
+//        System.out.println(const_data.getCur_ID());
 
 
     }

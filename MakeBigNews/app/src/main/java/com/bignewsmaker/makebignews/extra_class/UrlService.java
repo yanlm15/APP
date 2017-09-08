@@ -12,6 +12,7 @@ import retrofit2.http.Url;
 public interface UrlService {
 
     //下载图像
+//    @Streaming
     @GET
     Call<ResponseBody> downloadPicFromNet(@Url String fileUrl);
 
