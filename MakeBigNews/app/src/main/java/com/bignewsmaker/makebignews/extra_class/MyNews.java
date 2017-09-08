@@ -37,17 +37,17 @@ public class MyNews {
 //    List<item2> organizations;
 //    List<item2> persons;
 //    String repeat_ID;
-    public String seggedPListOfContent;
+    public ArrayList<String > seggedPListOfContent;
     public String seggedTitle;
 //    String wordCountOfContent;
 //    String  wordCountOfTitle;
 
 
-    public String getSeggedPListOfContent() {
+    public ArrayList<String> getSeggedPListOfContent() {
         return seggedPListOfContent;
     }
 
-    public void setSeggedPListOfContent(String seggedPListOfContent) {
+    public void setSeggedPListOfContent(ArrayList<String> seggedPListOfContent) {
         this.seggedPListOfContent = seggedPListOfContent;
     }
 

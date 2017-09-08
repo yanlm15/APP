@@ -110,9 +110,11 @@ public class ShowNewsActivity extends AppCompatActivity {
         repos.enqueue(new Callback<MyNews>() {
             @Override
             public void onResponse(Call<MyNews> call, Response<MyNews> response) {
-//
+
+                System.out.println("<>");
                 if (response.isSuccessful())
                 {
+                    System.out.println("success");
                     MyNews data = new MyNews();
                     data = response.body();
                     if (data != null)
@@ -135,11 +137,11 @@ public class ShowNewsActivity extends AppCompatActivity {
                         String myt = data.getNews_Title() + "," + data.getNews_Content();
                         speaker.setText(myt);
                         ArrayList<Item1> a = data.getKeywords();
-//                        for (Item1 i : a)//添加关键词
-//                        {
-//                            const_data.setLike(i.word);
-//                            System.out.println(i.word);//用于测试输出
-//                        }
+                        for (Item1 i : a)//添加关键词
+                        {
+                            const_data.setLike(i.word);
+                            System.out.println(i.word);//用于测试输出
+                        }
 
                     }
                 }
@@ -159,10 +161,9 @@ public class ShowNewsActivity extends AppCompatActivity {
 
 
 
-//        et1.setText(data.getNews_Title());
         System.out.println("kk");
+        System.out.println(const_data.getCur_ID());
 
-//        System.out.println(data.keywords[0].);
 
     }
 
