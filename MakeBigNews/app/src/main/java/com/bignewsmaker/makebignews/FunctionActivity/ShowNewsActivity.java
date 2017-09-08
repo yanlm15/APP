@@ -25,6 +25,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -51,6 +53,7 @@ public class ShowNewsActivity extends AppCompatActivity {
     private ConstData const_data = ConstData.getInstance();// 设置访问全局变量接口
     private Speaker speaker = Speaker.getInstance();// 设置语音系统接口
     private String id;
+    private String[] picture;
 //    MyNews data = new MyNews();
     public void setNews(String id) {
         this.id = id;
@@ -61,7 +64,15 @@ public class ShowNewsActivity extends AppCompatActivity {
         setNews(const_data.getCur_ID());
     }
 
+    private void picture_init(String str){
+        String s = "http://www.people.com.cn/mediafile/pic/20150819/5/2655964700156489425.jpg http://www.people.com.cn/mediafile/pic/20150819/41/12064259816872364729.jpg";
 
+        Pattern p = Pattern.compile("<[^>]*>");
+        Matcher m = p.matcher(s);
+
+
+
+    }
 
     void setHighLight(String str) //高亮关键字
     {
