@@ -22,6 +22,8 @@ public class SearchActivity  extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
 
+
+
         //设置输入监控
         //设置更新函数
 
