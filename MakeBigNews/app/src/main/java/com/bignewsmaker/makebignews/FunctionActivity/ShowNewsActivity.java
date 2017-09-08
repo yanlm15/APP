@@ -1,42 +1,33 @@
 package com.bignewsmaker.makebignews.FunctionActivity;
 
-import android.content.ClipData;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.Html;
-import android.text.method.LinkMovementMethod;
-import android.text.method.ScrollingMovementMethod;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bignewsmaker.makebignews.ConstData;
-import com.bignewsmaker.makebignews.LIST;
-import com.bignewsmaker.makebignews.News;
+import com.bignewsmaker.makebignews.Functiontool.ConstData;
 import com.bignewsmaker.makebignews.R;
-import com.bignewsmaker.makebignews.Speaker;
+import com.bignewsmaker.makebignews.Functiontool.Speaker;
 import com.bignewsmaker.makebignews.extra_class.Item1;
 import com.bignewsmaker.makebignews.extra_class.MyNews;
 import com.bignewsmaker.makebignews.extra_class.NewService;
+import com.bignewsmaker.makebignews.extra_class.UrlService;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -57,13 +48,14 @@ import retrofit2.converter.gson.*;
  * |-当然你可以参考https://www.2cto.com/kf/201311/256174.html 对比其他的方法
  */
 
+
+
 public class ShowNewsActivity extends AppCompatActivity {
 
     private ConstData const_data = ConstData.getInstance();// 设置访问全局变量接口
     private Speaker speaker = Speaker.getInstance();// 设置语音系统接口
     private String id;
     private ArrayList<String> picture = new ArrayList<String >();
-//    MyNews data = new MyNews();
     public void setNews(String id) {
         this.id = id;
     }
@@ -100,27 +92,12 @@ public class ShowNewsActivity extends AppCompatActivity {
 
     }
 
+    public void getpicture()
+    {
 
-//    private void getNetworkImg(String url)
-//    {
-//        Log.d(TAG,"url: " + url);
-//        RequestQueue queue = Volley.newRequestQueue(this);
-//        ImageRequest request = new ImageRequest(url,new Response.Listener<Bitmap>()
-//        {
-//            @Override
-//            public void onResponse(Bitmap bitmap){
-//                Log.d(TAG, "onResponse");
-//                saveMyBitmap(url, bitmap);
-//                mTextView03.setText(Html.fromHtml(htmlFor03, mNetWorkImageGetter, null));
-//            }, 0, 0, ImageView.ScaleType.CENTER, Bitmap.Config.RGB_565, new ErrorListener() {
-//
-//            @Override
-//            public void onErrorResponse(VolleyError error) {
-//                Log.d(TAG, "onErrorResponse:" + error);
-//            }
-//        });
-//        queue.add(request);
-//    }
+
+    }
+
     public void saveMyBitmap(String bitName, Bitmap mBitmap) {
         File f = new File("/sdcard/" + bitName);
         try {
@@ -145,7 +122,36 @@ public class ShowNewsActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
+    private boolean writeResponseBodyToDisk(ResponseBody body)
+    {
 
+        return true;
+    }
+
+//    private void getpicture(String url)
+//    {
+//        UrlService urlService = retrofit.create(UrlService.class);
+//
+//        Call<ResponseBody> urepos = urlService.downloadPicFromNet(url);
+//
+//        urepos.enqueue(new Callback<ResponseBody>() {
+//            @Override
+//            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+//                if (response.isSuccessful())
+//                {
+//                    boolean writeToDisk = writeResponseBodyToDisk(response.body());
+//                }else {
+//                    System.out.println("func-picture");
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(Call<ResponseBody> call, Throwable t) {
+//                System.out.println("func-picture-err");
+//            }
+//        });
+//
+//    }
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -161,8 +167,8 @@ public class ShowNewsActivity extends AppCompatActivity {
                 .baseUrl("http://166.111.68.66:2042/")
                 .build();
         NewService service = retrofit.create(NewService.class);
-        Call<MyNews> repos = service.listRepos(id);
 
+        Call<MyNews> repos = service.listRepos(id);
 
         repos.enqueue(new Callback<MyNews>() {
             @Override
@@ -189,11 +195,12 @@ public class ShowNewsActivity extends AppCompatActivity {
 
 
                         et2.setText(data.getNews_Title());
-                        String html = "<html><head><title>TextView使用HTML</title></head><body><p><strong>强调</strong></p><p><em>斜体</em></p>"
-
-                                + "下面是网络图片</p><img src=http://up.2cto.com/2013/0128/20130128020940641.jpg\"/></body></html>";
-                        et1.setMovementMethod(LinkMovementMethod.getInstance());
-                        et1.setText(Html.fromHtml(html));
+                        et1.setText(data.getNews_Content());
+//                        String html = "<html><head><title>TextView使用HTML</title></head><body><p><strong>强调</strong></p><p><em>斜体</em></p>"
+//
+//                                + "下面是网络图片</p><img src=http://up.2cto.com/2013/0128/20130128020940641.jpg\"/></body></html>";
+//                        et1.setMovementMethod(LinkMovementMethod.getInstance());
+//                        et1.setText(Html.fromHtml(html));
                         String myt = data.getNews_Title() + "," + data.getNews_Content();
                         speaker.setText(myt);
                         ArrayList<Item1> a = data.getKeywords();

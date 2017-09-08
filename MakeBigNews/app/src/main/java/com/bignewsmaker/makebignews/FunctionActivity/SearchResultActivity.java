@@ -3,9 +3,9 @@ package com.bignewsmaker.makebignews.FunctionActivity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
-import com.bignewsmaker.makebignews.ConstData;
+import com.bignewsmaker.makebignews.Functiontool.ConstData;
 import com.bignewsmaker.makebignews.R;
-import com.bignewsmaker.makebignews.Speaker;
+import com.bignewsmaker.makebignews.Functiontool.Speaker;
 
 /**
  * Created by liminyan on 06/09/2017.

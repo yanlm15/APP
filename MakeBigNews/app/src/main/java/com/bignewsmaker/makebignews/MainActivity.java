@@ -17,6 +17,8 @@ import android.view.MenuItem;
 
 import com.bignewsmaker.makebignews.FunctionActivity.SearchActivity;
 import com.bignewsmaker.makebignews.FunctionActivity.SetActivity;
+import com.bignewsmaker.makebignews.Functiontool.ConstData;
+import com.bignewsmaker.makebignews.Functiontool.Speaker;
 
 import java.util.ArrayList;
 import java.util.List;

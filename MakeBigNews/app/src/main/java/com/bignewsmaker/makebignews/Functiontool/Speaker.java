@@ -1,4 +1,4 @@
-package com.bignewsmaker.makebignews;
+package com.bignewsmaker.makebignews.Functiontool;
 
 import android.speech.tts.TextToSpeech;
 import android.support.v7.app.AppCompatActivity;

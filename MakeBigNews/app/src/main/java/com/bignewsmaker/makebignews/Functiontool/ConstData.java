@@ -1,4 +1,7 @@
-package com.bignewsmaker.makebignews;
+package com.bignewsmaker.makebignews.Functiontool;
+
+import com.bignewsmaker.makebignews.LIST;
+import com.bignewsmaker.makebignews.News;
 
 import java.util.TreeMap;
 

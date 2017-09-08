@@ -4,13 +4,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.SearchView;
-import android.widget.TextView;
 
-import com.bignewsmaker.makebignews.ConstData;
+import com.bignewsmaker.makebignews.Functiontool.ConstData;
 import com.bignewsmaker.makebignews.R;
-import com.bignewsmaker.makebignews.Speaker;
-
-import static com.bignewsmaker.makebignews.R.id.searchView;
+import com.bignewsmaker.makebignews.Functiontool.Speaker;
 
 
 /**

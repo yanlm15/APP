@@ -13,6 +13,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.bignewsmaker.makebignews.FunctionActivity.ShowNewsActivity;
+import com.bignewsmaker.makebignews.Functiontool.ConstData;
+import com.bignewsmaker.makebignews.Functiontool.Speaker;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.ByteArrayOutputStream;
