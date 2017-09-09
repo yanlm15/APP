@@ -2,9 +2,16 @@ package com.bignewsmaker.makebignews.activity;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.AppCompatSeekBar;
+import android.support.v7.widget.Toolbar;
+import android.view.View;
+import android.widget.CompoundButton;
+import android.widget.SeekBar;
+import android.widget.Switch;
+import android.widget.TextView;
 
-import com.bignewsmaker.makebignews.basic_class.ConstData;
 import com.bignewsmaker.makebignews.R;
+import com.bignewsmaker.makebignews.basic_class.ConstData;
 import com.bignewsmaker.makebignews.extra_class.Speaker;
 
 /**
@@ -20,6 +27,58 @@ public class SetActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_set);
+
+        //设置toolbar
+        Toolbar toolbar = (Toolbar) findViewById(R.id.fanhui);
+        toolbar.setTitle("设置");
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+        setSupportActionBar(toolbar);
+
+        Switch switchNight = (Switch) findViewById(R.id.switchnight);
+        switchNight.setChecked(!const_data.getDay());
+        switchNight.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                const_data.setDay(!b);
+            }
+        });
+
+        Switch switchPicture = (Switch) findViewById(R.id.switchpicture);
+        switchPicture.setChecked(!const_data.getShow_picture());
+        switchPicture.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                const_data.setShow_picture(!b);
+            }
+        });
+
+
+        AppCompatSeekBar sizeBar = (AppCompatSeekBar) findViewById(R.id.sizebar);
+        final TextView textView = (TextView) findViewById(R.id.sizenumber);
+        sizeBar.setProgress(20);
+        sizeBar.setMax(50);
+        sizeBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                String p = String.valueOf(progress);
+                textView.setText(p);
+                const_data.setCur_pageSize(p);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+            }
+        });
+
 
         //设置输入监控
         //设置更新函数

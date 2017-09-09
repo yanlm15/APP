@@ -77,13 +77,16 @@ public class MainActivity extends AppCompatActivity {
                 item.setCheckable(false);//选项是否可选
                 switch (item.getItemId()) {
                     case R.id.nav_saved:
-
+                        Intent savedIntent = new Intent(MainActivity.this, SavedActivity.class);
+                        startActivity(savedIntent);
                         break;
                     case R.id.nav_setting:
                         Intent setIntent = new Intent(MainActivity.this, SetActivity.class);
                         startActivity(setIntent);
                         break;
                     case R.id.nav_about:
+                        Intent aboutIntent = new Intent(MainActivity.this, AboutActivity.class);
+                        startActivity(aboutIntent);
                         break;
 
                 }

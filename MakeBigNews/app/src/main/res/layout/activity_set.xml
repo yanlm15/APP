@@ -9,15 +9,13 @@
 
     tools:context="com.bignewsmaker.makebignews.activity.SearchActivity">
 
-
     <android.support.v7.widget.Toolbar
         android:id="@+id/fanhui"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="#3F51B5"
-        app:navigationIcon="@android:drawable/ic_menu_revert"
-        app:popupTheme="@style/AppTheme.PopupOverlay" />
-
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:navigationIcon="@mipmap/fanhui" />
 
     <LinearLayout
         android:id="@+id/linenight"
@@ -37,12 +35,11 @@
             android:textColor="#363636"
             android:textSize="16dp" />
 
-
         <Switch
             android:id="@+id/switchnight"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            />
+            android:padding="6dp" />
 
     </LinearLayout>
 
@@ -66,11 +63,58 @@
 
 
         <Switch
-            android:id="@+id/switchnopicture"
+            android:id="@+id/switchpicture"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            />
+            android:padding="6dp" />
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/linenumber"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:background="#FFFFFF"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:padding="12dp"
+            android:text="每页新闻数目"
+            android:textColor="#363636"
+            android:textSize="16dp" />
+
+        <TextView
+            android:id="@+id/sizenumber"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="12dp"
+            android:layout_gravity="center_vertical"
+            android:text="20" />
+        <TextView
+            android:layout_width="8dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"/>
+    </LinearLayout>
+
+    <android.support.v7.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <android.support.v7.widget.AppCompatSeekBar
+            android:id="@+id/sizebar"
+            android:layout_width="match_parent"
+            android:padding="6dp"
+            android:layout_height="wrap_content"
+            android:background="#FFFFFF"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1" />
+
+
+    </android.support.v7.widget.LinearLayoutCompat>
 
 </LinearLayout>

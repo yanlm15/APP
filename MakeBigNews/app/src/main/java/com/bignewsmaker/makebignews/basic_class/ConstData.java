@@ -30,6 +30,14 @@ public class ConstData {
     private String  search_class = null;//用户的搜索标签，默认为空！！
     private String cur_pageSize = "20";
 
+   public boolean getDay() {
+        return isDay;
+    }
+
+    public void setDay(boolean day) {
+        isDay = day;
+    }
+
     public void setSearch_class(String search_class) {
         this.search_class = search_class;
     }

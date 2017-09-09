@@ -1,6 +1,7 @@
 package com.bignewsmaker.makebignews.fragment;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -12,13 +13,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.bignewsmaker.makebignews.activity.ShowNewsActivity;
-import com.bignewsmaker.makebignews.basic_class.ConstData;
-import com.bignewsmaker.makebignews.adapter.NewsAdapter;
-import com.bignewsmaker.makebignews.basic_class.NewsList;
-import com.bignewsmaker.makebignews.extra_class.Speaker;
 import com.bignewsmaker.makebignews.Interface.OnItemClickListener;
 import com.bignewsmaker.makebignews.R;
+import com.bignewsmaker.makebignews.activity.ShowNewsActivity;
+import com.bignewsmaker.makebignews.adapter.NewsAdapter;
+import com.bignewsmaker.makebignews.basic_class.ConstData;
+import com.bignewsmaker.makebignews.basic_class.NewsList;
+import com.bignewsmaker.makebignews.extra_class.Speaker;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.ByteArrayOutputStream;
@@ -31,7 +32,7 @@ import java.net.URL;
 public class NewsFragment extends Fragment {
     private NewsList news;
     private int category;
-    private LinearLayoutManager layoutManager;
+    private LinearLayoutManager mLayoutManager;
     private RecyclerView recyclerView;
     private SwipeRefreshLayout swipeRefresh;
     private NewsAdapter adapter;
@@ -62,9 +63,12 @@ public class NewsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_news, container, false);
+        mLayoutManager = new LinearLayoutManager(getActivity());
         recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
-        category = getArguments().getInt("category");
-        refreshNews();
+        recyclerView.addOnScrollListener(mOnScrollListener);
+        if (!const_data.getDay())
+            recyclerView.setBackgroundColor(Color.rgb(66, 66, 66));
+
         swipeRefresh = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh);
         swipeRefresh.setRefreshing(true);
         swipeRefresh.setColorSchemeResources(R.color.colorPrimary);
@@ -76,8 +80,32 @@ public class NewsFragment extends Fragment {
                 refreshNews();
             }
         });
+
+        category = getArguments().getInt("category");
+        refreshNews();
         return view;
     }
+
+
+    private RecyclerView.OnScrollListener mOnScrollListener = new RecyclerView.OnScrollListener() {
+
+        private int lastVisibleItem;
+
+        @Override
+        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+            super.onScrolled(recyclerView, dx, dy);
+            lastVisibleItem = mLayoutManager.findLastVisibleItemPosition();
+        }
+
+        @Override
+        public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+            super.onScrollStateChanged(recyclerView, newState);
+            if (newState == RecyclerView.SCROLL_STATE_IDLE
+                    && lastVisibleItem + 1 == adapter.getItemCount()) {
+                //加载更多
+            }
+        }
+    };
 
     private void refreshNews() {
         new Thread(new Runnable() {
@@ -119,7 +147,7 @@ public class NewsFragment extends Fragment {
             String pageNo = String.valueOf(news == null ? 1 : news.getPageNo() + 1);
             String url = "http://166.111.68.66:2042/news/action/query/latest?pageNo=" + pageNo +
                     "&pageSize=" + const_data.getCur_pageSize() + (category == 0 ? "" : "&category=" + category);
-            URL u=new URL(url);
+            URL u = new URL(url);
             conn = (HttpURLConnection) u.openConnection();
             InputStream inputStream = conn.getInputStream();
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -133,7 +161,7 @@ public class NewsFragment extends Fragment {
             inputStream.close();
             conn.disconnect();
             ObjectMapper mapper = new ObjectMapper();
-            news=mapper.readValue(s, NewsList.class);
+            news = mapper.readValue(s, NewsList.class);
         } catch (MalformedURLException e) {
             e.printStackTrace();
         } catch (IOException e) {

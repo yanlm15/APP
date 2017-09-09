@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="3dp"
+    android:layout_marginLeft="6dp"
+    android:layout_marginRight="6dp"
+    android:layout_marginTop="3dp"
+    android:orientation="vertical"
+    app:cardCornerRadius="10dp"
+    app:cardPreventCornerOverlap="true"
+    app:cardUseCompatPadding="true">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="5dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/news_image"
+                    android:layout_width="100dp"
+                    android:layout_height="61.8dp"
+                    android:layout_marginTop="12dp"
+                    android:padding="5dp"
+                    android:scaleType="centerCrop" />
+
+                <TextView
+                    android:layout_width="10dp"
+                    android:layout_height="match_parent" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/news_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginTop="3dp"
+                        android:text="《口袋妖怪GO》重拳出击打击作弊 不再支持越狱设备"
+                        android:textSize="18dp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/news_intro"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginTop="3dp"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:text="9月12日消息，据外媒报道，作为《口袋妖怪GO》开发商之一的Niantic游..."
+                        android:textSize="12dp" />
+
+                    <TextView
+                        android:id="@+id/news_source"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginTop="3dp"
+                        android:text="其他"
+                        android:textSize="9dp" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="10dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:id="@+id/news_image1"
+                    android:layout_width="100dp"
+                    android:layout_height="61.8dp"
+                    android:layout_marginTop="6dp"
+                    android:visibility="gone"
+                    android:scaleType="centerCrop" />
+                <TextView
+                    android:layout_width="30dp"
+                    android:layout_height="match_parent" />
+                <ImageView
+                    android:id="@+id/news_image2"
+                    android:layout_width="100dp"
+                    android:visibility="gone"
+                    android:layout_height="61.8dp"
+                    android:layout_marginTop="6dp"
+                    android:scaleType="centerCrop" />
+                <TextView
+                    android:layout_width="30dp"
+                    android:layout_height="match_parent" />
+                <ImageView
+                    android:id="@+id/news_image3"
+                    android:layout_width="100dp"
+                    android:layout_height="61.8dp"
+                    android:visibility="gone"
+                    android:layout_marginTop="6dp"
+                    android:scaleType="centerCrop" />
+            </LinearLayout>
+        </LinearLayout>
+    </RelativeLayout>
+
+</android.support.v7.widget.CardView>
