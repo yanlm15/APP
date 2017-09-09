@@ -53,6 +53,13 @@ public class Speaker {
         });
     }
 
+    public void stop() {
+        if (mTextToSpeech != null) {
+            mTextToSpeech.stop();
+            mTextToSpeech.shutdown();
+        }
+    }
+
     public static Speaker getInstance() {
 
         if (now == null)

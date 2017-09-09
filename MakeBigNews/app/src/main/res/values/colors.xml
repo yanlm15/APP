@@ -3,4 +3,12 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+    <color name="toolColor">#3F51B5</color>
+    <color name="toolColor_night">#3b3b3b</color>
+    <color name="titleColor">#3b3b3b</color>
+    <color name="titleColor_night">#FFFFFF</color>
+    <color name="textColor">#3b3b3b</color>
+    <color name="textColor_night">#aaa</color>
+    <color name="backgroundColor">#FFFFFF</color>
+    <color name="backgroundColor_night">#ff000000</color>
 </resources>

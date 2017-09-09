@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -16,6 +17,7 @@ import com.bignewsmaker.makebignews.Functiontool.ConstData;
 import com.bignewsmaker.makebignews.Functiontool.RetrofitTool;
 import com.bignewsmaker.makebignews.R;
 import com.bignewsmaker.makebignews.Functiontool.Speaker;
+import com.bignewsmaker.makebignews.ThemeManager;
 import com.bignewsmaker.makebignews.extra_class.Item1;
 import com.bignewsmaker.makebignews.extra_class.MyNews;
 import com.bignewsmaker.makebignews.extra_class.NewService;
@@ -56,15 +58,24 @@ import retrofit2.converter.gson.*;
 
 
 
-public class ShowNewsActivity extends AppCompatActivity {
+public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.OnThemeChangeListener {
 
     private ConstData const_data = ConstData.getInstance();// 设置访问全局变量接口
     private Speaker speaker = Speaker.getInstance();// 设置语音系统接口
     private RetrofitTool retrofitTool = RetrofitTool.getInstance();
-
     private String id;
     private ArrayList<String> picture = new ArrayList<String >();
     private TreeSet<Bitmap> mybitmap = new TreeSet<>();
+
+    private boolean isDay = const_data.isModel_day();
+    private LinearLayout linearLayout;
+    private Toolbar toolbar;
+    private TextView textView, textView2;
+    private MenuItem item_voice, item_stop, item_day, item_night;
+    private boolean isread = false;
+
+
+
     public void setNews(String id) {
         this.id = id;
     }
@@ -182,12 +193,17 @@ public class ShowNewsActivity extends AppCompatActivity {
 
     }
 
-
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show_news);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar2);
+        toolbar = (Toolbar) findViewById(R.id.toolbar2);
         setSupportActionBar(toolbar);
+        ThemeManager.registerThemeChangeListener(this);
+        linearLayout = (LinearLayout) findViewById(R.id.linearLayout);
+        textView = (TextView) findViewById(R.id.textView);
+        textView2 = (TextView) findViewById(R.id.textView2);
+
         first_init(); // 获取当前新闻信息
         //设置输入监控
         //设置更新函数
@@ -255,13 +271,40 @@ public class ShowNewsActivity extends AppCompatActivity {
 //        System.out.println(const_data.getCur_ID());
 
 
+
+        init_model();    //设置夜间or日间模式
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.toolbar_shownews, menu);
+        item_voice = menu.findItem(R.id.voice);
+        item_stop = menu.findItem(R.id.stop);
+        item_day = menu.findItem(R.id.day);
+        item_night = menu.findItem(R.id.night);
+        if ( isread )
+        {
+            item_voice.setVisible(false);
+            item_stop.setVisible(true);
+        }
+        else
+        {
+            item_stop.setVisible(false);
+            item_voice.setVisible(true);
+        }
+        if ( isDay )
+        {
+            item_day.setVisible(false);
+            item_night.setVisible(true);
+        }
+        else
+        {
+            item_night.setVisible(false);
+            item_day.setVisible(true);
+        }
         return super.onCreateOptionsMenu(menu);
     }
+
     public void shareMsg(String activityTitle, String msgTitle, String msgText, String imgPath ){
         Intent intent = new Intent(Intent.ACTION_SEND);
         if ( imgPath == null || imgPath.equals("")){
@@ -287,6 +330,7 @@ public class ShowNewsActivity extends AppCompatActivity {
         }
 
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -294,7 +338,16 @@ public class ShowNewsActivity extends AppCompatActivity {
                 shareMsg("分享图片和文字", "Share", "img and text", null);
                 return true;
             case R.id.voice:
-                news_voice();
+                voice_begin();
+                break;
+            case R.id.stop:
+                voice_stop();
+                break;
+            case R.id.night:
+                night_model();
+                break;
+            case R.id.day:
+                day_model();
                 break;
             default:
                 Toast.makeText(this, "方法还没定义", Toast.LENGTH_SHORT).show();
@@ -302,8 +355,55 @@ public class ShowNewsActivity extends AppCompatActivity {
         }
         return false;
     }
-    public void news_voice(){
+
+    public void voice_begin(){
         speaker.setCur(this);
         speaker.start();
+        isread = true;
+        this.invalidateOptionsMenu();
+    }
+    public void voice_stop(){
+        speaker.stop();
+        isread = false;
+        this.invalidateOptionsMenu();
+    }
+
+    public void night_model(){
+        ThemeManager.setThemeMode(ThemeManager.ThemeMode.NIGHT);
+        isDay = false;
+        this.invalidateOptionsMenu();
+        const_data.setModel_day(isDay);
+    }
+
+    public void day_model(){
+        ThemeManager.setThemeMode(ThemeManager.ThemeMode.DAY);
+        isDay = true;
+        this.invalidateOptionsMenu();
+        const_data.setModel_day(isDay);
+    }
+
+    public void init_model() {
+        if (!isDay) {
+            ThemeManager.setThemeMode(ThemeManager.ThemeMode.NIGHT);
+            this.invalidateOptionsMenu();
+        } else {
+            ThemeManager.setThemeMode(ThemeManager.ThemeMode.DAY);
+            this.invalidateOptionsMenu();
+        }
+    }
+    @Override
+    public void onThemeChanged() {
+        //日间模式下的颜色
+        textView.setTextColor(getResources().getColor(ThemeManager.getCurrentThemeRes(ShowNewsActivity.this, R.color.textColor)));
+        textView2.setTextColor(getResources().getColor(ThemeManager.getCurrentThemeRes(ShowNewsActivity.this, R.color.textColor)));
+        linearLayout.setBackgroundColor(getResources().getColor(ThemeManager.getCurrentThemeRes(ShowNewsActivity.this, R.color.backgroundColor)));
+        toolbar.setTitleTextColor(getResources().getColor(ThemeManager.getCurrentThemeRes(ShowNewsActivity.this, R.color.titleColor)));
+        toolbar.setBackgroundColor(getResources().getColor(ThemeManager.getCurrentThemeRes(ShowNewsActivity.this, R.color.toolColor)));
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        ThemeManager.unregisterThemeChangeListener(this);
     }
 }
