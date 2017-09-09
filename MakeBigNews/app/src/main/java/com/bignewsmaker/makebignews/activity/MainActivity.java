@@ -29,11 +29,6 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-//    LinearLayoutManager layoutManager;
-//    RecyclerView recyclerView;
-//    private SwipeRefreshLayout swipeRefresh;
-//    private NewsAdapter adapter;
-
     private TabLayout mTabLayout;
     private ViewPager mViewPager;
     private List<Fragment> mFragments;
