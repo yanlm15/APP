@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.style.ImageSpan;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
@@ -16,6 +17,7 @@ import com.bignewsmaker.makebignews.Functiontool.ConstData;
 import com.bignewsmaker.makebignews.Functiontool.RetrofitTool;
 import com.bignewsmaker.makebignews.R;
 import com.bignewsmaker.makebignews.Functiontool.Speaker;
+import com.bignewsmaker.makebignews.extra_class.AfterSuccessReCall;
 import com.bignewsmaker.makebignews.extra_class.Item1;
 import com.bignewsmaker.makebignews.extra_class.MyNews;
 import com.bignewsmaker.makebignews.extra_class.NewService;
@@ -56,13 +58,15 @@ import retrofit2.converter.gson.*;
 
 
 
-public class ShowNewsActivity extends AppCompatActivity {
+public class ShowNewsActivity extends AppCompatActivity implements AfterSuccessReCall{
 
     private ConstData const_data = ConstData.getInstance();// 设置访问全局变量接口
     private Speaker speaker = Speaker.getInstance();// 设置语音系统接口
-    private RetrofitTool retrofitTool = RetrofitTool.getInstance();
+    private RetrofitTool retrofitTool = RetrofitTool.getInstance();// 设置请求器
 
     private String id;
+    private String title;
+    private String context;
     private ArrayList<String> picture = new ArrayList<String >();
     private TreeSet<Bitmap> mybitmap = new TreeSet<>();
     public void setNews(String id) {
@@ -74,6 +78,21 @@ public class ShowNewsActivity extends AppCompatActivity {
         setNews(const_data.getCur_ID());
     }
 
+
+
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_show_news);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar2);
+        setSupportActionBar(toolbar);
+        first_init(); // 获取当前新闻信息
+        //设置输入监控
+        //设置更新函数
+
+        getText(id);
+
+    }
+
     private void picture_init(String str){//获取所有图片
         String s = str;
         Pattern p = Pattern.compile("http://(\\w+|\\/|\\.|-)*.(jpg|png)");
@@ -81,12 +100,11 @@ public class ShowNewsActivity extends AppCompatActivity {
 
         while( m.find())
             picture.add(m.group());
-        for (String e : picture) {
-             System.out.println(e);
 
-        }
 
     }
+
+
 
     void setHighLight(String str) //高亮关键字
     {
@@ -133,8 +151,6 @@ public class ShowNewsActivity extends AppCompatActivity {
         });
 
         System.out.println(">>>|<<<");
-
-
     }
 
     private boolean writeResponseBodyToDisk(ResponseBody body,String name)
@@ -186,63 +202,77 @@ public class ShowNewsActivity extends AppCompatActivity {
         }
 
     }
+    public void setText(){
+        System.out.println("acd---->");
+        for (String e:picture)
+        {
+            System.out.println(e);//用于测试输出
+            File file =  new File(getExternalFilesDir(null) + File.separator+"picture"+File.separator+ e);
+
+            if (const_data.getShow_picture() == true){
+                if (file.exists())
+                {
+                    //图文混排
+                    Bitmap p =  BitmapFactory.decodeFile(getExternalFilesDir(null) +  File.separator+"picture"+File.separator+ e);
+                    mybitmap.add(p);
+                    break;//暂时添加一张图片
+                }
+                else
+                {
+                    getpicture(e);
+                    return;//避免 图片请求被多次调用
+//                    break;
+
+                }
+            }
 
 
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_show_news);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar2);
-        setSupportActionBar(toolbar);
-        first_init(); // 获取当前新闻信息
-        //设置输入监控
-        //设置更新函数
+        }
+        TextView et1 = (TextView) findViewById(R.id.textView);//content
+        TextView et2 = (TextView) findViewById(R.id.textView2);//title
+        if (mybitmap.size()>0)
+        {
+            //  如果有图片
+        }
 
-        System.out.println(">asd");
+
+        et2.setText(title);
+        et1.setText("\n"+context+"\n");
+    }
+
+    public void getText(String id)
+    {
 
         NewService service = retrofitTool.getRetrofit().create(NewService.class);
 
-        System.out.println("asd<");
         Call<MyNews> repos = service.listRepos(id);
 
         repos.enqueue(new Callback<MyNews>() {
             @Override
             public void onResponse(Call<MyNews> call, Response<MyNews> response) {
 
-                if (response.isSuccessful())
-                {
+                if (response.isSuccessful()) {
                     System.out.println("news-success");
                     MyNews data = new MyNews();
                     data = response.body();
-                    if (data != null)
-                    {
-                        TextView et1 = (TextView) findViewById(R.id.textView);//content
-                        TextView et2 = (TextView) findViewById(R.id.textView2);//title
-
-                        picture_init(data.getNews_Pictures());
-
-                        for (String e:picture)
-                        {
-                            System.out.println(e);//用于测试输出
-                            getpicture(e);
-                        }
-
-                            System.out.println(data.getNews_Pictures());
-
-                        et2.setText(data.getNews_Title());
-                        et1.setText(data.getNews_Content());
+                    if (data != null) {
                         String myt = data.getNews_Title() + "," + data.getNews_Content();
                         speaker.setText(myt);
                         ArrayList<Item1> a = data.getKeywords();
-                        for (Item1 i : a)//添加关键词
-                        {
+                        for (Item1 i : a){//添加关键词
                             const_data.setLike(i.word);
 //                            System.out.println(i.word);//用于测试输出
                         }
 
+                        picture_init(data.getNews_Pictures());
+                        System.out.println(data.getNews_Pictures());
+
+                        title =  data.getNews_Title();
+                        context = data.getNews_Content();
+                        setText();
+
                     }
-                }
-                else
-                {
+                } else {
                     System.out.println("fuck");
                 }
 
@@ -254,13 +284,6 @@ public class ShowNewsActivity extends AppCompatActivity {
 
             }
         });
-
-
-
-//        System.out.println("kk><");
-//        System.out.println(const_data.getCur_ID());
-
-
     }
 
     @Override
@@ -311,5 +334,11 @@ public class ShowNewsActivity extends AppCompatActivity {
     public void news_voice(){
         speaker.setCur(this);
         speaker.start();
+    }
+
+
+    public void onSuccess(String data)
+    {
+
     }
 }
