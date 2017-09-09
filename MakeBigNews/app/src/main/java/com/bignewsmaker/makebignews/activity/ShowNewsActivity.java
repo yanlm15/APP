@@ -65,6 +65,7 @@ import retrofit2.Response;
  * 设置信息储存，当然要是实现永久性，将信息写到一个文件里，然后开机的时候倒入
  * getExternalFilesDir(null)获取外部存储目录
  *
+ * 可以通过设置主进程来调试，不一定要等到服务器恢复
  */
 
 
