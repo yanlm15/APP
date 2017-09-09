@@ -30,6 +30,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -63,7 +65,7 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
     private String title;
     private String context;
     private ArrayList<String> picture = new ArrayList<String >();
-    private TreeSet<Bitmap> mybitmap = new TreeSet<>();
+    private ArrayList<Bitmap> mybitmap = new ArrayList<Bitmap>();
 
     private boolean isDay = const_data.isModel_day();
     private LinearLayout linearLayout;
@@ -87,7 +89,12 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
         init_model();    //设置夜间or日间模式
     }
 
+    public String  getDir(int number)
+    {
+        String mynumber = String.valueOf(number);
+        return (getExternalFilesDir(null) + File.separator+"picture"+File.separator+id+File.separator+mynumber );
 
+    }
 
     public void setNews(String id) {
         this.id = id;
@@ -112,7 +119,7 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
 
     }
     public void onSuccess(String str){
-
+        setText();
     }
 
     void setHighLight(String str) //高亮关键字
@@ -129,35 +136,45 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
     }
     public void setText(){
         System.out.println("acd---->");
+        int i = 0;
         for (String e:picture)
         {
-            System.out.println(e);//用于测试输出
-            File file =  new File(getExternalFilesDir(null) + File.separator+"picture"+File.separator+ e);
+            System.out.println("><:"+e);//用于测试输出
+
+            File file =  new File(getDir(i));
 
             if (const_data.getShow_picture() == true){
                 if (file.exists())
                 {
                     //图文混排
-                    Bitmap p =  BitmapFactory.decodeFile(getExternalFilesDir(null) +  File.separator+"picture"+File.separator+ e);
+                    System.out.println(">>:>"+e+"\n"+getDir(i));
+                    Bitmap p =  BitmapFactory.decodeFile(getDir(i));
                     mybitmap.add(p);
                     break;//暂时添加一张图片
                 }
                 else
                 {
-                    getpicture(e);
-//                    return;//避免 图片请求被多次调用
-                    break;
+                    System.out.println(">:"+e);
+                    getpicture(e,i);
+                    return;//避免 图片请求被多次调用
+//                    break;
 
                 }
             }
 
-
+            i++;
         }
         TextView et1 = (TextView) findViewById(R.id.textView);//content
         TextView et2 = (TextView) findViewById(R.id.textView2);//title
         if (mybitmap.size()>0)
         {
             //  如果有图片
+            System.out.println("you get it");
+//            Bitmap b = mybitmap.get(0);
+//            ImageSpan imgSpan = new ImageSpan(this, b);
+        }
+        else {
+            System.out.println("no picture");
         }
 
 
@@ -165,7 +182,7 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
         et1.setText("\n"+context+"\n");
     }
 
-    public void getpicture(final String url)
+    public void getpicture(final String url,final int i)
     {
         UrlService service = RetrofitTool.getInstance().getRetrofit().create(UrlService.class);
         System.out.println(">>><<<");
@@ -179,12 +196,16 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
                 if (response.isSuccessful())
                 {
 //                    File file = new  File(getExternalFilesDir(null) + File.separator+"picture"+File.separator+ url);
-                    System.out.println(">>>");
+                    System.out.println(">>>"+url);
 
-                        writeResponseBodyToDisk(response.body(), url);
+                        writeResponseBodyToDisk(response.body(), i);
+                    File file = new File(getDir(i));
 //                        BitmapFactory.decodeFile(getExternalFilesDir(null) + File.separator + url);
+                    System.out.println(">>:"+getDir(i));
+                    System.out.println(file.exists());
 
                     System.out.println("Url-Success");
+                    onSuccess(">>");
                 }else {
                     System.out.println("Url-err");
                 }
@@ -247,11 +268,16 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
 
 
 
-    private boolean writeResponseBodyToDisk(ResponseBody body,String name)
+    private boolean writeResponseBodyToDisk(ResponseBody body,int i)
     {
 
         try{
-        File futureStudioIconFile = new File(getExternalFilesDir(null) + File.separator+"picture"+File.separator+ name);
+        File futureStudioIconFile = new File(getExternalFilesDir(null) + File.separator+"picture"+File.separator+id);
+            if (futureStudioIconFile.exists()==false)
+            {
+                futureStudioIconFile.mkdir();
+            }
+        futureStudioIconFile = new File(getDir(i));
         InputStream inputStream = null;
         OutputStream outputStream = null;
 
@@ -278,10 +304,13 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
 
             }
             outputStream.flush();
+            System.out.println("TR");
             return true;
 
         }catch (Exception e)
         {
+            System.out.println("FTR"+e);
+
             return false;
         }finally {
             if (inputStream != null){
