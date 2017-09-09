@@ -2,6 +2,7 @@ package com.bignewsmaker.makebignews.activity;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -12,6 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bignewsmaker.makebignews.Interface.SuccessCallBack;
 import com.bignewsmaker.makebignews.basic_class.ConstData;
 import com.bignewsmaker.makebignews.extra_class.RetrofitTool;
 import com.bignewsmaker.makebignews.R;
@@ -52,12 +54,14 @@ import retrofit2.Response;
 
 
 
-public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.OnThemeChangeListener {
+public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.OnThemeChangeListener,SuccessCallBack {
 
     private ConstData const_data = ConstData.getInstance();// 设置访问全局变量接口
     private Speaker speaker = Speaker.getInstance();// 设置语音系统接口
     private RetrofitTool retrofitTool = RetrofitTool.getInstance();
     private String id;
+    private String title;
+    private String context;
     private ArrayList<String> picture = new ArrayList<String >();
     private TreeSet<Bitmap> mybitmap = new TreeSet<>();
 
@@ -67,6 +71,21 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
     private TextView textView, textView2;
     private MenuItem item_voice, item_stop, item_day, item_night;
     private boolean isread = false;
+
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_show_news);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar2);
+        setSupportActionBar(toolbar);
+        first_init(); // 获取当前新闻信息
+        //设置输入监控
+        //设置更新函数
+
+        getText(id);
+        init_model();    //设置夜间or日间模式
+    }
 
 
 
@@ -92,6 +111,9 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
         }
 
     }
+    public void onSuccess(String str){
+
+    }
 
     void setHighLight(String str) //高亮关键字
     {
@@ -105,20 +127,59 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
     {
 
     }
+    public void setText(){
+        System.out.println("acd---->");
+        for (String e:picture)
+        {
+            System.out.println(e);//用于测试输出
+            File file =  new File(getExternalFilesDir(null) + File.separator+"picture"+File.separator+ e);
+
+            if (const_data.getShow_picture() == true){
+                if (file.exists())
+                {
+                    //图文混排
+                    Bitmap p =  BitmapFactory.decodeFile(getExternalFilesDir(null) +  File.separator+"picture"+File.separator+ e);
+                    mybitmap.add(p);
+                    break;//暂时添加一张图片
+                }
+                else
+                {
+                    getpicture(e);
+//                    return;//避免 图片请求被多次调用
+                    break;
+
+                }
+            }
+
+
+        }
+        TextView et1 = (TextView) findViewById(R.id.textView);//content
+        TextView et2 = (TextView) findViewById(R.id.textView2);//title
+        if (mybitmap.size()>0)
+        {
+            //  如果有图片
+        }
+
+
+        et2.setText(title);
+        et1.setText("\n"+context+"\n");
+    }
 
     public void getpicture(final String url)
     {
-        UrlService service = retrofitTool.getRetrofit().create(UrlService.class);
+        UrlService service = RetrofitTool.getInstance().getRetrofit().create(UrlService.class);
+        System.out.println(">>><<<");
 
         Call<ResponseBody> urepos = service.downloadPicFromNet(url);
 
         urepos.enqueue(new Callback<ResponseBody>() {
+
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response.isSuccessful())
                 {
 //                    File file = new  File(getExternalFilesDir(null) + File.separator+"picture"+File.separator+ url);
-
+                    System.out.println(">>>");
 
                         writeResponseBodyToDisk(response.body(), url);
 //                        BitmapFactory.decodeFile(getExternalFilesDir(null) + File.separator + url);
@@ -131,12 +192,60 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
-                System.out.println("Url-f-err");
+                System.out.println("Url-f-err"+t.toString());
             }
         });
 
+        System.out.println(">>>|<<<");
     }
-    
+
+    public void getText(String id)
+    {
+
+        NewService service = retrofitTool.getRetrofit().create(NewService.class);
+
+        Call<MyNews> repos = service.listRepos(id);
+
+        repos.enqueue(new Callback<MyNews>() {
+            @Override
+            public void onResponse(Call<MyNews> call, Response<MyNews> response) {
+
+                if (response.isSuccessful()) {
+                    System.out.println("news-success");
+                    MyNews data = new MyNews();
+                    data = response.body();
+                    if (data != null) {
+                        String myt = data.getNews_Title() + "," + data.getNews_Content();
+                        speaker.setText(myt);
+                        ArrayList<Item1> a = data.getKeywords();
+                        for (Item1 i : a){//添加关键词
+                            const_data.setLike(i.word);
+//                            System.out.println(i.word);//用于测试输出
+                        }
+
+                        picture_init(data.getNews_Pictures());
+                        System.out.println(data.getNews_Pictures());
+
+                        title =  data.getNews_Title();
+                        context = data.getNews_Content();
+                        setText();
+
+                    }
+                } else {
+                    System.out.println("fuck");
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<MyNews> call, Throwable t) {
+                t.printStackTrace();
+
+            }
+        });
+    }
+
+
 
     private boolean writeResponseBodyToDisk(ResponseBody body,String name)
     {
@@ -186,88 +295,6 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
         return  false;
         }
 
-    }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_show_news);
-        toolbar = (Toolbar) findViewById(R.id.toolbar2);
-        setSupportActionBar(toolbar);
-        ThemeManager.registerThemeChangeListener(this);
-        linearLayout = (LinearLayout) findViewById(R.id.linearLayout);
-        textView = (TextView) findViewById(R.id.textView);
-        textView2 = (TextView) findViewById(R.id.textView2);
-
-        first_init(); // 获取当前新闻信息
-        //设置输入监控
-        //设置更新函数
-
-        System.out.println(">asd");
-
-        NewService service = retrofitTool.getRetrofit().create(NewService.class);
-
-        System.out.println("asd<");
-        Call<MyNews> repos = service.listRepos(id);
-
-        repos.enqueue(new Callback<MyNews>() {
-            @Override
-            public void onResponse(Call<MyNews> call, Response<MyNews> response) {
-
-                if (response.isSuccessful())
-                {
-                    System.out.println("news-success");
-                    MyNews data = new MyNews();
-                    data = response.body();
-                    if (data != null)
-                    {
-                        TextView et1 = (TextView) findViewById(R.id.textView);//content
-                        TextView et2 = (TextView) findViewById(R.id.textView2);//title
-
-                        picture_init(data.getNews_Pictures());
-
-                        for (String e:picture)
-                        {
-                            System.out.println(e);//用于测试输出
-                        }
-
-                            System.out.println(data.getNews_Pictures());
-
-                        et2.setText(data.getNews_Title());
-                        et1.setText(data.getNews_Content());
-                        String myt = data.getNews_Title() + "," + data.getNews_Content();
-                        speaker.setText(myt);
-                        ArrayList<Item1> a = data.getKeywords();
-                        for (Item1 i : a)//添加关键词
-                        {
-                            const_data.setLike(i.word);
-//                            System.out.println(i.word);//用于测试输出
-                        }
-
-                    }
-                }
-                else
-                {
-                    System.out.println("fuck");
-                }
-
-            }
-
-            @Override
-            public void onFailure(Call<MyNews> call, Throwable t) {
-                t.printStackTrace();
-
-            }
-        });
-
-
-
-//        System.out.println("kk><");
-//        System.out.println(const_data.getCur_ID());
-
-
-
-        init_model();    //设置夜间or日间模式
     }
 
     @Override
