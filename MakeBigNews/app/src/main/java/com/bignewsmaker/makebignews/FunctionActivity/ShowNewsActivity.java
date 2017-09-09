@@ -187,6 +187,7 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
             if (outputStream != null){
                 outputStream.close();
             }
+            
         }}catch (IOException e){
         return  false;
         }
