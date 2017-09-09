@@ -126,9 +126,15 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
     {
 
     }
-    void setURL(String str) //关键字超链接
+    String setURL(String str,String arm) //关键字超链接
     {
+        String s = str;
+        Pattern p = Pattern.compile(arm);
+        Matcher m = p.matcher(s);
+        while( m.find())
+            picture.add(m.group());
 
+        return s;
     }
     void setPicture(String str)// html 图片解析
     {
@@ -165,7 +171,7 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
             i++;
         }
         TextView et1 = (TextView) findViewById(R.id.textView);//content
-        TextView et2 = (TextView) findViewById(R.id.textView2);//title
+//        TextView et2 = (TextView) findViewById(R.id.textView2);//title
         if (mybitmap.size()>0)
         {
             //  如果有图片
@@ -177,9 +183,19 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
             System.out.println("no picture");
         }
 
-
-        et2.setText(title);
-        et1.setText("\n"+context+"\n");
+    String ccontext =
+            "<html>"
+                +"<body>"
+                    +"<h1 align=\"center\">"+title+ "</h1>"
+//                    +<a href="网址、链接地址" target="目标" title="说明">被链接内容</a>
+//                    <a href="http://www.w3school.com.cn/" target="_blank">Visit W3School!</a>
+                    +"<hr style=\"height:1px;border:none;border-top:1px dashed #555555;\" />"
+                    + "<img src="+getDir(0)+ "style=\"max-width:100%;\"/>"
+                    +"<p>"+ context+"</p>"
+                +"</body>"
+            +"</html>";
+//        et2.setText(title);
+        et1.setText("\n"+ccontext+"\n");
     }
 
     public void getpicture(final String url,final int i)
