@@ -136,6 +136,7 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
         });
 
     }
+    
 
     private boolean writeResponseBodyToDisk(ResponseBody body,String name)
     {
