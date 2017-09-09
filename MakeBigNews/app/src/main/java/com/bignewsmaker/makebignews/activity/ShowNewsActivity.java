@@ -53,6 +53,18 @@ import retrofit2.Response;
  * --举个例子
  * |-你可以将当前选中的news存到const_data，然后在新的activity中直接调用const_data
  * |-当然你可以参考https://www.2cto.com/kf/201311/256174.html 对比其他的方法
+ *
+ *
+ * 图片获取方法 处理函数通过getpicture()请求，成功后再回调处理函数
+ * 其中处理函数 需要添加判断是否本地有存储 如果有则倒入本地资源
+ * 类似的思想可以应用到离线离线新闻列表中
+ * 每次打开app就判读 a这个文件是否为空，是调用网络响应反馈加载，否则将文本a的数据写到界面，
+ * 触发更新函数后就等待网络响应，获取新的新闻，关闭然后将最后一次获取的新闻写到a
+ * 以上就是离线列表的实现思路
+ *
+ * 设置信息储存，当然要是实现永久性，将信息写到一个文件里，然后开机的时候倒入
+ * getExternalFilesDir(null)获取外部存储目录
+ *
  */
 
 
@@ -124,10 +136,6 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
         setText();
     }
 
-//    void setHighLight(String str) //高亮关键字
-//    {
-//
-//    }
     String setURL(String str,String arm) //关键字超链接
     {
         String s = str;
@@ -150,10 +158,10 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
         return  s;
     }
 
-//    String jump_pla(String str)
+//    String jump_pla(String str)//地点
 //    {
 //        String s = str;
-//        for (Item2 e : myNews.persons() )
+//        for (Item2 e : myNews.getPlace() )
 //        {
 //            s = setURL(s,e.word);
 //        }
@@ -195,7 +203,6 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
         return "s";
     }
     public void setText(){
-        System.out.println("acd---->");
         int i = 0;
         for (String e:picture)
         {
@@ -204,30 +211,24 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
             File file =  new File(getDir(i));
 
             if (const_data.getShow_picture() == true){
-                if (file.exists())
-                {
+                if (file.exists()) {
                     //图文混排
                     System.out.println(">>:>"+e+"\n"+getDir(i));
                     Bitmap p =  BitmapFactory.decodeFile(getDir(i));
                     mybitmap.add(p);
                     break;//暂时添加一张图片
                 }
-                else
-                {
+                else {
                     System.out.println(">:"+e);
-                    getpicture(e,i);
+                    getpicture(e,i);//请求图片，请求成功后会再次调用setText进入true
                     return;//避免 图片请求被多次调用
-//                    break;
-
                 }
             }
 
             i++;
         }
         TextView et1 = (TextView) findViewById(R.id.textView);//content
-//        TextView et2 = (TextView) findViewById(R.id.textView2);//title
-        if (mybitmap.size()>0)
-        {
+        if (mybitmap.size()>0) {
             //  如果有图片
             System.out.println("you get it");
             context = jump_peo(context);
@@ -235,18 +236,19 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
         }
         else {
             System.out.println("no picture");
+            context = jump_peo(context);
+            context = setP(context,0);
         }
 
     String ccontext =
             "<html>"
                 +"<body>"
-                    +"<h1 align=\"center\">"+title+ "</h1>"
-                    +"<hr style=\"height:1px;border:none;border-top:1px dashed #555555;\" />"
-                    + "<img src="+getDir(0)+ "style=\"max-width:100%;\"/>"
-                    +"<p>"+ context+"</p>"
+                    +"<h1 align=\"center\">"+title+ "</h1>" //标题
+                    +"<hr style=\"height:1px;border:none;border-top:1px dashed #555555;\" />"//分割线
+                    + "<img src="+getDir(0)+ "style=\"max-width:100%;\"/>"//测试第一张（没有会暂时报错）
+                    +"<p>"+ context+"</p>"//正文处理
                 +"</body>"
             +"</html>";
-//        et2.setText(title);
         et1.setText("\n"+ccontext+"\n");
     }
 
@@ -263,12 +265,9 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response.isSuccessful())
                 {
-//                    File file = new  File(getExternalFilesDir(null) + File.separator+"picture"+File.separator+ url);
                     System.out.println(">>>"+url);
-
-                        writeResponseBodyToDisk(response.body(), i);
+                    writeResponseBodyToDisk(response.body(), i);
                     File file = new File(getDir(i));
-//                        BitmapFactory.decodeFile(getExternalFilesDir(null) + File.separator + url);
                     System.out.println(">>:"+getDir(i));
                     System.out.println(file.exists());
 
