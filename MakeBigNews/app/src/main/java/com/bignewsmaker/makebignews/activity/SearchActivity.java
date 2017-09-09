@@ -1,13 +1,13 @@
-package com.bignewsmaker.makebignews.FunctionActivity;
+package com.bignewsmaker.makebignews.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.SearchView;
 
-import com.bignewsmaker.makebignews.Functiontool.ConstData;
+import com.bignewsmaker.makebignews.basic_class.ConstData;
 import com.bignewsmaker.makebignews.R;
-import com.bignewsmaker.makebignews.Functiontool.Speaker;
+import com.bignewsmaker.makebignews.extra_class.Speaker;
 
 
 /**

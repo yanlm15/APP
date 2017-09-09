@@ -1,4 +1,4 @@
-package com.bignewsmaker.makebignews.extra_class;
+package com.bignewsmaker.makebignews.basic_class;
 
 /**
  * Created by liminyan on 08/09/2017.

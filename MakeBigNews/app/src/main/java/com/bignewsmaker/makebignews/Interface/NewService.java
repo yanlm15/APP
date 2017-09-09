@@ -1,10 +1,9 @@
-package com.bignewsmaker.makebignews.extra_class;
+package com.bignewsmaker.makebignews.Interface;
 
-import com.bignewsmaker.makebignews.LIST;
+import com.bignewsmaker.makebignews.basic_class.MyNews;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
-import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 /**

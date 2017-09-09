@@ -1,4 +1,4 @@
-package com.bignewsmaker.makebignews;
+package com.bignewsmaker.makebignews.extra_class;
 
 /**
  * Created by samsung01 on 2017/9/8.

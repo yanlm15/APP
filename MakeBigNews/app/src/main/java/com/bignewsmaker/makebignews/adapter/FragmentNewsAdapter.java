@@ -1,4 +1,4 @@
-package com.bignewsmaker.makebignews;
+package com.bignewsmaker.makebignews.adapter;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;

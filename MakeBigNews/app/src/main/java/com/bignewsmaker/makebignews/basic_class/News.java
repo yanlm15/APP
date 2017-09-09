@@ -1,17 +1,17 @@
-package com.bignewsmaker.makebignews;
+package com.bignewsmaker.makebignews.basic_class;
 
-public class LIST {
-    private String lang_Type = null;
-    private String newsClassTag = null;
-    private String news_Author = null;
-    private String news_ID = null;
-    private String news_Pictures = null;
-    private String news_Source = null;
-    private String news_Time = null;
-    private String news_Title = null;
-    private String news_URL = null;
-    private String news_Video = null;
-    private String news_Intro = null;
+public class News {
+    protected String lang_Type = null;
+    protected String newsClassTag = null;
+    protected String news_Author = null;
+    protected String news_ID = null;
+    protected String news_Pictures = null;
+    protected String news_Source = null;
+    protected String news_Time = null;
+    protected String news_Title = null;
+    protected String news_URL = null;
+    protected String news_Video = null;
+    protected String news_Intro = null;
 
     public String getLang_Type() {
         return lang_Type;

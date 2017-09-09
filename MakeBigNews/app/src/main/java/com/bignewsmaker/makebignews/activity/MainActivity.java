@@ -1,4 +1,4 @@
-package com.bignewsmaker.makebignews;
+package com.bignewsmaker.makebignews.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,10 +15,11 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.bignewsmaker.makebignews.FunctionActivity.SearchActivity;
-import com.bignewsmaker.makebignews.FunctionActivity.SetActivity;
-import com.bignewsmaker.makebignews.Functiontool.ConstData;
-import com.bignewsmaker.makebignews.Functiontool.Speaker;
+import com.bignewsmaker.makebignews.basic_class.ConstData;
+import com.bignewsmaker.makebignews.adapter.FragmentNewsAdapter;
+import com.bignewsmaker.makebignews.extra_class.Speaker;
+import com.bignewsmaker.makebignews.fragment.NewsFragment;
+import com.bignewsmaker.makebignews.R;
 
 import java.util.ArrayList;
 import java.util.List;

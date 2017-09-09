@@ -1,4 +1,4 @@
-package com.bignewsmaker.makebignews.extra_class;
+package com.bignewsmaker.makebignews.Interface;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;

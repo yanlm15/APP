@@ -1,4 +1,4 @@
-package com.bignewsmaker.makebignews;
+package com.bignewsmaker.makebignews.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,9 +12,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.bignewsmaker.makebignews.FunctionActivity.ShowNewsActivity;
-import com.bignewsmaker.makebignews.Functiontool.ConstData;
-import com.bignewsmaker.makebignews.Functiontool.Speaker;
+import com.bignewsmaker.makebignews.activity.ShowNewsActivity;
+import com.bignewsmaker.makebignews.basic_class.ConstData;
+import com.bignewsmaker.makebignews.adapter.NewsAdapter;
+import com.bignewsmaker.makebignews.basic_class.NewsList;
+import com.bignewsmaker.makebignews.extra_class.Speaker;
+import com.bignewsmaker.makebignews.Interface.OnItemClickListener;
+import com.bignewsmaker.makebignews.R;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.ByteArrayOutputStream;
@@ -25,7 +29,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 public class NewsFragment extends Fragment {
-    private News news;
+    private NewsList news;
     private int category;
     private LinearLayoutManager layoutManager;
     private RecyclerView recyclerView;
@@ -129,7 +133,7 @@ public class NewsFragment extends Fragment {
             inputStream.close();
             conn.disconnect();
             ObjectMapper mapper = new ObjectMapper();
-            news=mapper.readValue(s, News.class);
+            news=mapper.readValue(s, NewsList.class);
         } catch (MalformedURLException e) {
             e.printStackTrace();
         } catch (IOException e) {

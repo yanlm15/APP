@@ -1,4 +1,4 @@
-package com.bignewsmaker.makebignews.extra_class;
+package com.bignewsmaker.makebignews.basic_class;
 
 import java.util.*;
 
@@ -7,13 +7,8 @@ import java.util.*;
  */
 
 
-class Item2
-{
-    String word;
-    String count;
-}
 
-public class MyNews {
+public class MyNews{
 
    public ArrayList<Item1> Keywords;
 //    List<item> bagOfWords;

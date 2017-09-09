@@ -1,7 +1,4 @@
-package com.bignewsmaker.makebignews.Functiontool;
-
-import com.bignewsmaker.makebignews.LIST;
-import com.bignewsmaker.makebignews.News;
+package com.bignewsmaker.makebignews.basic_class;
 
 import java.util.TreeMap;
 
@@ -19,9 +16,9 @@ public class ConstData {
     private double ligth_rate = 1; //屏幕亮度比例
     private boolean show_picture = true; //图片显示标签
     private boolean isDay = true;
-    private News cur_news = null ;// 当前新闻列表
-    private LIST cur_list = null ;// 当前选中新闻
-    private News search_result = null ;// 当前的搜索结果
+    private NewsList cur_news = null ;// 当前新闻列表
+    private News cur_list = null ;// 当前选中新闻
+    private NewsList search_result = null ;// 当前的搜索结果
     private static ConstData cur;
 
     private TreeMap<String,Integer> like = new TreeMap<String,Integer>(); // 喜欢词条，添加历史记录
@@ -79,7 +76,7 @@ public class ConstData {
         boolean show_picture = true;
     }
 
-    public void setSearch_result(News search_result) {
+    public void setSearch_result(NewsList search_result) {
         this.search_result = search_result;
     }//初始化搜索结果
 
@@ -110,11 +107,11 @@ public class ConstData {
         }
     }
 
-    public void setCur_news(News cur_news) {
+    public void setCur_news(NewsList cur_news) {
         this.cur_news = cur_news;
     }//初始新闻列表
 
-    public void setCur_list(LIST cur_list) {
+    public void setCur_list(News cur_list) {
         this.cur_list = cur_list;
     }//初始化选中新闻
 
@@ -126,13 +123,13 @@ public class ConstData {
         this.show_picture = show_picture;
     }//初始化图片显示标签
 
-    public News getSearch_result() {
+    public NewsList getSearch_result() {
         return search_result;
     }
 
-    public News getCur_news() {return cur_news;}
+    public NewsList getCur_news() {return cur_news;}
 
-    public LIST getCur_list() {return cur_list;}
+    public News getCur_list() {return cur_list;}
 
     public double getLigth_rate() {
         return ligth_rate;

@@ -29,19 +29,19 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        <activity android:name=".activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".FunctionActivity.SearchActivity" />
-        <activity android:name=".FunctionActivity.SetActivity" />
-        <activity android:name=".FunctionActivity.ShareActivity" />
-        <activity android:name=".FunctionActivity.ShowNewsActivity" />
-        <activity android:name=".FunctionActivity.ShowSharedListActivity" />
-        <activity android:name=".FunctionActivity.SearchResultActivity" />
+        <activity android:name=".activity.SearchActivity" />
+        <activity android:name=".activity.SetActivity" />
+        <activity android:name=".activity.ShareActivity" />
+        <activity android:name=".activity.ShowNewsActivity" />
+        <activity android:name=".activity.ShowSharedListActivity" />
+        <activity android:name=".activity.SearchResultActivity" />
 
         <!--添加activity的格式-->
         <!-- Required SDK核心功能-->

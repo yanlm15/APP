@@ -7,7 +7,7 @@
     android:background="#EDEDED"
     android:orientation="vertical"
 
-    tools:context="com.bignewsmaker.makebignews.FunctionActivity.SearchActivity">
+    tools:context="com.bignewsmaker.makebignews.activity.SearchActivity">
 
 
     <android.support.v7.widget.Toolbar

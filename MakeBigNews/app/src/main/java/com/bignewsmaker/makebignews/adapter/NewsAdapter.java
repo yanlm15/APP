@@ -1,10 +1,14 @@
-package com.bignewsmaker.makebignews;
+package com.bignewsmaker.makebignews.adapter;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import com.bignewsmaker.makebignews.Interface.OnItemClickListener;
+import com.bignewsmaker.makebignews.R;
+import com.bignewsmaker.makebignews.basic_class.News;
 
 import java.util.List;
 
@@ -19,7 +23,7 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
         this.onItemClickListener = listener;
     }
 
-    private List<LIST> mNewsList;
+    private List<News> mNewsList;
 
     static class ViewHolder extends RecyclerView.ViewHolder  implements View.OnClickListener{
         TextView newsTitle, newsIntro, newsSource;
@@ -44,7 +48,7 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
         }
     }
 
-    public NewsAdapter(List<LIST> newsList) {
+    public NewsAdapter(List<News> newsList) {
         mNewsList = newsList;
     }
 
@@ -59,7 +63,7 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        LIST list = mNewsList.get(position);
+        News list = mNewsList.get(position);
         holder.newsTitle.setText(list.getNews_Title());
         holder.newsIntro.setText(list.getNews_Intro().replaceAll("\\s",""));
         holder.newsSource.setText("\n"+list.getNews_Source());

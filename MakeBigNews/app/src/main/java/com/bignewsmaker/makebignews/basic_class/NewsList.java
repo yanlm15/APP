@@ -1,4 +1,4 @@
-package com.bignewsmaker.makebignews;
+package com.bignewsmaker.makebignews.basic_class;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,18 +6,18 @@ import java.util.List;
 *
 *
 */
-public class News {
-    private List<LIST> list = new ArrayList<LIST>();
+public class NewsList {
+    private List<News> list = new ArrayList<News>();
     private int pageNo = 0;
     private int pageSize = 0;
     private int totalPages = 0;
     private int totalRecords = 0;
 
-    public List<LIST> getList() {
+    public List<News> getList() {
         return list;
     }
 
-    public void setList(List<LIST> list) {
+    public void setList(List<News> list) {
         this.list = list;
     }
 

@@ -1,4 +1,4 @@
-package com.bignewsmaker.makebignews.Functiontool;
+package com.bignewsmaker.makebignews.extra_class;
 
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
