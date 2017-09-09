@@ -25,12 +25,12 @@ public class MyNews{
 //    String news_Journal;
    public String news_Pictures;
 //    String news_Source;
-//    String news_Time;
+   public String news_Time;
    public String news_Title = "1";
 //    String news_URL;
 //    String news_Video;
 //    List<item2> organizations;
-//    List<item2> persons;
+    public ArrayList<Item2> persons;
 //    String repeat_ID;
     public ArrayList<String > seggedPListOfContent;
     public String seggedTitle;
@@ -44,6 +44,22 @@ public class MyNews{
 
     public void setSeggedPListOfContent(ArrayList<String> seggedPListOfContent) {
         this.seggedPListOfContent = seggedPListOfContent;
+    }
+
+    public void setPersons(ArrayList<Item2> persons) {
+        this.persons = persons;
+    }
+
+    public ArrayList<Item2> getPersons() {
+        return persons;
+    }
+
+    public String getNews_Time() {
+        return news_Time;
+    }
+
+    public void setNews_Time(String news_Time) {
+        this.news_Time = news_Time;
     }
 
     public String getSeggedTitle() {

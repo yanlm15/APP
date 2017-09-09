@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import com.bignewsmaker.makebignews.Interface.SuccessCallBack;
 import com.bignewsmaker.makebignews.basic_class.ConstData;
+import com.bignewsmaker.makebignews.basic_class.Item2;
 import com.bignewsmaker.makebignews.extra_class.RetrofitTool;
 import com.bignewsmaker.makebignews.R;
 import com.bignewsmaker.makebignews.extra_class.Speaker;
@@ -64,6 +65,7 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
     private String id;
     private String title;
     private String context;
+    private MyNews myNews = new MyNews();
     private ArrayList<String> picture = new ArrayList<String >();
     private ArrayList<Bitmap> mybitmap = new ArrayList<Bitmap>();
 
@@ -122,23 +124,75 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
         setText();
     }
 
-    void setHighLight(String str) //高亮关键字
-    {
-
-    }
+//    void setHighLight(String str) //高亮关键字
+//    {
+//
+//    }
     String setURL(String str,String arm) //关键字超链接
     {
         String s = str;
         Pattern p = Pattern.compile(arm);
         Matcher m = p.matcher(s);
-        while( m.find())
-            picture.add(m.group());
+//
+        s=m.replaceAll("<a href="+"\"https://baike.baidu.com/item/"+arm+"\"target=\"_blank\">"+arm+"</a>");
+//        https://baike.baidu.com/item/+"arm"
+//        <a href="http://www.w3school.com.cn/" target="_blank">Visit W3School!</a>
+        return s;
+    }
+
+    String jump_peo (String str)
+    {
+        String s = str;
+        for (Item2 e : myNews.getPersons() )
+        {
+            s = setURL(s,e.word);
+        }
+        return  s;
+    }
+
+//    String jump_pla(String str)
+//    {
+//        String s = str;
+//        for (Item2 e : myNews.persons() )
+//        {
+//            s = setURL(s,e.word);
+//        }
+//        return  s;
+//    }
+    String getPicture_id(int i)
+    {
+        String s= "<p style=\"text-align:center\"><img src=\""+getDir(i)+"\"></p>";
+//        <p style="text-align:center"><img src="/i/eg_tulip.jpg"></p>
+        return s;
+    }
+
+    String setP(String str,int num)// 分段 添加图片占位符号 待修改的文本，参数为添加图片数目
+    {
+        String s=str;
+        Pattern p = Pattern.compile("\\s{2,1000}");
+//        String arm = "俄罗斯";
+        Matcher m = p.matcher(s);
+
+        int textnumber = m.end();
+        s=m.replaceAll("</p><p>");
+        if (num > 0)
+        {
+            String[] strs = s.split("</p><p>");
+            s = "";
+            s+=getPicture_id(0);
+            for (int i=1 ; (i < strs.length-1) && (i<num) ;i++)
+            {
+                s+=strs[i]+"</p>"+getPicture_id(i)+"<p>";
+            }
+        }
 
         return s;
     }
-    void setPicture(String str)// html 图片解析
-    {
 
+
+    String clearExtra(String s)// 清除多余标签
+    {
+        return "s";
     }
     public void setText(){
         System.out.println("acd---->");
@@ -176,8 +230,8 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
         {
             //  如果有图片
             System.out.println("you get it");
-//            Bitmap b = mybitmap.get(0);
-//            ImageSpan imgSpan = new ImageSpan(this, b);
+            context = jump_peo(context);
+            context = setP(context,mybitmap.size());
         }
         else {
             System.out.println("no picture");
@@ -187,8 +241,6 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
             "<html>"
                 +"<body>"
                     +"<h1 align=\"center\">"+title+ "</h1>"
-//                    +<a href="网址、链接地址" target="目标" title="说明">被链接内容</a>
-//                    <a href="http://www.w3school.com.cn/" target="_blank">Visit W3School!</a>
                     +"<hr style=\"height:1px;border:none;border-top:1px dashed #555555;\" />"
                     + "<img src="+getDir(0)+ "style=\"max-width:100%;\"/>"
                     +"<p>"+ context+"</p>"
@@ -265,6 +317,7 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
 
                         title =  data.getNews_Title();
                         context = data.getNews_Content();
+                        myNews = data;
                         setText();
 
                     }
