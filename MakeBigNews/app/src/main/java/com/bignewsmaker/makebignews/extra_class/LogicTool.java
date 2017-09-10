@@ -15,8 +15,11 @@ import retrofit2.Response;
 
 /**
  * Created by liminyan on 11/09/2017.
- * 使用说明，如果想调用Logictool 必须重新写一个类继承 并且重载recall 函数
- * recall
+ * 使用说明，如果想调用Logictool 需要重新写一个类继承 并且重载recall 函数
+ * 当然你可以仅仅使用他的筛选功能
+ * 我提供了根据最高频的词条，当前所看标题，搜索关键词的反馈函数，使用时需要注意这是一个异步请求
+ *
+ * 如果你单纯为了方便，你也可以通过设置type 执行不同的函数，只是这样的代码太丑陋了
  */
 
 public class LogicTool {

@@ -1,11 +1,8 @@
 package com.bignewsmaker.makebignews;
 
 import com.bignewsmaker.makebignews.basic_class.ConstData;
-import com.bignewsmaker.makebignews.extra_class.ValueComparator;
 
 import org.junit.Test;
-
-import java.util.TreeMap;
 
 import static org.junit.Assert.*;
 
