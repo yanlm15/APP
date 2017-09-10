@@ -12,6 +12,15 @@ public class News {
     protected String news_URL = null;
     protected String news_Video = null;
     protected String news_Intro = null;
+    protected boolean isRead = false;
+
+    public boolean isRead() {
+        return isRead;
+    }
+
+    public void setRead(boolean read) {
+        isRead = read;
+    }
 
     public String getLang_Type() {
         return lang_Type;

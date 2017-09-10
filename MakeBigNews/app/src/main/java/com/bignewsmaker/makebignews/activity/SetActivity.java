@@ -34,7 +34,10 @@ public class SetActivity extends AppCompatActivity {
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                setResult(RESULT_OK);
                 finish();
+
+
             }
         });
         setSupportActionBar(toolbar);
@@ -46,6 +49,7 @@ public class SetActivity extends AppCompatActivity {
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 const_data.setDay(!b);
                 const_data.setSetChanged(true);
+
             }
         });
 

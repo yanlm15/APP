@@ -1,5 +1,6 @@
 package com.bignewsmaker.makebignews.basic_class;
 
+import java.util.HashSet;
 import java.util.TreeMap;
 
 /**
@@ -30,6 +31,17 @@ public class ConstData {
     private String  search_message = null;//用户的输入信息
     private String  search_class = null;//用户的搜索标签，默认为空！！
     private String cur_pageSize = "20";
+
+    public static final String TAG = "makebignews";
+    private HashSet<String> haveRead=new HashSet<String>();
+
+    public HashSet<String> getHaveRead() {
+        return haveRead;
+    }
+
+    public void addHaveRead(String id) {
+        haveRead.add(id);
+    }
 
     public boolean isSetChanged() {
         return isSetChanged;

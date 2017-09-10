@@ -82,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     case R.id.nav_setting:
                         Intent setIntent = new Intent(MainActivity.this, SetActivity.class);
-                        startActivity(setIntent);
+                        startActivityForResult(setIntent,1);
                         break;
                     case R.id.nav_about:
                         Intent aboutIntent = new Intent(MainActivity.this, AboutActivity.class);
@@ -124,10 +124,23 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.setting:
                 Intent setIntent = new Intent(MainActivity.this, SetActivity.class);
-                startActivity(setIntent);
+                startActivityForResult(setIntent,1);
                 break;
         }
         return super.onOptionsItemSelected(item);
     }
 
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch(requestCode){
+            case 1:
+                if (const_data.isSetChanged()) {
+                    const_data.setSetChanged(false);
+                    recreate();
+                    break;
+                }
+        }
+    }
 }

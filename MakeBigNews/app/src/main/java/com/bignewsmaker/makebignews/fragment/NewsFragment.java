@@ -7,11 +7,13 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.bignewsmaker.makebignews.Interface.OnItemClickListener;
 import com.bignewsmaker.makebignews.R;
@@ -20,7 +22,7 @@ import com.bignewsmaker.makebignews.adapter.NewsAdapter;
 import com.bignewsmaker.makebignews.basic_class.ConstData;
 import com.bignewsmaker.makebignews.basic_class.NewsList;
 import com.bignewsmaker.makebignews.extra_class.Speaker;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -30,7 +32,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 public class NewsFragment extends Fragment {
-    private static final String TAG = "makebignews";
+
     private NewsList news;
     private int category;
     private LinearLayoutManager mLayoutManager;
@@ -38,6 +40,8 @@ public class NewsFragment extends Fragment {
     private SwipeRefreshLayout swipeRefresh;
     private NewsAdapter adapter;
     private View view;
+    private CardView cardView;
+    private TextView newsTitle, newsIntro, newsSource;
     private ConstData const_data = ConstData.getInstance();// 设置访问全局变量接口
     private Speaker speaker = Speaker.getInstance();// 设置语音系统接口
 
@@ -61,30 +65,36 @@ public class NewsFragment extends Fragment {
     }
 
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (const_data.isSetChanged()) {
-            news.setPageNo(news.getPageNo() - 1);
-            refreshNews();
-            const_data.setSetChanged(false);
+  /*  @Override
+    public void onStart() {
+        super.onStart();
+        if (news == null || cardView == null) {
+            return;
         }
         if (!const_data.isModel_day())
-            recyclerView.setBackgroundColor(Color.rgb(66,66,66));
+            recyclerView.setBackgroundColor(Color.rgb(66, 66, 66));
         else
-            recyclerView.setBackgroundColor(Color.rgb(255,255,255));
+            recyclerView.setBackgroundColor(Color.rgb(255, 255, 255));
 
-        }
+
+    }*/
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_news, container, false);
+       /* newsTitle = (TextView) view.findViewById(R.id.news_title);
+        newsIntro = (TextView) view.findViewById(R.id.news_intro);
+        newsSource = (TextView) view.findViewById(R.id.news_source);
+        cardView = (CardView) view.findViewById(R.id.cardview);*/
         mLayoutManager = new LinearLayoutManager(getActivity());
         recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         recyclerView.addOnScrollListener(mOnScrollListener);
-
+        if (!const_data.isModel_day())
+            recyclerView.setBackgroundColor(Color.rgb(66, 66, 66));
+        else
+            recyclerView.setBackgroundColor(Color.rgb(255, 255, 255));
         swipeRefresh = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh);
         swipeRefresh.setRefreshing(true);
         swipeRefresh.setColorSchemeResources(R.color.colorPrimary);
@@ -146,8 +156,10 @@ public class NewsFragment extends Fragment {
                 @Override
                 public void onClick(View view, int position) {
                     Intent i = new Intent(getContext(), ShowNewsActivity.class);
-                    const_data.setCur_ID(news.getList().get(position).getNews_ID());
-                    startActivity(i);
+                    String id = news.getList().get(position).getNews_ID();
+                    const_data.setCur_ID(id);
+                    const_data.addHaveRead(id);
+                    startActivityForResult(i, 2);
                 }
             });
             recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -176,8 +188,10 @@ public class NewsFragment extends Fragment {
             outputStream.close();
             inputStream.close();
             conn.disconnect();
-            ObjectMapper mapper = new ObjectMapper();
-            news = mapper.readValue(s, NewsList.class);
+            /*ObjectMapper mapper = new ObjectMapper();
+            news = mapper.readValue(s, NewsList.class);*/
+            Gson gson = new Gson();
+            news = gson.fromJson(s, NewsList.class);
         } catch (MalformedURLException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -185,5 +199,14 @@ public class NewsFragment extends Fragment {
         }
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch(requestCode){
+            case 2:
+                adapter.notifyDataSetChanged();
+        }
 
+    }
 }
+
