@@ -219,10 +219,6 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
         int i = 0;
         for (String e:picture)
         {
-            System.out.println("><:"+e);//用于测试输出
-            System.out.println("><:"+gettype(i));
-            System.out.println(getDir(i)+gettype(i));
-            System.out.println(">|<:"+e);//用于测试输出
             File file =  new File(getDir(i)+gettype(i));
             if (const_data.getShow_picture() == true){
                 if (file.exists()) {
@@ -233,7 +229,6 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
 //                    break;//暂时添加一张图片
                 }
                 else {
-                    System.out.println(">:"+e);
                     getpicture(e,i);//请求图片，请求成功后会再次调用setText进入true
                     return;//避免 图片请求被多次调用
                 }
@@ -255,7 +250,6 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
             System.out.println("no picture");
             context = jump_peo(context);
             System.out.println("setp");
-
             context = setP(context,0);
         }
 
@@ -270,15 +264,11 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
             +"</html>";
 
         et1.loadDataWithBaseURL("", ccontext, "text/html", "utf-8", null);
-//        et1.setMovementMethod(LinkMovementMethod.getInstance());//点击的时候产生超链接
-
     }
 
     public void getpicture(final String url,final int i)
     {
         UrlService service = RetrofitTool.getInstance().getRetrofit().create(UrlService.class);
-        System.out.println(">>><<<");
-
         Call<ResponseBody> urepos = service.downloadPicFromNet(url);
 
         urepos.enqueue(new Callback<ResponseBody>() {
@@ -287,26 +277,19 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response.isSuccessful())
                 {
-                    System.out.println(">>>"+url);
                     writeResponseBodyToDisk(response.body(), i);
                     File file = new File(getDir(i));
-                    System.out.println(">>:"+getDir(i));
-                    System.out.println(file.exists());
 
-                    System.out.println("Url-Success");
                     onSuccess(">>");
                 }else {
-                    System.out.println("Url-err");
                 }
             }
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
-                System.out.println("Url-f-err"+t.toString());
+                System.out.println("Url-f-er："+t.toString());
             }
         });
-
-        System.out.println(">>>|<<<");
     }
 
     public void getText(String id)
