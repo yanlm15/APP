@@ -231,8 +231,6 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
         Pattern p = Pattern.compile("(jpg|png|jpeg|gif)");
         Matcher m = p.matcher(s);
         m.find();
-        System.out.println("<>");
-        System.out.println("/."+m.group());
         return "."+m.group();
 
     }
