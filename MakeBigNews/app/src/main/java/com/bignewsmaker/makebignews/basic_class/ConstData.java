@@ -1,6 +1,9 @@
 package com.bignewsmaker.makebignews.basic_class;
 
+
+import java.util.Comparator;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.TreeMap;
 
 /**
@@ -22,8 +25,18 @@ public class ConstData {
     private News cur_list = null ;// 当前选中新闻
     private NewsList search_result = null ;// 当前的搜索结果
     private static ConstData cur;
+    private TreeMap<String,Integer> like1 = new TreeMap<String, Integer>();
+    private TreeMap<String,Integer> like = new TreeMap<String, Integer>(new Comparator<String>() {
+        @Override
+        public int compare(String s, String t1) {
+                if (like1.get(s) < like1.get(t1))
+                    return 1;
+                if (like1.get(s) > like1.get(t1))
+                    return -1;
+            return 0;
+        }
+    });
 
-    private TreeMap<String,Integer> like = new TreeMap<String,Integer>(); // 喜欢词条，添加历史记录
     private String cur_ID = "201608090432c815a85453c34d8ca43a591258701e9b";
 
     private TreeMap<String,Integer> dislike = new TreeMap<String,Integer>();// 不喜欢的词条
@@ -41,6 +54,10 @@ public class ConstData {
 
     public void addHaveRead(String id) {
         haveRead.add(id);
+    }
+
+    public TreeMap<String, Integer> getLike1() {
+        return like1;
     }
 
     public boolean isSetChanged() {
@@ -133,6 +150,22 @@ public class ConstData {
             int number = this.like.get(s_name);
             number ++;
             this.like.put(s_name,number);
+        }else {
+            this.like.put(name,0);
+        }
+    }
+
+    public void setLike1(String  name) {
+
+        boolean e = this.like1.containsKey(name);
+        if (e == true)
+        {
+            String s_name = name;
+            int number = this.like1.get(s_name);
+            number ++;
+            this.like1.put(s_name,number);
+        }else {
+            this.like1.put(name,0);
         }
     }
 

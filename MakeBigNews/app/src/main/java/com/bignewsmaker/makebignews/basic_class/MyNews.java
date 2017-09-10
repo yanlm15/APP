@@ -46,6 +46,10 @@ public class MyNews{
         this.seggedPListOfContent = seggedPListOfContent;
     }
 
+    public void setRepeat_ID(String repeat_ID) {this.repeat_ID = repeat_ID;}
+
+    public String getRepeat_ID() {return repeat_ID;}
+
     public void setPersons(ArrayList<Item2> persons) {
         this.persons = persons;
     }
@@ -103,22 +107,6 @@ public class MyNews{
     }
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

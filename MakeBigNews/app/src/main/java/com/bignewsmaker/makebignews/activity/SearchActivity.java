@@ -24,7 +24,7 @@ import retrofit2.Response;
  *
  * 请求的结果我放在了const—data的searchresult里面
  * 你直接用就行
- * 
+ *
  */
 
 public class SearchActivity  extends AppCompatActivity {
@@ -32,9 +32,6 @@ public class SearchActivity  extends AppCompatActivity {
     private ConstData const_data = ConstData.getInstance();// 设置访问全局变量接口
     private Speaker speaker = Speaker.getInstance();// 设置语音系统接口
     private RetrofitTool retrofitTool = RetrofitTool.getInstance();//设置接收器
-
-
-
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

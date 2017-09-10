@@ -53,4 +53,9 @@ public class NewsList {
         this.totalRecords = totalRecords;
     }
 
+    public void add_news(News cur)
+    {
+        list.add(cur);
+    }
+
 }

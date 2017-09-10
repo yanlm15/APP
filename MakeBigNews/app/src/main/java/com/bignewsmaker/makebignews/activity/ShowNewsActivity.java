@@ -103,7 +103,10 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
         first_init(); // 获取当前新闻信息
         //设置输入监控
         //设置更新函数
-
+//        const_data.setLike("app");
+//        System.out.println("app");
+//
+//        System.out.println(const_data.getLike().get("app"));
         getText(id);
         init_model();    //设置夜间or日间模式
     }
@@ -136,18 +139,13 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
         System.out.println(str);
         Pattern p = Pattern.compile("http://([^;\\s])*?\\.(jpg|png|jpeg|gif)");
         Matcher m = p.matcher(s);
-//        String [] strs = str.split(";|\\s");
         while( m.find())
             picture.add(m.group());
-
-//        for (String e:strs)
-//        {
-//            picture.add(e);
+//
+//        for (String e : picture) {
+//             System.out.println(e);
+//
 //        }
-        for (String e : picture) {
-             System.out.println(e);
-
-        }
 
     }
     public void onSuccess(String str){
@@ -321,6 +319,7 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
                         speaker.setText(myt);
                         ArrayList<Item1> a = data.getKeywords();
                         for (Item1 i : a){//添加关键词
+                            const_data.setLike1(i.word);
                             const_data.setLike(i.word);
                         }
 
