@@ -184,18 +184,17 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
 //        String arm = "俄罗斯";
         Matcher m = p.matcher(s);
 
-        int textnumber = m.end();
         s=m.replaceAll("</p><p>");
-        if (num > 0)
-        {
-            String[] strs = s.split("</p><p>");
-            s = "";
-            s+=getPicture_id(0);
-            for (int i=1 ; (i < strs.length-1) && (i<num) ;i++)
-            {
-                s+=strs[i]+"</p>"+getPicture_id(i)+"<p>";
-            }
-        }
+//        if (num > 0)
+//        {
+//            String[] strs = s.split("</p><p>");
+//            s = "";
+//            s+=getPicture_id(0);
+//            for (int i=1 ; (i < strs.length-1) && (i<num) ;i++)
+//            {
+//                s+=strs[i]+"</p>"+getPicture_id(i)+"<p>";
+//            }
+//        }
 
         return s;
     }
@@ -212,7 +211,7 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
             System.out.println("><:"+e);//用于测试输出
 
             File file =  new File(getDir(i));
-
+            const_data.setShow_picture(false);
             if (const_data.getShow_picture() == true){
                 if (file.exists()) {
                     //图文混排
@@ -235,12 +234,12 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
             //  如果有图片
             System.out.println("you get it");
             context = jump_peo(context);
-//            context = setP(context,mybitmap.size());
+            context = setP(context,mybitmap.size());
         }
         else {
             System.out.println("no picture");
             context = jump_peo(context);
-//            context = setP(context,0);
+            context = setP(context,0);
         }
 
         String ccontext =
