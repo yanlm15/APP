@@ -133,7 +133,7 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
 
     private void picture_init(String str){//获取所有图片
         String s = str;
-        Pattern p = Pattern.compile("http://(\\w+|\\/|\\.|-)*.(jpg|png|jpeg|gif)");
+        Pattern p = Pattern.compile("http://[^.]*.(jpg|png|jpeg|gif)");
         Matcher m = p.matcher(s);
 
         while( m.find())
