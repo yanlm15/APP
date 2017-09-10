@@ -16,6 +16,7 @@ public class ConstData {
     private double ligth_rate = 1; //屏幕亮度比例
     private boolean show_picture = true; //图片显示标签
     private boolean isDay = true;
+    private boolean isSetChanged =false;
     private NewsList cur_news = null ;// 当前新闻列表
     private News cur_list = null ;// 当前选中新闻
     private NewsList search_result = null ;// 当前的搜索结果
@@ -30,7 +31,15 @@ public class ConstData {
     private String  search_class = null;//用户的搜索标签，默认为空！！
     private String cur_pageSize = "20";
 
-   public boolean getDay() {
+    public boolean isSetChanged() {
+        return isSetChanged;
+    }
+
+    public void setSetChanged(boolean setChanged) {
+        isSetChanged = setChanged;
+    }
+
+    public boolean getDay() {
         return isDay;
     }
 

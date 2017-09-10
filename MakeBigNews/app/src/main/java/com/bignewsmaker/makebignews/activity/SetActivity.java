@@ -45,6 +45,7 @@ public class SetActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 const_data.setDay(!b);
+                const_data.setSetChanged(true);
             }
         });
 
@@ -54,13 +55,16 @@ public class SetActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 const_data.setShow_picture(!b);
+                const_data.setSetChanged(true);
+
             }
         });
 
 
         AppCompatSeekBar sizeBar = (AppCompatSeekBar) findViewById(R.id.sizebar);
         final TextView textView = (TextView) findViewById(R.id.sizenumber);
-        sizeBar.setProgress(20);
+        sizeBar.setProgress(Integer.parseInt(const_data.getCur_pageSize()));
+        textView.setText(const_data.getCur_pageSize());
         sizeBar.setMax(50);
         sizeBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -68,6 +72,8 @@ public class SetActivity extends AppCompatActivity {
                 String p = String.valueOf(progress);
                 textView.setText(p);
                 const_data.setCur_pageSize(p);
+                const_data.setSetChanged(true);
+
             }
 
             @Override

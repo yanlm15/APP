@@ -1,6 +1,8 @@
 package com.bignewsmaker.makebignews.adapter;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,8 +33,9 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
     private Context context;
 
     static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        CardView cardView;
         TextView newsTitle, newsIntro, newsSource;
-        ImageView newsImage, newsImage1, newsImage2, newsImage3;
+        ImageView newsImage, newsImage0, newsImage1, newsImage2;
         private OnItemClickListener onItemClickListener = null;
 
         public ViewHolder(View view, OnItemClickListener onItemClickListener) {
@@ -40,11 +43,11 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
             newsTitle = (TextView) view.findViewById(R.id.news_title);
             newsIntro = (TextView) view.findViewById(R.id.news_intro);
             newsSource = (TextView) view.findViewById(R.id.news_source);
+            cardView = (CardView) view.findViewById(R.id.cardview);
             newsImage = (ImageView) view.findViewById(R.id.news_image);
+            newsImage0 = (ImageView) view.findViewById(R.id.news_image0);
             newsImage1 = (ImageView) view.findViewById(R.id.news_image1);
             newsImage2 = (ImageView) view.findViewById(R.id.news_image2);
-            newsImage3 = (ImageView) view.findViewById(R.id.news_image3);
-
             //点击事件
             this.onItemClickListener = onItemClickListener;
             itemView.setOnClickListener(this);
@@ -58,40 +61,59 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
         }
     }
 
-    public NewsAdapter(List<News> newsList) {
+    public NewsAdapter(List<News> newsList, Context context) {
         mNewsList = newsList;
+        this.context = context;
     }
 
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        if (context != null)
+            context = parent.getContext();
+
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_news, parent, false);
-        final ViewHolder holder = new ViewHolder(view, onItemClickListener);
+        ViewHolder holder = new ViewHolder(view, onItemClickListener);
         return holder;
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
+        holder.setIsRecyclable(false);
         News news = mNewsList.get(position);
         String[] urls = news.getNews_Pictures().split(";");
-
         holder.newsTitle.setText(news.getNews_Title());
         holder.newsIntro.setText(news.getNews_Intro().replaceAll("\\s", ""));
         holder.newsSource.setText("\n" + news.getNews_Source());
-        if (urls.length == 0||!const_data.getShow_picture())
-            holder.newsImage.setVisibility(View.GONE);
-        else if (urls.length < 3) {
-//            holder.newsImage.setImageResource(R.mipmap.ic_launcher);
-            Glide.with(holder.newsImage).load(R.mipmap.ic_launcher).into(holder.newsImage);
+        if (!const_data.isModel_day()) {
+            holder.cardView.setBackgroundColor(Color.rgb(66, 66, 66));
+            holder.newsTitle.setTextColor(Color.rgb(255, 255, 255));
+            holder.newsIntro.setTextColor(Color.rgb(255, 255, 255));
+            holder.newsSource.setTextColor(Color.rgb(255, 255, 255));
         } else {
+            holder.cardView.setBackgroundColor(Color.rgb(255, 255, 255));
+            holder.newsTitle.setTextColor(Color.rgb(0, 0, 0));
+            holder.newsIntro.setTextColor(Color.rgb(0, 0, 0));
+            holder.newsSource.setTextColor(Color.rgb(0, 0, 0));
+        }
+
+
+        if (!urls[0].contains("h") || !const_data.getShow_picture())
+            return;
+        else if (urls.length < 3) {
+            holder.newsImage.setVisibility(View.VISIBLE);
+            Glide.with(context).load(urls[0]).into(holder.newsImage);
+        } else {
+            holder.newsImage.setVisibility(View.GONE);
+            holder.newsImage0.setVisibility(View.VISIBLE);
             holder.newsImage1.setVisibility(View.VISIBLE);
             holder.newsImage2.setVisibility(View.VISIBLE);
-            holder.newsImage3.setVisibility(View.VISIBLE);
-            Glide.with(holder.newsImage1).load(R.mipmap.ic_launcher).into(holder.newsImage1);
-            Glide.with(holder.newsImage2).load(R.mipmap.ic_launcher).into(holder.newsImage2);
-            Glide.with(holder.newsImage3).load(R.mipmap.ic_launcher).into(holder.newsImage3);
+            Glide.with(context).load(urls[0]).into(holder.newsImage0);
+            Glide.with(context).load(urls[1]).into(holder.newsImage1);
+            Glide.with(context).load(urls[2]).into(holder.newsImage2);
         }
+
 
     }
 

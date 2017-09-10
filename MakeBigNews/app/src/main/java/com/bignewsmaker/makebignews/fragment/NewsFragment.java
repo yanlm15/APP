@@ -30,6 +30,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 public class NewsFragment extends Fragment {
+    private static final String TAG = "makebignews";
     private NewsList news;
     private int category;
     private LinearLayoutManager mLayoutManager;
@@ -59,6 +60,23 @@ public class NewsFragment extends Fragment {
         super.onCreate(savedInstanceState);
     }
 
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (const_data.isSetChanged()) {
+            news.setPageNo(news.getPageNo() - 1);
+            refreshNews();
+            const_data.setSetChanged(false);
+        }
+        if (!const_data.isModel_day())
+            recyclerView.setBackgroundColor(Color.rgb(66,66,66));
+        else
+            recyclerView.setBackgroundColor(Color.rgb(255,255,255));
+
+        }
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
@@ -66,8 +84,6 @@ public class NewsFragment extends Fragment {
         mLayoutManager = new LinearLayoutManager(getActivity());
         recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         recyclerView.addOnScrollListener(mOnScrollListener);
-        if (!const_data.getDay())
-            recyclerView.setBackgroundColor(Color.rgb(66, 66, 66));
 
         swipeRefresh = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh);
         swipeRefresh.setRefreshing(true);
@@ -125,7 +141,7 @@ public class NewsFragment extends Fragment {
 
     Handler handler = new Handler() {
         public void handleMessage(Message msg) {
-            adapter = new NewsAdapter(news.getList());
+            adapter = new NewsAdapter(news.getList(), getActivity().getApplicationContext());
             adapter.setOnItemClickListener(new OnItemClickListener() {
                 @Override
                 public void onClick(View view, int position) {
