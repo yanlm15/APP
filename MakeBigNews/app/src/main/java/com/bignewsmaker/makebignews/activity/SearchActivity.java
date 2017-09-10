@@ -30,9 +30,7 @@ public class SearchActivity  extends AppCompatActivity {
             // 当点击搜索按钮时触发该方法
             @Override
             public boolean onQueryTextSubmit(String query) {
-                if (query == null)
-                {
-//                    System.out.println("><");
+                if (query == null) {
                     return false;
                 }
 

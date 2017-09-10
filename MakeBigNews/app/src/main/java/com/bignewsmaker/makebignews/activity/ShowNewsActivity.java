@@ -167,42 +167,57 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
         return  s;
     }
 
-    String getPicture_id(int i)
+    String empty_i(int i)
     {
-        String s= "<img src=\"file://"+getDir(i)+gettype(i)+ "\"style=\"max-width:100%;\"/>";
-//        <p style="text-align:center"><img src="/i/eg_tulip.jpg"></p>
-//        String s = String.valueOf(i);
+        String s ="<img src=\"file://"+"/android_res/drawable/t.jpg\""+ "alt=\""+String.valueOf(i)+"\" " + "/>";
+
         return s;
     }
 
-    String setP(String str,int num)// 分段 添加图片占位符号 待修改的文本，参数为添加图片数目
+    String getPicture_id(int i)
     {
-        String s=str;
+        String s= "<img src=\"file://"+getDir(i)+gettype(i)+ "\"style=\"max-width:100%;\"/>";
+        return s;
+    }
+
+    String setbody(String str)
+    {
+        String s = str;
         Pattern p = Pattern.compile("\\s{2,1000}");
         Matcher m = p.matcher(s);
-
         s=m.replaceAll("</p><p>");
-        if (num > 0)
-        {
-            String[] strs = s.split("</p><p>");
-            s = "";
-//            s+=getPicture_id(0);
-            for (int i=0 ; (i < strs.length-1)  ;i++)
-            {
-                if(i<picture.size())
-                {
-                    System.out.println(">><>>"+picture.size());
-                    System.out.println(">>>>"+i);
-                    s+=strs[i]+"</p>"+getPicture_id(i)+"<p>";}
-                else
-                    s+=strs[i]+"</p><p>";
-            }
-            s+=strs[strs.length-1];
+        return s;
+    }
+
+    String setP(String str,int num)// 添加图片，图片标号
+    {
+        String s=str;
+
+        if(num < picture.size()) {
+            Pattern p = Pattern.compile(empty_i(num));
+            Matcher m = p.matcher(s);
+            s=m.replaceAll(getPicture_id(num));
         }
 
         return s;
     }
 
+    String setEmptyP(String str)
+    {
+        String s =str;
+        String[] strs = s.split("</p><p>");
+        s = "";
+        for (int i=0 ; (i < strs.length-1)  ;i++)
+        {
+            if(i<picture.size())
+            {
+                s+=strs[i]+"</p>"+ empty_i(i) +"<p>";}
+            else
+                s+=strs[i]+"</p><p>";
+        }
+        s+=strs[strs.length-1];
+        return s;
+    }
 
     String gettype(int num)// 清除多余标签
     {
@@ -215,6 +230,23 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
         return "."+m.group();
 
     }
+
+    void  showText()
+    {
+        WebView et1 = (WebView) findViewById(R.id.textView);//content
+
+        String ccontext =
+                "<html>"
+                        +"<body>"
+                        +"<h1 align=\"center\">"+title+ "</h1>" //标题
+                        +"<hr style=\"height:1px;border:none;border-top:1px dashed #555555;\" />"//分割线
+//                    + "<img src="+getDir(0)+ "style=\"max-width:100%;\"/>"//测试第一张（没有会暂时报错）
+                        +"<p>"+ context+"</p>"//正文处理
+                        +"</body>"
+                        +"</html>";
+
+        et1.loadDataWithBaseURL("", ccontext, "text/html", "utf-8", null);
+    }
     public void setText(){
         int i = 0;
         for (String e:picture)
@@ -223,50 +255,24 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
             if (const_data.getShow_picture() == true){
                 if (file.exists()) {
                     //图文混排
-                    System.out.println(">>:>"+e+"\n"+getDir(i)+gettype(i));
-                    Bitmap p =  BitmapFactory.decodeFile(getDir(i)+gettype(i));
-                    mybitmap.add(p);
+//                    Bitmap p =  BitmapFactory.decodeFile(getDir(i)+gettype(i));
+//                    mybitmap.add(p);
 //                    break;//暂时添加一张图片
+                    context = setP(context,i);
+                    showText();
                 }
                 else {
+                    showText();
                     getpicture(e,i);//请求图片，请求成功后会再次调用setText进入true
                     return;//避免 图片请求被多次调用
                 }
             }
-
             i++;
         }
-        WebView et1 = (WebView) findViewById(R.id.textView);//content
-        if (mybitmap.size()>0) {
-            //  如果有图片
-            System.out.println("you get it");
-            context = jump_peo(context);
-            System.out.println("setpeo");
-            context = setP(context,mybitmap.size());
-            System.out.println("setp");
+        showText();
+    }//请求结束后设置显示格式
 
-        }
-        else {
-            System.out.println("no picture");
-            context = jump_peo(context);
-            System.out.println("setp");
-            context = setP(context,0);
-        }
-
-        String ccontext =
-            "<html>"
-                +"<body>"
-                    +"<h1 align=\"center\">"+title+ "</h1>" //标题
-                    +"<hr style=\"height:1px;border:none;border-top:1px dashed #555555;\" />"//分割线
-//                    + "<img src="+getDir(0)+ "style=\"max-width:100%;\"/>"//测试第一张（没有会暂时报错）
-                    +"<p>"+ context+"</p>"//正文处理
-                +"</body>"
-            +"</html>";
-
-        et1.loadDataWithBaseURL("", ccontext, "text/html", "utf-8", null);
-    }
-
-    public void getpicture(final String url,final int i)
+    public void getpicture(final String url,final int i)//请求图片
     {
         UrlService service = RetrofitTool.getInstance().getRetrofit().create(UrlService.class);
         Call<ResponseBody> urepos = service.downloadPicFromNet(url);
@@ -287,12 +293,11 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
-                System.out.println("Url-f-er："+t.toString());
             }
         });
     }
 
-    public void getText(String id)
+    public void getText(String id)//请求文本
     {
 
         NewService service = retrofitTool.getRetrofit().create(NewService.class);
@@ -313,7 +318,6 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
                         ArrayList<Item1> a = data.getKeywords();
                         for (Item1 i : a){//添加关键词
                             const_data.setLike(i.word);
-//                            System.out.println(i.word);//用于测试输出
                         }
 
                         picture_init(data.getNews_Pictures());
@@ -321,7 +325,12 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
 
                         title =  data.getNews_Title();
                         context = data.getNews_Content();
+
                         myNews = data;
+                        context = jump_peo(context);
+                        context = setbody(context);
+                        context = setEmptyP(context);
+                        showText();
                         setText();
 
                     }
@@ -339,22 +348,21 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
         });
     }
 
-
-
-    private boolean writeResponseBodyToDisk(ResponseBody body,int i)
+    private boolean writeResponseBodyToDisk(ResponseBody body,int i)//图片缓存-写到文件里
     {
 
         try{
-        File futureStudioIconFile = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES) +File.separator+id);
+//            BitmapFactory.Options options = new BitmapFactory.Options();
+//            options.inPreferredConfig = Bitmap.Config.RGB_565;//质量压缩;
+            File futureStudioIconFile = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES) +File.separator+id);
             if (futureStudioIconFile.exists()==false)
             {
                 futureStudioIconFile.mkdir();
             }
-            System.out.println(">file dir :"+futureStudioIconFile.exists());
 
             futureStudioIconFile = new File(getDir(i)+gettype(i));
-        InputStream inputStream = null;
-        OutputStream outputStream = null;
+            InputStream inputStream = null;
+            OutputStream outputStream = null;
 
         try {
             byte[] fileReader = new byte[4096];
@@ -378,12 +386,10 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
 
             }
             outputStream.flush();
-            System.out.println("TR");
             return true;
 
         }catch (Exception e)
         {
-            System.out.println("FTR"+e);
 
             return false;
         }finally {

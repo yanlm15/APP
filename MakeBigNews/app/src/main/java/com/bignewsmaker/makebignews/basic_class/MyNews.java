@@ -31,7 +31,7 @@ public class MyNews{
 //    String news_Video;
 //    List<item2> organizations;
     public ArrayList<Item2> persons;
-//    String repeat_ID;
+    public String repeat_ID;
     public ArrayList<String > seggedPListOfContent;
     public String seggedTitle;
 //    String wordCountOfContent;
