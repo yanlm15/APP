@@ -11,6 +11,7 @@ import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.webkit.WebView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -144,10 +145,7 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
         String s = str;
         Pattern p = Pattern.compile(arm);
         Matcher m = p.matcher(s);
-//
         s=m.replaceAll("<a href="+"\"https://baike.baidu.com/item/"+arm+"\"target=\"_blank\">"+arm+"</a>");
-//        https://baike.baidu.com/item/+"arm"
-//        <a href="http://www.w3school.com.cn/" target="_blank">Visit W3School!</a>
         return s;
     }
 
@@ -172,8 +170,9 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
 //    }
     String getPicture_id(int i)
     {
-        String s= "<p style=\"text-align:center\"><img src=\""+getDir(i)+"\"></p>";
+        String s= "<img src=\""+picture.get(i)+ "\"style=\"max-width:100%;\"/>";
 //        <p style="text-align:center"><img src="/i/eg_tulip.jpg"></p>
+//        String s = String.valueOf(i);
         return s;
     }
 
@@ -181,20 +180,23 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
     {
         String s=str;
         Pattern p = Pattern.compile("\\s{2,1000}");
-//        String arm = "俄罗斯";
         Matcher m = p.matcher(s);
 
         s=m.replaceAll("</p><p>");
-//        if (num > 0)
-//        {
-//            String[] strs = s.split("</p><p>");
-//            s = "";
+        if (num > 0)
+        {
+            String[] strs = s.split("</p><p>");
+            s = "";
 //            s+=getPicture_id(0);
-//            for (int i=1 ; (i < strs.length-1) && (i<num) ;i++)
-//            {
-//                s+=strs[i]+"</p>"+getPicture_id(i)+"<p>";
-//            }
-//        }
+            for (int i=0 ; (i < strs.length-1)  ;i++)
+            {
+                if(i<num)
+                    s+=strs[i]+"</p>"+getPicture_id(i)+"<p>";
+                else
+                    s+=strs[i]+"</p><p>";
+            }
+            s+=strs[strs.length-1];
+        }
 
         return s;
     }
@@ -211,14 +213,14 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
             System.out.println("><:"+e);//用于测试输出
 
             File file =  new File(getDir(i));
-            const_data.setShow_picture(false);
+//            const_data.setShow_picture(false);
             if (const_data.getShow_picture() == true){
                 if (file.exists()) {
                     //图文混排
                     System.out.println(">>:>"+e+"\n"+getDir(i));
                     Bitmap p =  BitmapFactory.decodeFile(getDir(i));
                     mybitmap.add(p);
-                    break;//暂时添加一张图片
+//                    break;//暂时添加一张图片
                 }
                 else {
                     System.out.println(">:"+e);
@@ -229,7 +231,7 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
 
             i++;
         }
-        TextView et1 = (TextView) findViewById(R.id.textView);//content
+        WebView et1 = (WebView) findViewById(R.id.textView);//content
         if (mybitmap.size()>0) {
             //  如果有图片
             System.out.println("you get it");
@@ -247,14 +249,15 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
                 +"<body>"
                     +"<h1 align=\"center\">"+title+ "</h1>" //标题
                     +"<hr style=\"height:1px;border:none;border-top:1px dashed #555555;\" />"//分割线
-                    + "<img src="+getDir(0)+ "style=\"max-width:100%;\"/>"//测试第一张（没有会暂时报错）
+//                    + "<img src="+getDir(0)+ "style=\"max-width:100%;\"/>"//测试第一张（没有会暂时报错）
                     +"<p>"+ context+"</p>"//正文处理
                 +"</body>"
             +"</html>";
 
 //        et1.setText("\n"+1+"\n");
-        et1.setText(Html.fromHtml(ccontext));
-        et1.setMovementMethod(LinkMovementMethod.getInstance());//点击的时候产生超链接
+//        et1.setText(Html.fromHtml(ccontext));
+        et1.loadDataWithBaseURL("", ccontext, "text/html", "utf-8", null);
+//        et1.setMovementMethod(LinkMovementMethod.getInstance());//点击的时候产生超链接
 
     }
 
