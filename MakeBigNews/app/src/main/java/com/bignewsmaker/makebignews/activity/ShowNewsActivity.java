@@ -7,6 +7,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Html;
+import android.text.method.LinkMovementMethod;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.LinearLayout;
@@ -233,15 +235,15 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
             //  如果有图片
             System.out.println("you get it");
             context = jump_peo(context);
-            context = setP(context,mybitmap.size());
+//            context = setP(context,mybitmap.size());
         }
         else {
             System.out.println("no picture");
             context = jump_peo(context);
-            context = setP(context,0);
+//            context = setP(context,0);
         }
 
-    String ccontext =
+        String ccontext =
             "<html>"
                 +"<body>"
                     +"<h1 align=\"center\">"+title+ "</h1>" //标题
@@ -250,7 +252,11 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
                     +"<p>"+ context+"</p>"//正文处理
                 +"</body>"
             +"</html>";
-        et1.setText("\n"+ccontext+"\n");
+
+//        et1.setText("\n"+1+"\n");
+        et1.setText(Html.fromHtml(ccontext));
+        et1.setMovementMethod(LinkMovementMethod.getInstance());//点击的时候产生超链接
+
     }
 
     public void getpicture(final String url,final int i)
