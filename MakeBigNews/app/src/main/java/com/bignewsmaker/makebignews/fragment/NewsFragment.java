@@ -7,15 +7,13 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.CardView;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
-import com.bignewsmaker.makebignews.Interface.OnItemClickListener;
 import com.bignewsmaker.makebignews.R;
 import com.bignewsmaker.makebignews.activity.ShowNewsActivity;
 import com.bignewsmaker.makebignews.adapter.NewsAdapter;
@@ -33,15 +31,15 @@ import java.net.URL;
 
 public class NewsFragment extends Fragment {
 
-    private NewsList news;
+    private int lastVisibleItem = 0;
+
+    private NewsList newsList;
     private int category;
     private LinearLayoutManager mLayoutManager;
     private RecyclerView recyclerView;
     private SwipeRefreshLayout swipeRefresh;
     private NewsAdapter adapter;
     private View view;
-    private CardView cardView;
-    private TextView newsTitle, newsIntro, newsSource;
     private ConstData const_data = ConstData.getInstance();// 设置访问全局变量接口
     private Speaker speaker = Speaker.getInstance();// 设置语音系统接口
 
@@ -65,75 +63,98 @@ public class NewsFragment extends Fragment {
     }
 
 
-  /*  @Override
-    public void onStart() {
-        super.onStart();
-        if (news == null || cardView == null) {
-            return;
+    private NewsAdapter.OnItemClickListener mOnItemClickListener = new NewsAdapter.OnItemClickListener() {
+        @Override
+        public void onClick(View view, int position) {
+            Intent i = new Intent(getContext(), ShowNewsActivity.class);
+            String id = adapter.getId(position);
+            const_data.setCur_ID(id);
+            const_data.addHaveRead(id);
+            startActivityForResult(i, 2);
         }
-        if (!const_data.isModel_day())
-            recyclerView.setBackgroundColor(Color.rgb(66, 66, 66));
-        else
-            recyclerView.setBackgroundColor(Color.rgb(255, 255, 255));
-
-
-    }*/
-
+    };
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+        category = getArguments().getInt("category");
         view = inflater.inflate(R.layout.fragment_news, container, false);
-       /* newsTitle = (TextView) view.findViewById(R.id.news_title);
-        newsIntro = (TextView) view.findViewById(R.id.news_intro);
-        newsSource = (TextView) view.findViewById(R.id.news_source);
-        cardView = (CardView) view.findViewById(R.id.cardview);*/
         mLayoutManager = new LinearLayoutManager(getActivity());
         recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
-        recyclerView.addOnScrollListener(mOnScrollListener);
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+
+//        recyclerView.addOnScrollListener(mOnScrollListener);
         if (!const_data.isModel_day())
             recyclerView.setBackgroundColor(Color.rgb(66, 66, 66));
         else
             recyclerView.setBackgroundColor(Color.rgb(255, 255, 255));
+
         swipeRefresh = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh);
         swipeRefresh.setRefreshing(true);
         swipeRefresh.setColorSchemeResources(R.color.colorPrimary);
-        swipeRefresh.setColorSchemeResources(R.color.colorAccent, R.color.colorPrimary, R.color.colorPrimaryDark);
         swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.
                 OnRefreshListener() {
             @Override
             public void onRefresh() {
+                swipeRefresh.setRefreshing(true);
+                newsList = null;
                 refreshNews();
             }
         });
-
-        category = getArguments().getInt("category");
         refreshNews();
+
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    if (adapter.isFadeTips() == false && lastVisibleItem + 1 == adapter.getItemCount()) {
+                       loadMoreNews();
+                    }
+
+                    if (adapter.isFadeTips() == true && lastVisibleItem + 2 == adapter.getItemCount()) {
+                        loadMoreNews();
+
+                    }
+                }
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                lastVisibleItem = mLayoutManager.findLastVisibleItemPosition();
+            }
+        });
+
         return view;
     }
 
-
-    private RecyclerView.OnScrollListener mOnScrollListener = new RecyclerView.OnScrollListener() {
-
-        private int lastVisibleItem;
-
-        @Override
-        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-            super.onScrolled(recyclerView, dx, dy);
-            lastVisibleItem = mLayoutManager.findLastVisibleItemPosition();
-        }
-
-        @Override
-        public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-            super.onScrollStateChanged(recyclerView, newState);
-            if (newState == RecyclerView.SCROLL_STATE_IDLE
-                    && lastVisibleItem + 1 == adapter.getItemCount()) {
-                //加载更多
+    private void refreshNews() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(150);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                loadNews();
+                Message msg = new Message();
+                refresh.sendMessage(msg);
             }
+        }).start();
+    }
+
+    Handler refresh = new Handler() {
+        public void handleMessage(Message msg) {
+            adapter = new NewsAdapter(newsList.getList(), getActivity().getApplicationContext(),true);
+            recyclerView.setLayoutManager(mLayoutManager);
+            recyclerView.setAdapter(adapter);
+            adapter.setOnItemClickListener(mOnItemClickListener);
+            swipeRefresh.setRefreshing(false);
         }
     };
 
-    private void refreshNews() {
+    private void loadMoreNews() {
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -144,26 +165,18 @@ public class NewsFragment extends Fragment {
                 }
                 loadNews();
                 Message msg = new Message();
-                handler.sendMessage(msg);
+                loadmore.sendMessage(msg);
             }
         }).start();
     }
 
-    Handler handler = new Handler() {
+
+    Handler loadmore = new Handler() {
         public void handleMessage(Message msg) {
-            adapter = new NewsAdapter(news.getList(), getActivity().getApplicationContext());
-            adapter.setOnItemClickListener(new OnItemClickListener() {
-                @Override
-                public void onClick(View view, int position) {
-                    Intent i = new Intent(getContext(), ShowNewsActivity.class);
-                    String id = news.getList().get(position).getNews_ID();
-                    const_data.setCur_ID(id);
-                    const_data.addHaveRead(id);
-                    startActivityForResult(i, 2);
-                }
-            });
-            recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-            recyclerView.setAdapter(adapter);
+            adapter.add(newsList.getList());
+//            recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+//            recyclerView.setAdapter(adapter);
+            adapter.notifyDataSetChanged();
             swipeRefresh.setRefreshing(false);
         }
     };
@@ -172,7 +185,7 @@ public class NewsFragment extends Fragment {
         String s = "";
         try {
             HttpURLConnection conn;
-            String pageNo = String.valueOf(news == null ? 1 : news.getPageNo() + 1);
+            String pageNo = String.valueOf(newsList == null ? 1 : newsList.getPageNo() + 1);
             String url = "http://166.111.68.66:2042/news/action/query/latest?pageNo=" + pageNo +
                     "&pageSize=" + const_data.getCur_pageSize() + (category == 0 ? "" : "&category=" + category);
             URL u = new URL(url);
@@ -188,10 +201,8 @@ public class NewsFragment extends Fragment {
             outputStream.close();
             inputStream.close();
             conn.disconnect();
-            /*ObjectMapper mapper = new ObjectMapper();
-            news = mapper.readValue(s, NewsList.class);*/
             Gson gson = new Gson();
-            news = gson.fromJson(s, NewsList.class);
+            newsList = gson.fromJson(s, NewsList.class);
         } catch (MalformedURLException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -202,7 +213,7 @@ public class NewsFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        switch(requestCode){
+        switch (requestCode) {
             case 2:
                 adapter.notifyDataSetChanged();
         }

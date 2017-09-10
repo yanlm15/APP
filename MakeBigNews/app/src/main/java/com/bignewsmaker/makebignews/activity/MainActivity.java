@@ -1,6 +1,7 @@
 package com.bignewsmaker.makebignews.activity;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -15,11 +16,11 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.bignewsmaker.makebignews.basic_class.ConstData;
+import com.bignewsmaker.makebignews.R;
 import com.bignewsmaker.makebignews.adapter.FragmentNewsAdapter;
+import com.bignewsmaker.makebignews.basic_class.ConstData;
 import com.bignewsmaker.makebignews.extra_class.Speaker;
 import com.bignewsmaker.makebignews.fragment.NewsFragment;
-import com.bignewsmaker.makebignews.R;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,7 +71,19 @@ public class MainActivity extends AppCompatActivity {
         }
         adapter = new FragmentNewsAdapter(getSupportFragmentManager(), mFragments);
         mViewPager.setAdapter(adapter);
+        mViewPager.setOffscreenPageLimit(6);
         mTabLayout.setupWithViewPager(mViewPager);
+
+        if(!const_data.getDay()){
+            mTabLayout.setBackgroundColor(Color.rgb(66,66,66));
+            mTabLayout.setTabTextColors(Color.rgb(255,255,255),Color.rgb(63,81,181));
+        }
+        else{
+            mTabLayout.setBackgroundColor(Color.rgb(255,255,255));
+            mTabLayout.setTabTextColors(Color.rgb(0,0,0),Color.rgb(63,81,181));
+
+        }
+
 
         navView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
