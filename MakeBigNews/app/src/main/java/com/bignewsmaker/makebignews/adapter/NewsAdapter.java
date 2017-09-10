@@ -2,6 +2,8 @@ package com.bignewsmaker.makebignews.adapter;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -10,7 +12,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bignewsmaker.makebignews.Interface.OnItemClickListener;
 import com.bignewsmaker.makebignews.R;
 import com.bignewsmaker.makebignews.basic_class.ConstData;
 import com.bignewsmaker.makebignews.basic_class.News;
@@ -20,18 +21,39 @@ import java.util.HashSet;
 import java.util.List;
 
 
-public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
+public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+    private final int NORMAL_TYPE = 0;
+    private final int FOOT_TYPE = 1;
+    private boolean hasMore = true;   // 变量，是否有更多数据
+    private boolean fadeTips = false; // 变量，是否隐藏了底部的提示
+    private Handler mHandler = new Handler(Looper.getMainLooper()); //获取主线程的Handler
+
     private HashSet<String> hs;
     private OnItemClickListener onItemClickListener;
     private ConstData const_data = ConstData.getInstance();// 设置访问全局变量接口
+    private List<News> mNewsList;
+    private Context context;
+
+    public NewsAdapter(List<News> newsList, Context context, boolean hasMore) {
+        mNewsList = newsList;
+        this.context = context;
+        this.hasMore = hasMore;
+    }
+
+    public void add(List<News> news) {
+        mNewsList.addAll(news);
+    }
 
     //点击接口
     public void setOnItemClickListener(OnItemClickListener listener) {
         this.onItemClickListener = listener;
     }
 
-    private List<News> mNewsList;
-    private Context context;
+    public interface OnItemClickListener {
+        void onClick(View view, int position);
+    }
+
+
 
     static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         CardView cardView;
@@ -62,70 +84,132 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
         }
     }
 
-    public NewsAdapter(List<News> newsList, Context context) {
-        mNewsList = newsList;
-        this.context = context;
+    class FootHolder extends RecyclerView.ViewHolder {
+        private TextView tips;
+
+        public FootHolder(View itemView) {
+            super(itemView);
+            tips = (TextView) itemView.findViewById(R.id.tips);
+        }
     }
 
-
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (context != null)
             context = parent.getContext();
+        if (viewType == NORMAL_TYPE) {
 
-        View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_news, parent, false);
-        ViewHolder holder = new ViewHolder(view, onItemClickListener);
-        return holder;
+            View view = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.item_news, parent, false);
+            ViewHolder holder = new ViewHolder(view, onItemClickListener);
+            return holder;
+        } else {
+            return new FootHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.footview, parent,false));
+        }
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
         holder.setIsRecyclable(false);
-        News news = mNewsList.get(position);
-        String[] urls = news.getNews_Pictures().split(";|\\s");
-        holder.newsTitle.setText(news.getNews_Title());
-        holder.newsIntro.setText(news.getNews_Intro().replaceAll("\\s", ""));
-        holder.newsSource.setText("\n" + (!news.getNews_Author().equals("")?news.getNews_Author():news.getNews_Source()));
-        if (!const_data.isModel_day()) {
-            holder.cardView.setBackgroundColor(Color.rgb(66, 66, 66));
-            holder.newsTitle.setTextColor(Color.rgb(255, 255, 255));
-            holder.newsIntro.setTextColor(Color.rgb(255, 255, 255));
-            holder.newsSource.setTextColor(Color.rgb(255, 255, 255));
+
+        if (holder instanceof ViewHolder) {
+            News news = mNewsList.get(position);
+            String[] urls = news.getNews_Pictures().split(";|\\s");
+
+            ((ViewHolder) holder).newsTitle.setText(news.getNews_Title());
+            ((ViewHolder) holder).newsIntro.setText(news.getNews_Intro().replaceAll("\\s", ""));
+            ((ViewHolder) holder).newsSource.setText("\n"
+                    + (!news.getNews_Author().equals("") ? news.getNews_Author() : news.getNews_Source()));
+            if (!const_data.isModel_day()) {
+                ((ViewHolder) holder).cardView.setBackgroundColor(Color.rgb(66, 66, 66));
+                ((ViewHolder) holder).newsTitle.setTextColor(Color.rgb(255, 255, 255));
+                ((ViewHolder) holder).newsIntro.setTextColor(Color.rgb(255, 255, 255));
+                ((ViewHolder) holder).newsSource.setTextColor(Color.rgb(255, 255, 255));
+            } else {
+                ((ViewHolder) holder).cardView.setBackgroundColor(Color.rgb(255, 255, 255));
+                ((ViewHolder) holder).newsTitle.setTextColor(Color.rgb(0, 0, 0));
+                ((ViewHolder) holder).newsIntro.setTextColor(Color.rgb(0, 0, 0));
+                ((ViewHolder) holder).newsSource.setTextColor(Color.rgb(0, 0, 0));
+            }
+            hs = const_data.getHaveRead();
+            if (hs.contains(news.getNews_ID())) {
+                ((ViewHolder) holder).newsTitle.setTextColor(Color.rgb(128, 128, 128));
+                ((ViewHolder) holder).newsIntro.setTextColor(Color.rgb(128, 128, 128));
+                ((ViewHolder) holder).newsSource.setTextColor(Color.rgb(128, 128, 128));
+            }
+
+            if (urls.length == 0 || !urls[0].contains("h") || !const_data.getShow_picture())
+                return;
+            else if (urls.length == 1) {
+                ((ViewHolder) holder).newsImage.setVisibility(View.VISIBLE);
+                Glide.with(context).load(urls[0]).into(((ViewHolder) holder).newsImage);
+            } else if (urls.length == 2) {
+                ((ViewHolder) holder).newsImage.setVisibility(View.VISIBLE);
+                Glide.with(context).load(urls[1]).into(((ViewHolder) holder).newsImage);
+            } else {
+                ((ViewHolder) holder).newsImage.setVisibility(View.GONE);
+                ((ViewHolder) holder).newsImage0.setVisibility(View.VISIBLE);
+                ((ViewHolder) holder).newsImage1.setVisibility(View.VISIBLE);
+                ((ViewHolder) holder).newsImage2.setVisibility(View.VISIBLE);
+                Glide.with(context).load(urls[0]).into(((ViewHolder) holder).newsImage0);
+                Glide.with(context).load(urls[1]).into(((ViewHolder) holder).newsImage1);
+                Glide.with(context).load(urls[2]).into(((ViewHolder) holder).newsImage2);
+            }
         } else {
-            holder.cardView.setBackgroundColor(Color.rgb(255, 255, 255));
-            holder.newsTitle.setTextColor(Color.rgb(0, 0, 0));
-            holder.newsIntro.setTextColor(Color.rgb(0, 0, 0));
-            holder.newsSource.setTextColor(Color.rgb(0, 0, 0));
-        }
-        hs=const_data.getHaveRead();
-        if(hs.contains(news.getNews_ID())){
-            holder.newsTitle.setTextColor(Color.rgb(128, 128, 128));
-            holder.newsIntro.setTextColor(Color.rgb(128, 128, 128));
-            holder.newsSource.setTextColor(Color.rgb(128, 128, 128));
-        }
+            ((FootHolder) holder).tips.setVisibility(View.VISIBLE);
+            if (hasMore == true) {
+                // 不隐藏footView提示
+                fadeTips = false;
+                if (mNewsList.size() > 0) {
+                    // 如果查询数据发现增加之后，就显示正在加载更多
+                    ((FootHolder) holder).tips.setText("正在加载...");
+                }
+            } else {
+                if (mNewsList.size() > 0) {
+                    // 如果查询数据发现并没有增加时，就显示没有更多数据了
+                    ((FootHolder) holder).tips.setText("没有更多数据了");
 
-        if (urls.length == 0 || !urls[0].contains("h") || !const_data.getShow_picture())
-            return;
-        else if (urls.length < 3) {
-            holder.newsImage.setVisibility(View.VISIBLE);
-            Glide.with(context).load(urls[0]).into(holder.newsImage);
-        } else {
-            holder.newsImage.setVisibility(View.GONE);
-            holder.newsImage0.setVisibility(View.VISIBLE);
-            holder.newsImage1.setVisibility(View.VISIBLE);
-            holder.newsImage2.setVisibility(View.VISIBLE);
-            Glide.with(context).load(urls[0]).into(holder.newsImage0);
-            Glide.with(context).load(urls[1]).into(holder.newsImage1);
-            Glide.with(context).load(urls[2]).into(holder.newsImage2);
+                    // 然后通过延时加载模拟网络请求的时间，在500ms后执行
+                    mHandler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            // 隐藏提示条
+                            ((FootHolder) holder).tips.setVisibility(View.GONE);
+                            // 将fadeTips设置true
+                            fadeTips = true;
+                            // hasMore设为true是为了让再次拉到底时，会先显示正在加载更多
+                            hasMore = true;
+                        }
+                    }, 100);
+                }
+            }
         }
+    }
 
-
+    // 暴露接口，改变fadeTips的方法
+    public boolean isFadeTips() {
+        return fadeTips;
     }
 
     @Override
     public int getItemCount() {
+        int begin = fadeTips ? 0 : 1;
+        return mNewsList.size() + begin;
+    }
+
+    public int getRealLastPosition() {
         return mNewsList.size();
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        if (fadeTips)
+            return NORMAL_TYPE;
+        if (position == getItemCount() - 1) {
+            return FOOT_TYPE;
+        } else {
+            return NORMAL_TYPE;
+        }
     }
 
 }
