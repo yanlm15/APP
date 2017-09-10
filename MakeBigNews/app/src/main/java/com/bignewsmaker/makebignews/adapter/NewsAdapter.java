@@ -212,5 +212,8 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         }
     }
 
+    public String getId(int position) {
+        return mNewsList.get(position).getNews_ID();
+    }
 }
 

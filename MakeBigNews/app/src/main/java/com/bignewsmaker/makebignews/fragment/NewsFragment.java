@@ -67,7 +67,7 @@ public class NewsFragment extends Fragment {
         @Override
         public void onClick(View view, int position) {
             Intent i = new Intent(getContext(), ShowNewsActivity.class);
-            String id = newsList.getList().get(position).getNews_ID();
+            String id = adapter.getId(position);
             const_data.setCur_ID(id);
             const_data.addHaveRead(id);
             startActivityForResult(i, 2);
