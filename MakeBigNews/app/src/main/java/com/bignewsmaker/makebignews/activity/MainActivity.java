@@ -1,5 +1,6 @@
 package com.bignewsmaker.makebignews.activity;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
@@ -9,27 +10,33 @@ import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
-import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 
+import com.bignewsmaker.makebignews.Interface.SearchService;
 import com.bignewsmaker.makebignews.R;
 import com.bignewsmaker.makebignews.adapter.FragmentNewsAdapter;
 import com.bignewsmaker.makebignews.basic_class.ConstData;
+import com.bignewsmaker.makebignews.basic_class.NewsList;
+import com.bignewsmaker.makebignews.extra_class.RetrofitTool;
 import com.bignewsmaker.makebignews.extra_class.Speaker;
 import com.bignewsmaker.makebignews.fragment.NewsFragment;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 /*
 *重载拖动事件实现拖动更新
 */
@@ -41,9 +48,11 @@ public class MainActivity extends AppCompatActivity {
     private List<Fragment> mFragments;
     private DrawerLayout mDrawerLayout;
     private FragmentNewsAdapter adapter;
-
+    private SearchView mSearchView;
     private ConstData const_data = ConstData.getInstance();// 设置访问全局变量接口
     private Speaker speaker = Speaker.getInstance();// 设置语音系统接口
+    private RetrofitTool retrofitTool = RetrofitTool.getInstance();//设置接收器
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         NavigationView navView = (NavigationView) findViewById(R.id.nav_view);
         ActionBar actionBar = getSupportActionBar();
@@ -70,9 +80,9 @@ public class MainActivity extends AppCompatActivity {
         mViewPager = (ViewPager) findViewById(R.id.viewpager);
         mTabLayout = (TabLayout) findViewById(R.id.tablayout);
         mFragments = new ArrayList<>();
-        int j=0;
+        int j = 0;
         for (int i = 0; i < 13; i++) {
-            if (const_data.getIstagSelected(i)){
+            if (const_data.getIstagSelected(i)) {
                 mFragments.add(NewsFragment.newInstance(j));
                 j++;
             }
@@ -84,14 +94,13 @@ public class MainActivity extends AppCompatActivity {
 
         if (!const_data.getDay()) {
             mTabLayout.setBackgroundColor(Color.rgb(66, 66, 66));
-            mTabLayout.setTabTextColors(Color.rgb(128, 128, 128), Color.rgb(255,255, 255));
-            mTabLayout.setSelectedTabIndicatorColor(Color.rgb(255,255,255));
+            mTabLayout.setTabTextColors(Color.rgb(128, 128, 128), Color.rgb(255, 255, 255));
+            mTabLayout.setSelectedTabIndicatorColor(Color.rgb(255, 255, 255));
             toolbar.setBackgroundColor(Color.rgb(66, 66, 66));
-            setStatusBarColor(MainActivity.this,Color.rgb(66,66,66));
+            setStatusBarColor(MainActivity.this, Color.rgb(66, 66, 66));
         } else {
             mTabLayout.setTabTextColors(Color.rgb(0, 0, 0), Color.rgb(63, 81, 181));
         }
-
 
         navView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -100,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
                 item.setCheckable(false);//选项是否可选
                 switch (item.getItemId()) {
                     case R.id.nav_home:
-                        Intent home=new Intent(MainActivity.this,MainActivity.class);
+                        Intent home = new Intent(MainActivity.this, MainActivity.class);
                         startActivity(home);
                         break;
                     case R.id.nav_saved:
@@ -121,9 +130,10 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         });
+
     }
 
-
+    @TargetApi(21)
     static void setStatusBarColor(Activity activity, int statusColor) {
         Window window = activity.getWindow();
         //取消状态栏透明
@@ -134,13 +144,6 @@ public class MainActivity extends AppCompatActivity {
         window.setStatusBarColor(statusColor);
         //设置系统状态栏处于可见状态
         window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
-       /* //让view不根据系统窗口来调整自己的布局
-        ViewGroup mContentView = (ViewGroup) window.findViewById(Window.ID_ANDROID_CONTENT);
-        View mChildView = mContentView.getChildAt(0);
-        if (mChildView != null) {
-            ViewCompat.setFitsSystemWindows(mChildView, false);
-            ViewCompat.requestApplyInsets(mChildView);
-        }*/
     }
 
     @Override
@@ -156,6 +159,33 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.toolbar_main, menu);
+        mSearchView = (SearchView) menu.findItem(R.id.search).getActionView();
+        mSearchView.setIconifiedByDefault(true);
+        mSearchView.setSubmitButtonEnabled(true);//设置是否显示搜索按钮
+        mSearchView.setQueryHint("请输入搜索内容...");//设置提示信息
+        mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextChange(String queryText) {
+                return false;
+            }
+            @Override
+            public boolean onQueryTextSubmit(String queryText) {
+               /* if (mSearchView != null) {
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    if (imm != null) {
+                        imm.hideSoftInputFromWindow(mSearchView.getWindowToken(), 0); // 输入法如果是显示状态，那么就隐藏输入法
+                    }
+                    mSearchView.clearFocus(); // 不获取焦点
+                }*/
+                if (queryText == null) {
+                    return false;
+                } else {
+                    const_data.setSearch_message(queryText);
+                    callData(queryText);
+                    return true;
+                }
+            }
+        });
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -165,11 +195,10 @@ public class MainActivity extends AppCompatActivity {
             case android.R.id.home:
                 mDrawerLayout.openDrawer(GravityCompat.START);
                 break;
-
-            case R.id.search:
+           /* case R.id.search:
                 Intent intent = new Intent(MainActivity.this, SearchActivity.class);
                 startActivity(intent);
-                break;
+                break;*/
             case R.id.setting:
                 Intent setIntent = new Intent(MainActivity.this, SetActivity.class);
                 startActivityForResult(setIntent, 1);
@@ -177,7 +206,6 @@ public class MainActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -190,5 +218,33 @@ public class MainActivity extends AppCompatActivity {
                     break;
                 }
         }
+    }
+
+    //处理搜索数据
+    private void callData(String str) {
+        SearchService service = retrofitTool.getRetrofit().create(SearchService.class);
+        Call<NewsList> repos = service.listRepos(str);
+        repos.enqueue(new Callback<NewsList>() {
+            @Override
+            public void onResponse(Call<NewsList> call, Response<NewsList> response) {
+                if (response.isSuccessful()) {
+                    NewsList data = response.body();
+                    if (data != null) {
+                        reCall(data);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<NewsList> call, Throwable t) {
+                t.printStackTrace();
+            }
+        });
+    }
+
+    private void reCall(NewsList a) {
+        const_data.setSearch_result(a);
+        Intent intent = new Intent(MainActivity.this, SearchResultActivity.class);// 新建一个界面
+        startActivity(intent);//跳转界面
     }
 }
