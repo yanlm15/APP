@@ -22,21 +22,15 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
-import com.bignewsmaker.makebignews.Interface.SearchService;
 import com.bignewsmaker.makebignews.R;
 import com.bignewsmaker.makebignews.adapter.FragmentNewsAdapter;
 import com.bignewsmaker.makebignews.basic_class.ConstData;
-import com.bignewsmaker.makebignews.basic_class.NewsList;
 import com.bignewsmaker.makebignews.extra_class.RetrofitTool;
 import com.bignewsmaker.makebignews.extra_class.Speaker;
 import com.bignewsmaker.makebignews.fragment.NewsFragment;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 /*
 *重载拖动事件实现拖动更新
 */
@@ -181,7 +175,9 @@ public class MainActivity extends AppCompatActivity {
                     return false;
                 } else {
                     const_data.setSearch_message(queryText);
-                    callData(queryText);
+//                    callData(queryText);
+                    Intent intent = new Intent(MainActivity.this, SearchResultActivity.class);// 新建一个界面
+                    startActivity(intent);
                     return true;
                 }
             }
@@ -218,33 +214,5 @@ public class MainActivity extends AppCompatActivity {
                     break;
                 }
         }
-    }
-
-    //处理搜索数据
-    private void callData(String str) {
-        SearchService service = retrofitTool.getRetrofit().create(SearchService.class);
-        Call<NewsList> repos = service.listRepos(str);
-        repos.enqueue(new Callback<NewsList>() {
-            @Override
-            public void onResponse(Call<NewsList> call, Response<NewsList> response) {
-                if (response.isSuccessful()) {
-                    NewsList data = response.body();
-                    if (data != null) {
-                        reCall(data);
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<NewsList> call, Throwable t) {
-                t.printStackTrace();
-            }
-        });
-    }
-
-    private void reCall(NewsList a) {
-        const_data.setSearch_result(a);
-        Intent intent = new Intent(MainActivity.this, SearchResultActivity.class);// 新建一个界面
-        startActivity(intent);//跳转界面
     }
 }

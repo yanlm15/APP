@@ -141,11 +141,14 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             if (urls.length == 0 || !urls[0].contains("h") || !const_data.getShow_picture())
                 return;
             else if (urls.length == 1) {
+                if(urls[0].toLowerCase().contains("logo")||urls[0].toLowerCase().contains("icocopy"))
+                    return;
                 ((ViewHolder) holder).newsImage.setVisibility(View.VISIBLE);
                 Glide.with(context).load(urls[0]).into(((ViewHolder) holder).newsImage);
             } else if (urls.length == 2) {
                 ((ViewHolder) holder).newsImage.setVisibility(View.VISIBLE);
-                Glide.with(context).load(urls[1]).into(((ViewHolder) holder).newsImage);
+                String url=urls[1].toLowerCase().contains("logo")||urls[1].toLowerCase().contains("icocopy")?urls[0]:urls[1];
+                Glide.with(context).load(url).into(((ViewHolder) holder).newsImage);
             } else {
                 ((ViewHolder) holder).newsImage.setVisibility(View.GONE);
                 ((ViewHolder) holder).newsImage0.setVisibility(View.VISIBLE);
@@ -191,6 +194,13 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         return fadeTips;
     }
 
+    public void setFadeTips(boolean fadeTips){
+        this.fadeTips=fadeTips;
+    }
+
+    public void setHasMore(boolean hasMore){
+        this.hasMore=hasMore;
+    }
     @Override
     public int getItemCount() {
         int begin = fadeTips ? 0 : 1;
