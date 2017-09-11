@@ -12,8 +12,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.webkit.WebView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -22,7 +25,10 @@ import android.widget.Toast;
 import com.bignewsmaker.makebignews.Interface.SuccessCallBack;
 import com.bignewsmaker.makebignews.basic_class.ConstData;
 import com.bignewsmaker.makebignews.basic_class.Item2;
+import com.bignewsmaker.makebignews.basic_class.News;
+import com.bignewsmaker.makebignews.basic_class.NewsList;
 import com.bignewsmaker.makebignews.extra_class.FileHelper;
+import com.bignewsmaker.makebignews.extra_class.LogicTool;
 import com.bignewsmaker.makebignews.extra_class.RetrofitTool;
 import com.bignewsmaker.makebignews.R;
 import com.bignewsmaker.makebignews.extra_class.Speaker;
@@ -49,6 +55,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static android.support.v7.appcompat.R.styleable.View;
+
 /**
  * Created by liminyan on 06/09/2017.
  * 用于显示单条新闻
@@ -72,19 +80,71 @@ import retrofit2.Response;
  * 设置信息储存，当然要是实现永久性，将信息写到一个文件里，然后开机的时候倒入
  * getExternalFilesDir(null)获取外部存储目录
  *
- * 可以通过设置主进程来调试，不一定要等到服务器恢复
+ * 然后这里是Lgictool 的使用方法：采用了范型接口，新定义一个类继承 Logictool（自己也继承了SuccessCallBack）
+ * 然后继承 SuccessCallBack<T>
+ *      就可以在不同的activity下使用搜索（既然主页的搜索实现了，那我就不添加继续加载了），筛选，请求等功能
+ *      这个例子提供的接口是搜索后的回调接口，其中a是搜索返回的结果
+ *      其实你们的收藏和下载也可以用类似的方法实现，以应对不同的activity的不同需求
  */
 
 
 
-public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.OnThemeChangeListener,SuccessCallBack {
+public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.OnThemeChangeListener {
 
     private ConstData const_data = ConstData.getInstance();// 设置访问全局变量接口
     private Speaker speaker = Speaker.getInstance();// 设置语音系统接口
     private RetrofitTool retrofitTool = RetrofitTool.getInstance();
+    private NewsList mNewsList = new  NewsList();
+    TextView []m = new  TextView[3];
+
+
+
+
+    class MyLogicTool extends LogicTool implements SuccessCallBack<NewsList>
+    {
+        @Override
+        public void onSuccess(NewsList a) {
+            mNewsList = a;
+            System.out.println(MyLogicTool.class);
+            int i = 0;
+
+            m[0] = (TextView)findViewById(R.id.r_1);
+            m[1] = (TextView)findViewById(R.id.r_2);
+            m[2] = (TextView)findViewById(R.id.r_3);
+            for (News e : a.getList())
+            {
+                System.out.println(e.getNews_Title());
+                System.out.println(e.getNews_Intro());
+                if(e.getNews_Title().endsWith(title) == false)
+                {
+                    m[i].setText("\n"+e.getNews_Title()+"\n");
+                    i++;
+                }
+                if (i>2)
+                    break;
+
+            }
+
+        }
+    }
+
+    MyLogicTool myLogicTool = new MyLogicTool();
+
+    public void setContext_rec()
+    {
+        getContext_rec();
+    }
+
+    public void getContext_rec()
+    {
+        System.out.println( ">>>" + myNews.getNews_Title());
+        myLogicTool.recommend_by_tytle(myNews.getNews_Title(),3);
+    }
+
     private String id;
     private String title;
     private String context;
+    private String context_rec;
     private MyNews myNews = new MyNews();
     private ArrayList<String> picture = new ArrayList<String >();
     private ArrayList<Bitmap> mybitmap = new ArrayList<Bitmap>();
@@ -119,6 +179,47 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
 //
 //        System.out.println(const_data.getLike().get("app"));
         getText(id);
+        TextView t = (TextView)findViewById(R.id.r_1);
+        t.setOnClickListener(new android.view.View.OnClickListener() {
+            @Override
+            public void onClick(View arg0) {
+
+                if (arg0.getContext().equals("") == false)
+                {
+                    const_data.setCur_ID(mNewsList.getList().get(0).getNews_ID());
+                    Intent intent=new Intent(ShowNewsActivity.this,ShowNewsActivity.class);// 新建一个界面
+                    startActivity(intent);
+                }
+            }
+        });
+        TextView t1 = (TextView)findViewById(R.id.r_2);
+        t1.setOnClickListener(new android.view.View.OnClickListener() {
+            @Override
+            public void onClick(View arg0) {
+
+                if (arg0.getContext().equals("") == false)
+                {
+                    const_data.setCur_ID(mNewsList.getList().get(0).getNews_ID());
+                    Intent intent=new Intent(ShowNewsActivity.this,ShowNewsActivity.class);// 新建一个界面
+                    startActivity(intent);
+                }
+            }
+        });
+        TextView t2 = (TextView)findViewById(R.id.r_3);
+        t2.setOnClickListener(new android.view.View.OnClickListener() {
+            @Override
+            public void onClick(View arg0) {
+
+                if (arg0.getContext().equals("") == false)
+                {
+                    const_data.setCur_ID(mNewsList.getList().get(0).getNews_ID());
+                    Intent intent=new Intent(ShowNewsActivity.this,ShowNewsActivity.class);// 新建一个界面
+                    startActivity(intent);
+                }
+            }
+        });
+
+
 
         SharedPreferences sharedPreferences = getSharedPreferences("saved_news_id_list", Context.MODE_PRIVATE); //私有数据
         String tmp = sharedPreferences.getString(id,"");
@@ -160,16 +261,12 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
         Matcher m = p.matcher(s);
         while( m.find())
             picture.add(m.group());
-//
-//        for (String e : picture) {
-//             System.out.println(e);
-//
-//        }
 
     }
     public void onSuccess(String str){
         setText();
     }
+
 
     String setURL(String str,String arm) //关键字超链接
     {
@@ -260,8 +357,9 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
                         +"<body>"
                         +"<h1 align=\"center\">"+title+ "</h1>" //标题
                         +"<hr style=\"height:1px;border:none;border-top:1px dashed #555555;\" />"//分割线
-//                    + "<img src="+getDir(0)+ "style=\"max-width:100%;\"/>"//测试第一张（没有会暂时报错）
                         +"<p>"+ context+"</p>"//正文处理
+                        +"<hr style=\"height:1px;border:none;border-top:1px dashed #555555;\" />"//分割线
+//                        +"<p>"+ context_rec+"</p>"//单页的推荐
                         +"</body>"
                         +"</html>";
 
@@ -269,6 +367,9 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
         et2.setText("");
 
     }
+
+
+
     public void setText(){
         int i = 0;
         for (String e:picture)
@@ -352,7 +453,10 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
                         context = setbody(context);
                         context = setEmptyP(context);
                         showText();
+
                         setText();
+                        getContext_rec();//请求关键词
+
 
                     }
                 } else {

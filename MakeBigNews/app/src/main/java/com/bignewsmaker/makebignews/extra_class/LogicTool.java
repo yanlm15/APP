@@ -3,6 +3,7 @@ package com.bignewsmaker.makebignews.extra_class;
 import android.content.Intent;
 
 import com.bignewsmaker.makebignews.Interface.SearchService;
+import com.bignewsmaker.makebignews.Interface.SuccessCallBack;
 import com.bignewsmaker.makebignews.activity.SearchActivity;
 import com.bignewsmaker.makebignews.activity.SearchResultActivity;
 import com.bignewsmaker.makebignews.basic_class.ConstData;
@@ -22,7 +23,7 @@ import retrofit2.Response;
  * 如果你单纯为了方便，你也可以通过设置type 执行不同的函数，只是这样的代码太丑陋了
  */
 
-public class LogicTool {
+public class LogicTool implements SuccessCallBack<NewsList> {
 
     protected ConstData const_data = ConstData.getCur();
     protected RetrofitTool retrofitTool = RetrofitTool.getInstance();
@@ -38,11 +39,11 @@ public class LogicTool {
         this.type = type;
     }
 
-    public static LogicTool getInstance() {
-        if (cur == null)
-            cur = new LogicTool();
-        return cur;
-    }
+//    public static LogicTool getInstance() {
+//        if (cur == null)
+//            cur = new LogicTool();
+//        return cur;
+//    }
 
     public NewsList filter_dislike(NewsList old_list)//过滤dislike
     {
@@ -109,7 +110,7 @@ public class LogicTool {
                     NewsList data = response.body();
                     if (data != null) {
                         System.out.println("S-T");
-                        reCall(data,const_number);
+                        onSuccess(data);
                     }
                     else {
                         System.out.println("S-F");
@@ -122,21 +123,21 @@ public class LogicTool {
 
             @Override
             public void onFailure(Call<NewsList> call, Throwable t) {
-
+                return;
             }
         });
     }
 
-     protected void reCall(NewsList a,int num)
-    {
-        const_data.setSearch_result(a);
-        int i=0;
-        for (News e : a.getList())
-        {
-            System.out.println(e.getNews_ID());
-            i++;
-            if (i>= num)
-                break;
-        }
-    }
+     public void onSuccess(NewsList a){}
+//    {
+//        const_data.setSearch_result(a);
+//        int i=0;
+//        for (News e : a.getList())
+//        {
+//            System.out.println(e.getNews_ID());
+//            i++;
+//            if (i>= const_number)
+//                break;
+//        }
+//    }
 }

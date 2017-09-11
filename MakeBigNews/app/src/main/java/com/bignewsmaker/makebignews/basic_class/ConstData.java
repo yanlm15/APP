@@ -22,6 +22,7 @@ public class ConstData {
     private boolean show_picture = true; //图片显示标签
     private boolean isDay = true;
     private boolean isSetChanged =false;
+    private boolean safe_search = false;
     private NewsList cur_news = null ;// 当前新闻列表
     private News cur_list = null ;// 当前选中新闻
     private NewsList search_result = null ;// 当前的搜索结果
@@ -64,6 +65,10 @@ public class ConstData {
                 a++;
         return a;
     }
+
+    public void setSafe_search(boolean safe_search) {this.safe_search = safe_search;}
+
+    public boolean isSafe_search() {return safe_search;}
 
     public HashSet<String> getHaveRead() {
         return haveRead;
