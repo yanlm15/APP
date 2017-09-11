@@ -97,9 +97,6 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
     private NewsList mNewsList = new  NewsList();
     TextView []m = new  TextView[3];
 
-
-
-
     class MyLogicTool extends LogicTool implements SuccessCallBack<NewsList>
     {
         @Override
@@ -327,13 +324,19 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
         String s =str;
         String[] strs = s.split("</p><p>");
         s = "";
+        double asd = strs.length *1.0 / picture.size();
+        int k = 0 ;
+        System.out.println("---------->"+asd+"f:"+strs.length+"p:"+picture.size());
         for (int i=0 ; (i < strs.length-1)  ;i++)
         {
-            if(i<picture.size())
+            if(k<picture.size() && k*asd<=i)
             {
-                s+=strs[i]+"</p>"+ empty_i(i) +"<p>";}
+                s+=strs[i]+"</p>"+ empty_i(k) +"<p>";
+                k++;
+            }
             else
                 s+=strs[i]+"</p><p>";
+//            k++;
         }
         s+=strs[strs.length-1];
         return s;
