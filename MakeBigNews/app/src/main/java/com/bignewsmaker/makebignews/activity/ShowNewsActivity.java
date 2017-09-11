@@ -236,7 +236,7 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
     void  showText()
     {
         WebView et1 = (WebView) findViewById(R.id.textView);//content
-
+        TextView et2 = (TextView) findViewById(R.id.textView2);
         String ccontext =
                 "<html>"
                         +"<body>"
@@ -248,6 +248,8 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
                         +"</html>";
 
         et1.loadDataWithBaseURL("", ccontext, "text/html", "utf-8", null);
+        et2.setText("");
+
     }
     public void setText(){
         int i = 0;
@@ -257,9 +259,6 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
             if (const_data.getShow_picture() == true){
                 if (file.exists()) {
                     //图文混排
-//                    Bitmap p =  BitmapFactory.decodeFile(getDir(i)+gettype(i));
-//                    mybitmap.add(p);
-//                    break;//暂时添加一张图片
                     context = setP(context,i);
                     showText();
                 }
