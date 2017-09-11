@@ -1,6 +1,8 @@
 package com.bignewsmaker.makebignews.activity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -20,6 +22,7 @@ import android.widget.Toast;
 import com.bignewsmaker.makebignews.Interface.SuccessCallBack;
 import com.bignewsmaker.makebignews.basic_class.ConstData;
 import com.bignewsmaker.makebignews.basic_class.Item2;
+import com.bignewsmaker.makebignews.extra_class.FileHelper;
 import com.bignewsmaker.makebignews.extra_class.RetrofitTool;
 import com.bignewsmaker.makebignews.R;
 import com.bignewsmaker.makebignews.extra_class.Speaker;
@@ -89,10 +92,12 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
     private boolean isDay = const_data.isModel_day();
     private LinearLayout linearLayout;
     private Toolbar toolbar;
-    private MenuItem item_voice, item_stop;
+    private MenuItem item_voice, item_stop, item_saved, item_cancel_saved;
     private WebView et1;
     private boolean isread = false;
-
+    private Context mContext;
+    private boolean issaved = false;
+    private String news_content = "";  //新闻标题 + 内容
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,6 +106,7 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
         toolbar = (Toolbar) findViewById(R.id.toolbar2);
         setSupportActionBar(toolbar);
 
+        mContext = getApplicationContext();
         et1 = (WebView) findViewById(R.id.textView);//content
         linearLayout = (LinearLayout) findViewById(R.id.linearLayout);
         ThemeManager.registerThemeChangeListener(this);
@@ -113,6 +119,14 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
 //
 //        System.out.println(const_data.getLike().get("app"));
         getText(id);
+
+        SharedPreferences sharedPreferences = getSharedPreferences("saved_news_id_list", Context.MODE_PRIVATE); //私有数据
+        String tmp = sharedPreferences.getString(id,"");
+        if ( !tmp.equals("") ) {
+            issaved = true;
+            this.invalidateOptionsMenu();
+        }
+
         init_model();    //设置夜间or日间模式
     }
 
@@ -320,6 +334,7 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
                     if (data != null) {
                         String myt = data.getNews_Title() + "," + data.getNews_Content();
                         speaker.setText(myt);
+                        news_content = myt;
                         ArrayList<Item1> a = data.getKeywords();
                         for (Item1 i : a){//添加关键词
                             const_data.setLike1(i.word);
@@ -417,6 +432,8 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
         getMenuInflater().inflate(R.menu.toolbar_shownews, menu);
         item_voice = menu.findItem(R.id.voice);
         item_stop = menu.findItem(R.id.stop);
+        item_saved = menu.findItem(R.id.save);
+        item_cancel_saved = menu.findItem(R.id.cancel_save);
         if ( isread )
         {
             item_voice.setVisible(false);
@@ -426,6 +443,16 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
         {
             item_stop.setVisible(false);
             item_voice.setVisible(true);
+        }
+        if ( issaved )
+        {
+            item_saved.setVisible(false);
+            item_cancel_saved.setVisible(true);
+        }
+        else
+        {
+            item_saved.setVisible(true);
+            item_cancel_saved.setVisible(false);
         }
         return super.onCreateOptionsMenu(menu);
     }
@@ -462,6 +489,12 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
             case R.id.share:
                 shareMsg("分享图片和文字", "Share", "img and text", null);
                 return true;
+            case R.id.save:
+                save_news();
+                break;
+            case R.id.cancel_save:
+                del_news();
+                break;
             case R.id.voice:
                 voice_begin();
                 break;
@@ -473,6 +506,48 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
                 break;
         }
         return false;
+    }
+
+    public void save_news(){
+        issaved = true;
+        this.invalidateOptionsMenu();
+        FileHelper fHelper = new FileHelper(mContext);
+        try {
+            //保存文件名和内容
+            fHelper.save(id+".txt", news_content);
+            Toast.makeText(getApplicationContext(), "收藏成功", Toast.LENGTH_SHORT).show();
+        } catch (Exception e) {
+            //写入异常时
+            e.printStackTrace();
+            Toast.makeText(getApplicationContext(), "收藏失败", Toast.LENGTH_SHORT).show();
+        }
+        SharedPreferences sharedPreferences = getSharedPreferences("saved_news_id_list", Context.MODE_PRIVATE); //私有数据
+        SharedPreferences.Editor editor = sharedPreferences.edit();//获取编辑器
+
+        File file = new File(Environment.getExternalStorageDirectory(),
+                id+".txt");
+        System.out.println(file.getAbsolutePath());
+//        //2、读取所有数据
+//        String content = "";
+//        Map<String, ?> allContent = sharedPreferences.getAll();
+//        //注意遍历map的方法
+//        for(Map.Entry<String, ?>  entry : allContent.entrySet()){
+//            content+=(entry.getKey()+entry.getValue());
+//        }
+
+        editor.putString(id, id);
+        editor.commit();//提交修改
+    }
+
+    public void del_news(){
+        issaved = false;
+        this.invalidateOptionsMenu();
+        Toast.makeText(getApplicationContext(), "取消收藏", Toast.LENGTH_SHORT).show();
+        deleteFile(id+".txt");
+        SharedPreferences sharedPreferences = getSharedPreferences("saved_news_id_list", Context.MODE_PRIVATE); //私有数据
+        SharedPreferences.Editor editor = sharedPreferences.edit();//获取编辑器
+        editor.putString(id, "");
+        editor.commit();//提交修改
     }
 
     public void voice_begin(){

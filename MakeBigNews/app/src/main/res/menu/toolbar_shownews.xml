@@ -11,6 +11,12 @@
         android:title="收藏"
         app:showAsAction="never" />
     <item
+        android:id="@+id/cancel_save"
+        android:icon="@android:drawable/ic_menu_save"
+        android:title="取消收藏"
+        android:visible="false"
+        app:showAsAction="never" />
+    <item
         android:id="@+id/voice"
         android:icon="@android:drawable/ic_menu_search"
         android:title="开始朗读"
@@ -19,17 +25,5 @@
         android:id="@+id/stop"
         android:icon="@android:drawable/ic_menu_search"
         android:title="停止朗读"
-        app:showAsAction="never" />
-    <item
-        android:id="@+id/night"
-        android:icon="@android:drawable/ic_menu_save"
-        android:title="夜间模式"
-        android:visible="false"
-        app:showAsAction="never" />
-    <item
-        android:id="@+id/day"
-        android:icon="@android:drawable/ic_menu_save"
-        android:title="日间模式"
-        android:visible="false"
         app:showAsAction="never" />
 </menu>
