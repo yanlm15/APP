@@ -89,8 +89,8 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
     private boolean isDay = const_data.isModel_day();
     private LinearLayout linearLayout;
     private Toolbar toolbar;
-    private TextView textView, textView2;
-    private MenuItem item_voice, item_stop, item_day, item_night;
+    private MenuItem item_voice, item_stop;
+    private WebView et1;
     private boolean isread = false;
 
 
@@ -98,8 +98,13 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show_news);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar2);
+        toolbar = (Toolbar) findViewById(R.id.toolbar2);
         setSupportActionBar(toolbar);
+
+        et1 = (WebView) findViewById(R.id.textView);//content
+        linearLayout = (LinearLayout) findViewById(R.id.linearLayout);
+        ThemeManager.registerThemeChangeListener(this);
+
         first_init(); // 获取当前新闻信息
         //设置输入监控
         //设置更新函数
@@ -235,7 +240,6 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
 
     void  showText()
     {
-        WebView et1 = (WebView) findViewById(R.id.textView);//content
         TextView et2 = (TextView) findViewById(R.id.textView2);
         String ccontext =
                 "<html>"
@@ -413,8 +417,6 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
         getMenuInflater().inflate(R.menu.toolbar_shownews, menu);
         item_voice = menu.findItem(R.id.voice);
         item_stop = menu.findItem(R.id.stop);
-        item_day = menu.findItem(R.id.day);
-        item_night = menu.findItem(R.id.night);
         if ( isread )
         {
             item_voice.setVisible(false);
@@ -424,16 +426,6 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
         {
             item_stop.setVisible(false);
             item_voice.setVisible(true);
-        }
-        if ( isDay )
-        {
-            item_day.setVisible(false);
-            item_night.setVisible(true);
-        }
-        else
-        {
-            item_night.setVisible(false);
-            item_day.setVisible(true);
         }
         return super.onCreateOptionsMenu(menu);
     }
@@ -476,12 +468,6 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
             case R.id.stop:
                 voice_stop();
                 break;
-            case R.id.night:
-                night_model();
-                break;
-            case R.id.day:
-                day_model();
-                break;
             default:
                 Toast.makeText(this, "方法还没定义", Toast.LENGTH_SHORT).show();
                 break;
@@ -501,22 +487,9 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
         this.invalidateOptionsMenu();
     }
 
-    public void night_model(){
-        ThemeManager.setThemeMode(ThemeManager.ThemeMode.NIGHT);
-        isDay = false;
-        this.invalidateOptionsMenu();
-        const_data.setModel_day(isDay);
-    }
-
-    public void day_model(){
-        ThemeManager.setThemeMode(ThemeManager.ThemeMode.DAY);
-        isDay = true;
-        this.invalidateOptionsMenu();
-        const_data.setModel_day(isDay);
-    }
-
     public void init_model() {
         if (!isDay) {
+            ThemeManager.setThemeMode(ThemeManager.ThemeMode.DAY);
             ThemeManager.setThemeMode(ThemeManager.ThemeMode.NIGHT);
             this.invalidateOptionsMenu();
         } else {
@@ -527,9 +500,8 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
     @Override
     public void onThemeChanged() {
         //日间模式下的颜色
-        textView.setTextColor(getResources().getColor(ThemeManager.getCurrentThemeRes(ShowNewsActivity.this, R.color.textColor)));
-        textView2.setTextColor(getResources().getColor(ThemeManager.getCurrentThemeRes(ShowNewsActivity.this, R.color.textColor)));
-        linearLayout.setBackgroundColor(getResources().getColor(ThemeManager.getCurrentThemeRes(ShowNewsActivity.this, R.color.backgroundColor)));
+        et1.setBackgroundColor(getResources().getColor(ThemeManager.getCurrentThemeRes(ShowNewsActivity.this, R.color.naviColor)));
+        linearLayout.setBackgroundColor(getResources().getColor(ThemeManager.getCurrentThemeRes(ShowNewsActivity.this, R.color.naviColor)));
         toolbar.setTitleTextColor(getResources().getColor(ThemeManager.getCurrentThemeRes(ShowNewsActivity.this, R.color.titleColor)));
         toolbar.setBackgroundColor(getResources().getColor(ThemeManager.getCurrentThemeRes(ShowNewsActivity.this, R.color.toolColor)));
     }

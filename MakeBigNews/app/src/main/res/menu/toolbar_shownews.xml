@@ -24,10 +24,12 @@
         android:id="@+id/night"
         android:icon="@android:drawable/ic_menu_save"
         android:title="夜间模式"
+        android:visible="false"
         app:showAsAction="never" />
     <item
         android:id="@+id/day"
         android:icon="@android:drawable/ic_menu_save"
         android:title="日间模式"
+        android:visible="false"
         app:showAsAction="never" />
 </menu>
