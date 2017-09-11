@@ -3,7 +3,6 @@ package com.bignewsmaker.makebignews.basic_class;
 
 import java.util.Comparator;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.TreeMap;
 
 /**
@@ -49,6 +48,22 @@ public class ConstData {
 
     public static final String TAG = "makebignews";
     private HashSet<String> haveRead=new HashSet<String>();
+    private boolean[] istagSelected={true,true,true,true,true,true,true,true,true,true,true,true,true};
+
+    public boolean getIstagSelected(int index) {
+        return istagSelected[index];
+    }
+
+    public void setIstagSelected(int index, boolean isSelected) {
+        istagSelected[index] = isSelected;
+    }
+    public int getTagSize(){
+        int a=0;
+        for(boolean e:istagSelected)
+            if(e)
+                a++;
+        return a;
+    }
 
     public HashSet<String> getHaveRead() {
         return haveRead;

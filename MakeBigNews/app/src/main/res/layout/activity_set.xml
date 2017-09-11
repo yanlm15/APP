@@ -119,6 +119,7 @@
     </android.support.v7.widget.LinearLayoutCompat>
 
     <LinearLayout
+        android:id="@+id/linedeladd"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
@@ -129,22 +130,28 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="0.2"
+            android:layout_weight="1"
             android:padding="12dp"
-            android:text="删除/添加分类列表"
+            android:text="删除/添加新闻类别"
             android:textColor="#363636"
             android:textSize="16dp" />
 
         <ImageView
+            android:id="@+id/deladd"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:src="@mipmap/right" />
+            android:layout_gravity="right"
+            android:src="@mipmap/right"
+            android:layout_marginRight="3dp"
+            android:padding="12dp"
+            />
+
 
 
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/lineclear"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="#FFFFFF"

@@ -30,9 +30,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 public class NewsFragment extends Fragment {
-
+    private static final String TAG = "makebignews";
     private int lastVisibleItem = 0;
-
     private NewsList newsList;
     private int category;
     private LinearLayoutManager mLayoutManager;
@@ -63,6 +62,16 @@ public class NewsFragment extends Fragment {
     }
 
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (!const_data.getDay()) {
+            recyclerView.setBackgroundColor(Color.rgb(66, 66, 66));
+        } else {
+            recyclerView.setBackgroundColor(Color.rgb(255, 255, 255));
+        }
+    }
+
     private NewsAdapter.OnItemClickListener mOnItemClickListener = new NewsAdapter.OnItemClickListener() {
         @Override
         public void onClick(View view, int position) {
@@ -77,16 +86,18 @@ public class NewsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         category = getArguments().getInt("category");
+        int i, temp = 0;
+        for (i = 0; i < 12; i++) {
+            if (const_data.getIstagSelected(i))
+                temp++;
+            if (temp == category + 1)
+                break;
+        }
+        category = i;
         view = inflater.inflate(R.layout.fragment_news, container, false);
         mLayoutManager = new LinearLayoutManager(getActivity());
         recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-
-//        recyclerView.addOnScrollListener(mOnScrollListener);
-        if (!const_data.isModel_day())
-            recyclerView.setBackgroundColor(Color.rgb(66, 66, 66));
-        else
-            recyclerView.setBackgroundColor(Color.rgb(255, 255, 255));
 
         swipeRefresh = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh);
         swipeRefresh.setRefreshing(true);
@@ -108,7 +119,7 @@ public class NewsFragment extends Fragment {
                 super.onScrollStateChanged(recyclerView, newState);
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                     if (adapter.isFadeTips() == false && lastVisibleItem + 1 == adapter.getItemCount()) {
-                       loadMoreNews();
+                        loadMoreNews();
                     }
 
                     if (adapter.isFadeTips() == true && lastVisibleItem + 2 == adapter.getItemCount()) {
@@ -146,7 +157,7 @@ public class NewsFragment extends Fragment {
 
     Handler refresh = new Handler() {
         public void handleMessage(Message msg) {
-            adapter = new NewsAdapter(newsList.getList(), getActivity().getApplicationContext(),true);
+            adapter = new NewsAdapter(newsList.getList(), getActivity().getApplicationContext(), true);
             recyclerView.setLayoutManager(mLayoutManager);
             recyclerView.setAdapter(adapter);
             adapter.setOnItemClickListener(mOnItemClickListener);
@@ -187,7 +198,7 @@ public class NewsFragment extends Fragment {
             HttpURLConnection conn;
             String pageNo = String.valueOf(newsList == null ? 1 : newsList.getPageNo() + 1);
             String url = "http://166.111.68.66:2042/news/action/query/latest?pageNo=" + pageNo +
-                    "&pageSize=" + const_data.getCur_pageSize() + (category == 0 ? "" : "&category=" + category);
+                    "&pageSize=" + const_data.getCur_pageSize() + (category == 0 ? "" : ("&category=" + category));
             URL u = new URL(url);
             conn = (HttpURLConnection) u.openConnection();
             InputStream inputStream = conn.getInputStream();
@@ -216,6 +227,10 @@ public class NewsFragment extends Fragment {
         switch (requestCode) {
             case 2:
                 adapter.notifyDataSetChanged();
+                if(const_data.isSetChanged()){
+                    const_data.setSetChanged(false);
+                    getActivity().recreate();
+                }
         }
 
     }
