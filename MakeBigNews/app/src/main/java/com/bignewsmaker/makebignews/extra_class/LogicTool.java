@@ -39,11 +39,7 @@ public class LogicTool implements SuccessCallBack<NewsList> {
         this.type = type;
     }
 
-//    public static LogicTool getInstance() {
-//        if (cur == null)
-//            cur = new LogicTool();
-//        return cur;
-//    }
+
 
     public NewsList filter_dislike(NewsList old_list)//过滤dislike
     {
