@@ -158,10 +158,13 @@ public class SearchResultActivity extends AppCompatActivity {
             conn.disconnect();
             Gson gson = new Gson();
             newsList = gson.fromJson(s, NewsList.class);
+            System.out.println("><");
         } catch (MalformedURLException e) {
             e.printStackTrace();
+            System.out.println("><");
         } catch (IOException e) {
             e.printStackTrace();
+            System.out.println(":><");
         }
     }
 

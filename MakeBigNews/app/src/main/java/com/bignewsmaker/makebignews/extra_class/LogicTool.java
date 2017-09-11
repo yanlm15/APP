@@ -47,14 +47,21 @@ public class LogicTool {
     public NewsList filter_dislike(NewsList old_list)//过滤dislike
     {
         NewsList new_list = new NewsList();
-        for (String e: ConstData.getInstance().getDislike().keySet())
+//
+        for (News cur:old_list.getList())
         {
-            for (News cur:old_list.getList())
+            boolean flag = true;
+            for (String e: ConstData.getInstance().getDislike().keySet())
             {
-                if (cur.getNews_Intro().contains(e)==false)
+                if (cur.getNews_Intro().contains(e))
                 {
-                    new_list.add_news(cur);
+                    flag =false;
+                    break;
                 }
+            }
+            if (flag =true)
+            {
+                new_list.add_news(cur);
             }
         }
         return new_list;
