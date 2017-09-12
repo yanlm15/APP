@@ -1,6 +1,8 @@
 package com.bignewsmaker.makebignews.basic_class;
 
-public class News {
+import java.io.Serializable;
+
+public class News implements Serializable {
     protected String lang_Type = null;
     protected String newsClassTag = null;
     protected String news_Author = null;

@@ -3,19 +3,19 @@
         <item
             android:id="@+id/nav_home"
             android:icon="@mipmap/home2"
-            android:title="主    页" />
+            android:title="主     页" />
         <item
             android:id="@+id/nav_saved"
             android:icon="@android:drawable/stat_sys_download"
-            android:title="已保存" />
+            android:title="我的收藏" />
         <item
             android:id="@+id/nav_setting"
             android:icon="@android:drawable/ic_menu_manage"
-            android:title="设    置" />
+            android:title="设     置" />
         <item
             android:id="@+id/nav_about"
             android:icon="@android:drawable/ic_menu_info_details"
-            android:title="关    于" />
+            android:title="关     于" />
 
 
 

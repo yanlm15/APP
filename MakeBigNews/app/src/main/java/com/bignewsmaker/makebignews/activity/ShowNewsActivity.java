@@ -38,6 +38,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 
@@ -666,11 +667,34 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
         this.invalidateOptionsMenu();
         Toast.makeText(getApplicationContext(), "收藏成功", Toast.LENGTH_SHORT).show();
 
+        News SavedNews = getNews();
+//        File file = new File(getExternalFilesDir(null)+File.separator+"SavedNews" +File.separator+id);
+        try
+        {
+            FileOutputStream fos = mContext.openFileOutput( id+".txt", Context.MODE_PRIVATE);
+            ObjectOutputStream oos = new ObjectOutputStream(fos);
+            oos.writeObject(SavedNews);
+            oos.flush();
+            oos.close();
+            fos.close();
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+
         SharedPreferences sharedPreferences = getSharedPreferences("saved_news_id_list", Context.MODE_PRIVATE); //私有数据
         SharedPreferences.Editor editor = sharedPreferences.edit();//获取编辑器
-
         editor.putString(id, id);
         editor.commit();//提交修改
+
+        SharedPreferences shared = getSharedPreferences("saved_news_num", Context.MODE_PRIVATE); //私有数据
+        SharedPreferences.Editor e = shared.edit();//获取编辑器
+        int num = shared.getInt("num", 0);
+        num++;
+        e.putInt("num", num);
+        e.commit();//提交修改
+        System.out.println("*****总共收藏了*****"+num+"*****条新闻*****");
     }
 
     public void del_news(){
@@ -681,6 +705,15 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
         SharedPreferences.Editor editor = sharedPreferences.edit();//获取编辑器
         editor.putString(id, "");
         editor.commit();//提交修改
+
+        SharedPreferences shared = getSharedPreferences("saved_news_num", Context.MODE_PRIVATE); //私有数据
+        SharedPreferences.Editor e = shared.edit();//获取编辑器
+        int num = shared.getInt("num", 0);
+        System.out.println("*****在删除之前，总共收藏了*****"+num+"*****条新闻*****");
+        num--;
+        if ( num < 0 ) num = 0;
+        e.putInt("num", num);
+        e.commit();
     }
 
     public void voice_begin(){
