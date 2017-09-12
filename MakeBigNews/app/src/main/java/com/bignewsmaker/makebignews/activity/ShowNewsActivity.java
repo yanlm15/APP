@@ -380,6 +380,7 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
 
     }
 
+
     void  showText()
     {
         TextView et2 = (TextView) findViewById(R.id.textView2);
