@@ -271,6 +271,15 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
         setText();
     }
 
+    String clearExtra(String  str)
+    {
+        String s = str;
+        Pattern p = Pattern.compile("\\[[^\\],\\[]*\\]");
+        Matcher m = p.matcher(s);
+        s=m.replaceAll("");
+        return s;
+    }
+
 
     String setURL(String str,String arm) //关键字超链接
     {
@@ -345,7 +354,8 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
                 s+=strs[i]+"</p><p>";
 //            k++;
         }
-        s+=strs[strs.length-1];
+        if (strs[strs.length-1].contains("下一页") == false)
+            s+=strs[strs.length-1];
         return s;
     }
 
@@ -457,11 +467,17 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
                         context = data.getNews_Content();
 
                         myNews = data;
+                        context = clearExtra(context);
                         context = jump_peo(context);
                         context = setbody(context);
                         context = setEmptyP(context);
                         showText();
 
+//                        System.out.println(myNews.);
+//                        for (String e : myNews.getSeggedPListOfContent())
+//                        {
+//                            System.out.println(e);
+//                        }
                         setText();
                         getContext_rec();//请求关键词
 
