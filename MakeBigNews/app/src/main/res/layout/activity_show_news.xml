@@ -49,6 +49,7 @@
                 android:id="@+id/textView2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textSize="60dp"
                 android:text="Loading..." />
 
             <TextView
@@ -56,21 +57,21 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:clickable="true"
-                android:text="r-1" />
+                android:text="..." />
 
             <TextView
                 android:id="@+id/r_2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:clickable="true"
-                android:text="r-2" />
+                android:text="..." />
 
             <TextView
                 android:id="@+id/r_3"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:clickable="true"
-                android:text="r-3" />
+                android:text="..." />
 
         </LinearLayout>
     </ScrollView>
