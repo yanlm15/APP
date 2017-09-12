@@ -18,11 +18,12 @@ import java.util.regex.Pattern;
 public class InternetPicturetool {
 
     private  final String url = "http://image.baidu.com/search/index?tn=baiduimage&ps=1&ct=201326592&lm=-1&cl=2&nc=1&ie=utf-8&word=";
+//    private  final String url = "https://images.search.yahoo.com/search/images;_ylt=AwrTcXnNQrhZoCsA2rqJzbkF;_ylu=X3oDMTBsZ29xY3ZzBHNlYwNzZWFyY2gEc2xrA2J1dHRvbg--;_ylc=X1MDOTYwNjI4NTcEX3IDMgRhY3RuA2NsawRiY2sDYmNxZHFiNWNyZ2dsdCUyNmIlM0QzJTI2cyUzRDUyBGNzcmNwdmlkAzUxUmw0ekl3Tmk2MmFicFpXYmhDdlFmME1UZ3pMZ0FBQUFEWldsaTUEZnIDeWZwLXQEZnIyA3NhLWdwBGdwcmlkAzhZX3NZNmcuUzJDRzNCTklsWlZFdUEEbXRlc3RpZANudWxsBG5fc3VnZwM0BG9yaWdpbgNpbWFnZXMuc2VhcmNoLnlhaG9vLmNvbQRwb3MDMARwcXN0cgMEcHFzdHJsAwRxc3RybAM4BHF1ZXJ5AKKKBHRfc3RtcAMxNTA1MjQ3OTkxBHZ0ZXN0aWQDbnVsbA--?gprid=8Y_sY6g.S2CG3BNIlZVEuA&pvid=51Rl4zIwNi62abpZWbhCvQf0MTgzLgAAAADZWli5&fr=yfp-t&fr2=sb-top-images.search.yahoo.com&ei=UTF-8&n=60&x=wrt&y=Search&p="
     private  final String ECODING = "UTF-8";
     private  final String IMGURL_REG = "<img.*src=(.*?)[^>]*?>";
     private  final String IMGSRC_REG = "http:\"?(.*?)(\"|>|\\s+)";
     private  String arm="";
-
+    ArrayList<String> result = new ArrayList<String>();
     static InternetPicturetool cur=null;
 
     public static InternetPicturetool getInstance() {
@@ -39,8 +40,12 @@ public class InternetPicturetool {
 
     }
 
-    private String getHTML(String url) throws Exception { //这里为了方便处理
-        URL uri = new URL(url);
+    public ArrayList<String> getResult() {
+        return result;
+    }
+
+    public String getHTML(String str) throws Exception { //这里为了方便处理
+        URL uri = new URL(url + str);
         URLConnection connection = uri.openConnection();
         InputStream in = connection.getInputStream();
         byte[] buf = new byte[1024];
@@ -51,19 +56,30 @@ public class InternetPicturetool {
 //            break;
         }
         in.close();
+//        System.out.println(sb.toString());
+        ArrayList<String > arrayList = getImageUrl(sb.toString());
+        result = arrayList;
+
         return sb.toString();
     }
 
-    private ArrayList<String> getImageUrl(String HTML) {
-        Matcher matcher = Pattern.compile(IMGURL_REG).matcher(HTML);
-        ArrayList<String> listImgUrl = new ArrayList<String>();
-        while (matcher.find()) {
-            listImgUrl.add(matcher.group());
+    public ArrayList<String> getImageUrl(String HTML) {
+
+        ArrayList<String> arrayList = new  ArrayList<String>();
+        Pattern p = Pattern.compile("http://([^;\\s\"\'])*?\\.(jpg|png|jpeg|gif)");
+        Matcher m = p.matcher(HTML);
+//        s=m.replaceAll("</p><p>");
+
+        while (m.find())
+        {
+            arrayList.add(m.group());
         }
-        return listImgUrl;
+
+        return  arrayList;
     }
 
-    private ArrayList<String> getImageSrc(ArrayList<String> listImageUrl) {
+
+    public ArrayList<String> getImageSrc(ArrayList<String> listImageUrl) {
         ArrayList<String> listImgSrc = new ArrayList<String>();
         for (String image : listImageUrl) {
             Matcher matcher = Pattern.compile(IMGSRC_REG).matcher(image);

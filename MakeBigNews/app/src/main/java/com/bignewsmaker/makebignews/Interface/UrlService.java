@@ -13,6 +13,7 @@ public interface UrlService {
 
     //下载图像
 //    @Streaming
+//    @Streaming
     @GET
     Call<ResponseBody> downloadPicFromNet(@Url String fileUrl);
 

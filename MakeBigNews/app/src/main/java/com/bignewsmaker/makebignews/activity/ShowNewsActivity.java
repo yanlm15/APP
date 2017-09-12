@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
@@ -27,6 +28,7 @@ import com.bignewsmaker.makebignews.basic_class.Item2;
 import com.bignewsmaker.makebignews.basic_class.News;
 import com.bignewsmaker.makebignews.basic_class.NewsList;
 import com.bignewsmaker.makebignews.extra_class.FileHelper;
+import com.bignewsmaker.makebignews.extra_class.InternetPicturetool;
 import com.bignewsmaker.makebignews.extra_class.LogicTool;
 import com.bignewsmaker.makebignews.extra_class.RetrofitTool;
 import com.bignewsmaker.makebignews.extra_class.Speaker;
@@ -87,7 +89,10 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
     private NewsList mNewsList = new  NewsList();
     private TextView []m = new  TextView[3];
     private int []place = new int[]{0,1,2};
-
+    private int search_number = 1;
+    private boolean flag = true;
+    private boolean okDownload= true;
+    private int minnumber = 1;
     class MyLogicTool extends LogicTool implements SuccessCallBack<NewsList> {
         @Override
         public void onSuccess(NewsList a) {
@@ -126,6 +131,67 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
         }
     }
 
+
+    class MyTask extends AsyncTask<String, String , String> {
+
+        @Override
+        protected String doInBackground(String... params) {
+            // TODO Auto-generated method stub execute
+            String str=params[0];
+            String jstr = "";
+            try
+            {
+                System.out.println(">as<");
+                jstr= InternetPicturetool.getInstance().getHTML(title);
+
+            }
+            catch (Exception e){
+//                System.out.println(e);
+            }
+
+            return jstr;
+        }
+        @Override
+        protected void onPostExecute(String result) {
+
+            int i = 0;
+            for (String  e: InternetPicturetool.getInstance().getResult())
+            {
+                System.out.println(e);
+            }
+            System.out.println(picture.size());
+
+
+            if (picture.size()==0);
+            {
+                System.out.println("in");
+                for (String  e: InternetPicturetool.getInstance().getResult())
+                {
+                    picture.add(e);
+                    System.out.println(e);
+                    i++;
+
+                    if (i>=minnumber)
+                    {
+                        break;
+                    }
+                }
+                System.out.println(picture.size());
+                context = clearExtra(context);
+                context = jump_peo(context);
+                context = setbody(context);
+                context = setEmptyP(context);
+                context = setP(context,0);
+
+                showText();
+                setText(0);
+
+            }
+
+        }
+
+    }
+
     private News getNews()
     {
 //        return myNews.formNews(myNews);
@@ -150,6 +216,8 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
     private String context_rec;
     private News myNews = new News();
     private ArrayList<String> picture = new ArrayList<String >();
+    private ArrayList<String> safepicture = new ArrayList<String >();
+
     private ArrayList<Bitmap> mybitmap = new ArrayList<Bitmap>();
 
     private boolean isDay = const_data.isModel_day();
@@ -266,8 +334,8 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
             picture.add(m.group());
 
     }
-    public void onSuccess(String str){
-        setText();
+    public void onSuccess(int k){
+        setText(k);
     }
 
     String clearExtra(String  str)
@@ -316,7 +384,12 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
 
     String getPicture_id(int i)
     {
-        String s= "<img src=\"file://"+getDir(i)+gettype(i)+ "\"style=\"max-width:100%;\"/>";
+        System.out.print(okDownload);
+        String s;
+        if (okDownload == true)
+            s= "<img src=\"file://"+getDir(i)+gettype(i)+ "\"style=\"max-width:100%;\"/>";
+        else
+            s= "<img src=\"" + picture.get(i) + "\"style=\"max-width:100%;\"/>";
         return s;
     }
 
@@ -332,13 +405,14 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
     String setP(String str,int num)// 添加图片，图片标号
     {
         String s=str;
+        System.out.println("do _ add");
 
         if(num < picture.size()) {
             Pattern p = Pattern.compile(empty_i(num));
             Matcher m = p.matcher(s);
             s=m.replaceAll(getPicture_id(num));
         }
-
+        System.out.println(str);
         return s;
     }
 
@@ -365,6 +439,7 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
                 && strs[strs.length-1].contains("严禁转载") == false
                )
             s+=strs[strs.length-1];
+        System.out.println(s);
         return s;
     }
 
@@ -398,18 +473,29 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
 
     }
 
-    public void setText(){
-        int i = 0;
-        for (String e:picture)
+    public void setText(int k){
+        int i = k;
+        for (int j=k;j<picture.size();j++)
         {
             File file =  new File(getDir(i)+gettype(i));
+            String e = picture.get(j);
             if (const_data.getShow_picture() == true){
+                System.out.println(e);
                 if (file.exists()) {
                     //图文混排
-                    context = setP(context,i);
+                    okDownload = true;
+                    safepicture.add(e);
+
+                    context = setP(context,safepicture.size()-1);
                     showText();
                 }
                 else {
+                    if (picture.size()==1)
+                    {
+                        okDownload = false;
+                        context = setP(context,i);
+
+                    }
                     showText();
                     getpicture(e,i);//请求图片，请求成功后会再次调用setText进入true
                     return;//避免 图片请求被多次调用
@@ -424,7 +510,7 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
     {
         UrlService service = RetrofitTool.getInstance().getRetrofit().create(UrlService.class);
         Call<ResponseBody> urepos = service.downloadPicFromNet(url);
-
+        System.out.println("load");
         urepos.enqueue(new Callback<ResponseBody>() {
 
             @Override
@@ -433,9 +519,13 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
                 {
                     writeResponseBodyToDisk(response.body(), i);
                     File file = new File(getDir(i));
-
-                    onSuccess(">>");
+                    System.out.println("okLoad : "+url);
+                    onSuccess(0);
                 }else {
+                    System.out.println("fLoad"+ i +":"+url);
+                    okDownload = false;
+                    setP(context,i);
+                    onSuccess(i+1);
                 }
             }
 
@@ -475,15 +565,26 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
 
                         title =  data.getNews_Title();
                         context = data.getNews_Content();
+                        context = "</p><p>"+context;
 
                         myNews = data;
-                        context = clearExtra(context);
-                        context = jump_peo(context);
-                        context = setbody(context);
-                        context = setEmptyP(context);
-                        showText();
 
-                        setText();
+                        System.out.println(picture.size()+"here");
+                        if(picture.size()>minnumber)
+                        {
+                            context = clearExtra(context);
+                            context = jump_peo(context);
+                            context = setbody(context);
+                            context = setEmptyP(context);
+                            showText();
+                            setText(0);
+                        }
+                        else
+                        {
+                            okDownload = false;
+                            MyTask task = new MyTask();
+                            task.execute(title);
+                        }
                         getContext_rec();//请求关键词
 
 
