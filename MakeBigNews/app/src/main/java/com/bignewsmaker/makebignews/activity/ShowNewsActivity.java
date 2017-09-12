@@ -58,25 +58,24 @@ import retrofit2.Response;
  * --举个例子
  * |-你可以将当前选中的news存到const_data，然后在新的activity中直接调用const_data
  * |-当然你可以参考https://www.2cto.com/kf/201311/256174.html 对比其他的方法
- *
- *
+ * <p>
+ * <p>
  * 图片获取方法 处理函数通过getpicture()请求，成功后再回调处理函数
  * 其中处理函数 需要添加判断是否本地有存储 如果有则倒入本地资源
  * 类似的思想可以应用到离线离线新闻列表中
  * 每次打开app就判读 a这个文件是否为空，是调用网络响应反馈加载，否则将文本a的数据写到界面，
  * 触发更新函数后就等待网络响应，获取新的新闻，关闭然后将最后一次获取的新闻写到a
  * 以上就是离线列表的实现思路
- *
+ * <p>
  * 设置信息储存，当然要是实现永久性，将信息写到一个文件里，然后开机的时候倒入
  * getExternalFilesDir(null)获取外部存储目录
- *
+ * <p>
  * 然后这里是Lgictool 的使用方法：采用了范型接口，新定义一个类继承 Logictool（自己也继承了SuccessCallBack）
  * 然后继承 SuccessCallBack<T>
- *      就可以在不同的activity下使用搜索（既然主页的搜索实现了，那我就不添加继续加载了），筛选，请求等功能
- *      这个例子提供的接口是搜索后的回调接口，其中a是搜索返回的结果
- *      其实你们的收藏和下载也可以用类似的方法实现，以应对不同的activity的不同需求
+ * 就可以在不同的activity下使用搜索（既然主页的搜索实现了，那我就不添加继续加载了），筛选，请求等功能
+ * 这个例子提供的接口是搜索后的回调接口，其中a是搜索返回的结果
+ * 其实你们的收藏和下载也可以用类似的方法实现，以应对不同的activity的不同需求
  */
-
 
 
 public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.OnThemeChangeListener {
@@ -84,9 +83,9 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
     private ConstData const_data = ConstData.getInstance();// 设置访问全局变量接口
     private Speaker speaker = Speaker.getInstance();// 设置语音系统接口
     private RetrofitTool retrofitTool = RetrofitTool.getInstance();
-    private NewsList mNewsList = new  NewsList();
-    private TextView []m = new  TextView[3];
-    private int []place = new int[]{0,1,2};
+    private NewsList mNewsList = new NewsList();
+    private TextView[] m = new TextView[3];
+    private int[] place = new int[]{0, 1, 2};
 
     class MyLogicTool extends LogicTool implements SuccessCallBack<NewsList> {
         @Override
@@ -95,53 +94,51 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
             System.out.println(MyLogicTool.class);
             int i = 0;
 
-            m[0] = (TextView)findViewById(R.id.r_1);
-            m[1] = (TextView)findViewById(R.id.r_2);
-            m[2] = (TextView)findViewById(R.id.r_3);
-            for (int k =0; k<a.getList().size();k++) {
+            m[0] = (TextView) findViewById(R.id.r_1);
+            m[1] = (TextView) findViewById(R.id.r_2);
+            m[2] = (TextView) findViewById(R.id.r_3);
+            for (int k = 0; k < a.getList().size(); k++) {
                 News e = a.getList().get(k);
 
-                boolean flag =true;
+                boolean flag = true;
 
-                if (title .equals(e.getNews_Title()) ) {
+                if (title.equals(e.getNews_Title())) {
                     flag = false;
                 }
 
-                for (int j = 0;j<k;j++) {
-                    if (a.getList().get(j).getNews_ID().equals( e.getNews_ID()) ) {
+                for (int j = 0; j < k; j++) {
+                    if (a.getList().get(j).getNews_ID().equals(e.getNews_ID())) {
                         flag = false;
                         break;
                     }
                 }
 
-                if(flag == true) {
-                    m[i].setText("\n"+e.getNews_Title()+"\n");
-                    place[i]= k;
+                if (flag == true) {
+                    m[i].setText("\n" + e.getNews_Title() + "\n");
+                    place[i] = k;
                     i++;
                 }
-                if (i>2)
+                if (i > 2)
                     break;
 
             }
         }
     }
 
-    private News getNews()
-    {
+    private News getNews() {
 //        return myNews.formNews(myNews);
         return myNews;
     }
+
     private MyLogicTool myLogicTool = new MyLogicTool();
 
-    public void setContext_rec()
-    {
+    public void setContext_rec() {
         getContext_rec();
     }
 
-    public void getContext_rec()
-    {
-        System.out.println( ">>>" + myNews.getNews_Title());
-        myLogicTool.recommend_by_tytle(myNews.getNews_Title(),3);
+    public void getContext_rec() {
+        System.out.println(">>>" + myNews.getNews_Title());
+        myLogicTool.recommend_by_tytle(myNews.getNews_Title(), 3);
     }
 
     private String id;
@@ -149,7 +146,7 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
     private String context;
     private String context_rec;
     private News myNews = new News();
-    private ArrayList<String> picture = new ArrayList<String >();
+    private ArrayList<String> picture = new ArrayList<String>();
     private ArrayList<Bitmap> mybitmap = new ArrayList<Bitmap>();
 
     private boolean isDay = const_data.isModel_day();
@@ -179,72 +176,67 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
         first_init(); // 获取当前新闻信息
         //设置输入监控
         //设置更新函数
-        System.out.println(">:"+id);
+        System.out.println(">:" + id);
 
         getText(id);
-        TextView t = (TextView)findViewById(R.id.r_1);
+        TextView t = (TextView) findViewById(R.id.r_1);
         t.setOnClickListener(new android.view.View.OnClickListener() {
             @Override
             public void onClick(View arg0) {
 
-                if (arg0.getContext().equals("") == false)
-                {
+                if (arg0.getContext().equals("") == false) {
                     const_data.setCur_ID(mNewsList.getList().get(place[0]).getNews_ID());
-                    Intent intent=new Intent(ShowNewsActivity.this,ShowNewsActivity.class);// 新建一个界面
+                    Intent intent = new Intent(ShowNewsActivity.this, ShowNewsActivity.class);// 新建一个界面
                     startActivity(intent);
                 }
             }
         });
-        TextView t1 = (TextView)findViewById(R.id.r_2);
+        TextView t1 = (TextView) findViewById(R.id.r_2);
         t1.setOnClickListener(new android.view.View.OnClickListener() {
             @Override
             public void onClick(View arg0) {
 
-                if (arg0.getContext().equals("") == false)
-                {
+                if (arg0.getContext().equals("") == false) {
                     const_data.setCur_ID(mNewsList.getList().get(place[1]).getNews_ID());
-                    Intent intent=new Intent(ShowNewsActivity.this,ShowNewsActivity.class);// 新建一个界面
+                    Intent intent = new Intent(ShowNewsActivity.this, ShowNewsActivity.class);// 新建一个界面
                     startActivity(intent);
                 }
             }
         });
-        TextView t2 = (TextView)findViewById(R.id.r_3);
+        TextView t2 = (TextView) findViewById(R.id.r_3);
         t2.setOnClickListener(new android.view.View.OnClickListener() {
             @Override
             public void onClick(View arg0) {
 
-                if (arg0.getContext().equals("") == false)
-                {
+                if (arg0.getContext().equals("") == false) {
                     const_data.setCur_ID(mNewsList.getList().get(place[2]).getNews_ID());
-                    Intent intent=new Intent(ShowNewsActivity.this,ShowNewsActivity.class);// 新建一个界面
+                    Intent intent = new Intent(ShowNewsActivity.this, ShowNewsActivity.class);// 新建一个界面
                     startActivity(intent);
                 }
             }
         });
 
 
-
         SharedPreferences sharedPreferences = getSharedPreferences("saved_news_id_list", Context.MODE_PRIVATE); //私有数据
-        String tmp = sharedPreferences.getString(id,"");
-        if ( !tmp.equals("") ) {
+        String tmp = sharedPreferences.getString(id, "");
+        if (!tmp.equals("")) {
             issaved = true;
             this.invalidateOptionsMenu();
         }
 
         init_model();    //设置夜间or日间模式
+
     }
 
-    public String  getDir(int number)
-    {
+    public String getDir(int number) {
         String mynumber = String.valueOf(number);
 
-        File f = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES)+File.separator+id);
-        if (f.exists()==false)
-        {
+        File f = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES) + File.separator + id);
+        if (f.exists() == false) {
             f.mkdir();
         }
 
-        return (getExternalFilesDir(null)+File.separator+"Pictures" +File.separator+id+File.separator+mynumber );
+        return (getExternalFilesDir(null) + File.separator + "Pictures" + File.separator + id + File.separator + mynumber);
 
     }
 
@@ -252,119 +244,109 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
         this.id = id;
     }
 
-    private void first_init()
-    {
+    private void first_init() {
         setNews(const_data.getCur_ID());
     }
 
-    private void picture_init(String str){//获取所有图片
+    private void picture_init(String str) {//获取所有图片
         String s = str;
         System.out.println(str);
         Pattern p = Pattern.compile("http://([^;\\s])*?\\.(jpg|png|jpeg|gif)");
         Matcher m = p.matcher(s);
-        while( m.find())
+        while (m.find())
             picture.add(m.group());
 
     }
-    public void onSuccess(String str){
+
+    public void onSuccess(String str) {
         setText();
     }
 
-    String clearExtra(String  str)
-    {
+    String clearExtra(String str) {
         String s = str;
         Pattern p = Pattern.compile("\\[[^\\],\\[]*\\]");
         Matcher m = p.matcher(s);
-        s=m.replaceAll("");
+        s = m.replaceAll("");
 
         p = Pattern.compile("\\|[^\\|]*\\|");
         m = p.matcher(s);
-        s=m.replaceAll("");
+        s = m.replaceAll("");
 
         p = Pattern.compile("相关新闻");
         m = p.matcher(s);
-        s=m.replaceAll("</p><p>");
+        s = m.replaceAll("</p><p>");
         return s;
     }
 
 
-    String setURL(String str,String arm) //关键字超链接
+    String setURL(String str, String arm) //关键字超链接
     {
         String s = str;
         Pattern p = Pattern.compile(arm);
         Matcher m = p.matcher(s);
-        s=m.replaceAll("<a href="+"\"https://baike.baidu.com/item/"+arm+"\"target=\"_blank\">"+arm+"</a>");
+        s = m.replaceAll("<a href=" + "\"https://baike.baidu.com/item/" + arm + "\"target=\"_blank\">" + arm + "</a>");
         return s;
     }
 
-    String jump_peo (String str)
-    {
+    String jump_peo(String str) {
         String s = str;
-        for (Item2 e : myNews.getPersons() )
-        {
-            s = setURL(s,e.word);
+        for (Item2 e : myNews.getPersons()) {
+            s = setURL(s, e.word);
         }
-        return  s;
+        return s;
     }
 
-    String empty_i(int i)
-    {
-        String s ="<img src=\"file://"+"/android_res/drawable/t.jpg\""+ "alt=\""+String.valueOf(i)+"\" " + "/>";
+    String empty_i(int i) {
+        String s = "<img src=\"file://" + "/android_res/drawable/t.jpg\"" + "alt=\"" + String.valueOf(i) + "\" " + "/>";
 
         return s;
     }
 
-    String getPicture_id(int i)
-    {
-        String s= "<img src=\"file://"+getDir(i)+gettype(i)+ "\"style=\"max-width:100%;\"/>";
+    String getPicture_id(int i) {
+        String s = "<img src=\"file://" + getDir(i) + gettype(i) + "\"style=\"max-width:100%;\"/>";
         return s;
     }
 
-    String setbody(String str)
-    {
+    String setbody(String str) {
         String s = str;
         Pattern p = Pattern.compile("\\s{2,1000}");
         Matcher m = p.matcher(s);
-        s=m.replaceAll("</p><p>");
+        s = m.replaceAll("</p><p>");
         return s;
     }
 
-    String setP(String str,int num)// 添加图片，图片标号
+    String setP(String str, int num)// 添加图片，图片标号
     {
-        String s=str;
+        String s = str;
 
-        if(num < picture.size()) {
+        if (num < picture.size()) {
             Pattern p = Pattern.compile(empty_i(num));
             Matcher m = p.matcher(s);
-            s=m.replaceAll(getPicture_id(num));
+            s = m.replaceAll(getPicture_id(num));
         }
 
         return s;
     }
 
-    String setEmptyP(String str)
-    {
-        String s =str;
+    String setEmptyP(String str) {
+        String s = str;
         String[] strs = s.split("</p><p>");
         s = "";
-        double asd = strs.length *1.0 / picture.size();
-        int k = 0 ;
-        System.out.println("---------->"+asd+"f:"+strs.length+"p:"+picture.size());
-        for (int i=0 ; (i < strs.length-1)  ;i++)
-        {
-            if(k<picture.size() && k*asd<=i)
-            {
-                s+=strs[i]+"</p>"+ empty_i(k) +"<p>";
+        double asd = strs.length * 1.0 / picture.size();
+        int k = 0;
+        System.out.println("---------->" + asd + "f:" + strs.length + "p:" + picture.size());
+        for (int i = 0; (i < strs.length - 1); i++) {
+            if (k < picture.size() && k * asd <= i) {
+                s += strs[i] + "</p>" + empty_i(k) + "<p>";
                 k++;
-            }
-            else
-                s+=strs[i]+"</p><p>";
+            } else
+                s += strs[i] + "</p><p>";
 //            k++;
         }
-        if (strs[strs.length-1].contains("下一页") == false
-                && strs[strs.length-1].contains("严禁转载") == false
-               )
-            s+=strs[strs.length-1];
+        if (strs[strs.length - 1].contains("下一页") == false
+                && strs[strs.length - 1].contains("严禁转载") == false
+                )
+            s += strs[strs.length - 1];
         return s;
     }
 
@@ -374,44 +356,41 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
         Pattern p = Pattern.compile("(jpg|png|jpeg|gif)");
         Matcher m = p.matcher(s);
         m.find();
-        return "."+m.group();
+        return "." + m.group();
 
     }
 
 
-    void  showText()
-    {
+    void showText() {
         TextView et2 = (TextView) findViewById(R.id.textView2);
         String ccontext =
                 "<html>"
-                        +"<body>"
-                        +"<h1 align=\"center\">"+title+ "</h1>" //标题
-                        +"<hr style=\"height:1px;border:none;border-top:1px dashed #555555;\" />"//分割线
-                        +"<p>"+ context+"</p>"//正文处理
-                        +"<hr style=\"height:1px;border:none;border-top:1px dashed #555555;\" />"//分割线
+                        + "<body>"
+                        + "<h1 align=\"center\">" + title + "</h1>" //标题
+                        + "<hr style=\"height:1px;border:none;border-top:1px dashed #555555;\" />"//分割线
+                        + "<p>" + context + "</p>"//正文处理
+                        + "<hr style=\"height:1px;border:none;border-top:1px dashed #555555;\" />"//分割线
 //                        +"<p>"+ context_rec+"</p>"//单页的推荐
-                        +"</body>"
-                        +"</html>";
+                        + "</body>"
+                        + "</html>";
 
         et1.loadDataWithBaseURL("", ccontext, "text/html", "utf-8", null);
         et2.setText("");
 
     }
 
-    public void setText(){
+    public void setText() {
         int i = 0;
-        for (String e:picture)
-        {
-            File file =  new File(getDir(i)+gettype(i));
-            if (const_data.getShow_picture() == true){
+        for (String e : picture) {
+            File file = new File(getDir(i) + gettype(i));
+            if (const_data.getShow_picture() == true) {
                 if (file.exists()) {
                     //图文混排
-                    context = setP(context,i);
+                    context = setP(context, i);
                     showText();
-                }
-                else {
+                } else {
                     showText();
-                    getpicture(e,i);//请求图片，请求成功后会再次调用setText进入true
+                    getpicture(e, i);//请求图片，请求成功后会再次调用setText进入true
                     return;//避免 图片请求被多次调用
                 }
             }
@@ -420,7 +399,7 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
         showText();
     }//请求结束后设置显示格式
 
-    public void getpicture(final String url,final int i)//请求图片
+    public void getpicture(final String url, final int i)//请求图片
     {
         UrlService service = RetrofitTool.getInstance().getRetrofit().create(UrlService.class);
         Call<ResponseBody> urepos = service.downloadPicFromNet(url);
@@ -429,13 +408,12 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
 
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response.isSuccessful())
-                {
+                if (response.isSuccessful()) {
                     writeResponseBodyToDisk(response.body(), i);
                     File file = new File(getDir(i));
 
                     onSuccess(">>");
-                }else {
+                } else {
                 }
             }
 
@@ -448,72 +426,102 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
     public void getText(String id)//请求文本
     {
 
-        NewsService service = retrofitTool.getRetrofit().create(NewsService.class);
+        if (const_data.getHaveRead().contains(id)) {
+            News data2 = const_data.getHaveReadNews().get(id);
+            String myt = data2.getNews_Title() + "," + data2.getNews_Content();
+            speaker.setText(myt);
+            news_content = myt;
+            ArrayList<Item1> a = data2.getKeywords();
+            for (Item1 i : a) {//添加关键词
+                const_data.setLike1(i.word);
+                const_data.setLike(i.word);
+            }
 
-        Call<News> repos = service.listRepos(id);
+            picture_init(data2.getNews_Pictures());
+            System.out.println(data2.getNews_Pictures());
 
-        repos.enqueue(new Callback<News>() {
-            @Override
-            public void onResponse(Call<News> call, Response<News> response) {
+            title = data2.getNews_Title();
+            context = data2.getNews_Content();
 
-                if (response.isSuccessful()) {
-                    System.out.println("news-success");
-                    News data = new News();
-                    data = response.body();
-                    if (data != null) {
-                        String myt = data.getNews_Title() + "," + data.getNews_Content();
-                        speaker.setText(myt);
-                        news_content = myt;
-                        ArrayList<Item1> a = data.getKeywords();
-                        for (Item1 i : a){//添加关键词
-                            const_data.setLike1(i.word);
-                            const_data.setLike(i.word);
+            myNews = data2;
+            context = clearExtra(context);
+            context = jump_peo(context);
+            context = setbody(context);
+            context = setEmptyP(context);
+            showText();
+
+            setText();
+            getContext_rec();//请求关键词
+
+        } else {
+            NewsService service = retrofitTool.getRetrofit().create(NewsService.class);
+
+            Call<News> repos = service.listRepos(id);
+
+            repos.enqueue(new Callback<News>() {
+                @Override
+                public void onResponse(Call<News> call, Response<News> response) {
+
+                    if (response.isSuccessful()) {
+                        System.out.println("news-success");
+                        News data = new News();
+                        data = response.body();
+                        if (data != null) {
+                            const_data.addHaveRead(data);
+                            String myt = data.getNews_Title() + "," + data.getNews_Content();
+                            speaker.setText(myt);
+                            news_content = myt;
+                            ArrayList<Item1> a = data.getKeywords();
+                            for (Item1 i : a) {//添加关键词
+                                const_data.setLike1(i.word);
+                                const_data.setLike(i.word);
+                            }
+
+                            picture_init(data.getNews_Pictures());
+                            System.out.println(data.getNews_Pictures());
+
+                            title = data.getNews_Title();
+                            context = data.getNews_Content();
+
+                            myNews = data;
+                            context = clearExtra(context);
+                            context = jump_peo(context);
+                            context = setbody(context);
+                            context = setEmptyP(context);
+                            showText();
+
+                            setText();
+                            getContext_rec();//请求关键词
+
+
                         }
-
-                        picture_init(data.getNews_Pictures());
-                        System.out.println(data.getNews_Pictures());
-
-                        title =  data.getNews_Title();
-                        context = data.getNews_Content();
-
-                        myNews = data;
-                        context = clearExtra(context);
-                        context = jump_peo(context);
-                        context = setbody(context);
-                        context = setEmptyP(context);
-                        showText();
-
-                        setText();
-                        getContext_rec();//请求关键词
-
-
+                    } else {
                     }
-                } else {
+
                 }
 
-            }
+                @Override
+                public void onFailure(Call<News> call, Throwable t) {
+                    t.printStackTrace();
 
-            @Override
-            public void onFailure(Call<News> call, Throwable t) {
-                t.printStackTrace();
+                }
+            });
+        }
 
-            }
-        });
     }
 
-    private boolean writeResponseBodyToDisk(ResponseBody body,int i)//图片缓存-写到文件里
+    private boolean writeResponseBodyToDisk(ResponseBody body, int i)//图片缓存-写到文件里
     {
 
-        try{
+        try {
 //            BitmapFactory.Options options = new BitmapFactory.Options();
 //            options.inPreferredConfig = Bitmap.Config.RGB_565;//质量压缩;
-            File futureStudioIconFile = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES) +File.separator+id);
-            if (futureStudioIconFile.exists()==false)
-            {
+            File futureStudioIconFile = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES) + File.separator + id);
+            if (futureStudioIconFile.exists() == false) {
                 futureStudioIconFile.mkdir();
             }
 
-            futureStudioIconFile = new File(getDir(i)+gettype(i));
+            futureStudioIconFile = new File(getDir(i) + gettype(i));
             InputStream inputStream = null;
             OutputStream outputStream = null;
 
@@ -525,15 +533,14 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
 
                 inputStream = body.byteStream();
                 outputStream = new FileOutputStream(futureStudioIconFile);
-                while (true)
-                {
+                while (true) {
                     int read = inputStream.read(fileReader);
 
-                    if (read == -1){
+                    if (read == -1) {
                         break;
                     }
 
-                    outputStream.write(fileReader,0,read);
+                    outputStream.write(fileReader, 0, read);
 
                     fileSizeDownloaded += read;
 
@@ -541,20 +548,20 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
                 outputStream.flush();
                 return true;
 
-            }catch (Exception e)
-            {
+            } catch (Exception e) {
 
                 return false;
-            }finally {
-                if (inputStream != null){
+            } finally {
+                if (inputStream != null) {
                     inputStream.close();
                 }
 
-                if (outputStream != null){
+                if (outputStream != null) {
                     outputStream.close();
                 }
-            }}catch (IOException e){
-            return  false;
+            }
+        } catch (IOException e) {
+            return false;
         }
 
     }
@@ -568,58 +575,48 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
         item_cancel_saved = menu.findItem(R.id.cancel_save);
         item_download = menu.findItem(R.id.download);
         item_delete = menu.findItem(R.id.delete);
-        if ( isread )
-        {
+        if (isread) {
             item_voice.setVisible(false);
             item_stop.setVisible(true);
-        }
-        else
-        {
+        } else {
             item_stop.setVisible(false);
             item_voice.setVisible(true);
         }
-        if ( issaved )
-        {
+        if (issaved) {
             item_saved.setVisible(false);
             item_cancel_saved.setVisible(true);
-        }
-        else
-        {
+        } else {
             item_saved.setVisible(true);
             item_cancel_saved.setVisible(false);
         }
-        if ( isdownload )
-        {
+        if (isdownload) {
             item_download.setVisible(false);
             item_delete.setVisible(true);
-        }
-        else
-        {
+        } else {
             item_delete.setVisible(false);
             item_download.setVisible(true);
         }
         return super.onCreateOptionsMenu(menu);
     }
 
-    public void shareMsg(String activityTitle, String msgTitle, String msgText, String imgPath ){
+    public void shareMsg(String activityTitle, String msgTitle, String msgText, String imgPath) {
         Intent intent = new Intent(Intent.ACTION_SEND);
-        if ( imgPath == null || imgPath.equals("")){
+        if (imgPath == null || imgPath.equals("")) {
             intent.setType("text/plain");
-            intent.putExtra(Intent.EXTRA_SUBJECT,msgTitle);
-            intent.putExtra(Intent.EXTRA_TEXT,msgText);
+            intent.putExtra(Intent.EXTRA_SUBJECT, msgTitle);
+            intent.putExtra(Intent.EXTRA_TEXT, msgText);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(Intent.createChooser(intent, activityTitle));
-        }
-        else{
+        } else {
             File f = new File(imgPath);
-            if( f != null && f.exists() && f.isFile() ){
+            if (f != null && f.exists() && f.isFile()) {
                 intent.setType("text/plain");
-                intent.putExtra(Intent.EXTRA_TEXT,msgText);
+                intent.putExtra(Intent.EXTRA_TEXT, msgText);
                 intent.setType("image/*");
                 Uri u = Uri.fromFile(f);
                 intent.putExtra(Intent.EXTRA_STREAM, u);
 
-                intent.putExtra(Intent.EXTRA_SUBJECT,msgTitle);
+                intent.putExtra(Intent.EXTRA_SUBJECT, msgTitle);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(Intent.createChooser(intent, activityTitle));
             }
@@ -645,7 +642,7 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
                 download();
                 break;
             case R.id.delete:
-                deleteFile(id+".txt");
+                deleteFile(id + ".txt");
                 isdownload = false;
                 this.invalidateOptionsMenu();
                 Toast.makeText(getApplicationContext(), "删除成功", Toast.LENGTH_SHORT).show();
@@ -663,13 +660,13 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
         return false;
     }
 
-    public void download(){
+    public void download() {
         isdownload = true;
         this.invalidateOptionsMenu();
         FileHelper fHelper = new FileHelper(mContext);
         try {
             //保存文件名和内容
-            fHelper.save(id+".txt", news_content);
+            fHelper.save(id + ".txt", news_content);
             Toast.makeText(getApplicationContext(), "下载成功", Toast.LENGTH_SHORT).show();
         } catch (Exception e) {
             //写入异常时
@@ -677,28 +674,25 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
             Toast.makeText(getApplicationContext(), "下载失败", Toast.LENGTH_SHORT).show();
         }
         File file = new File(Environment.getExternalStorageDirectory(),
-                id+".txt");
+                id + ".txt");
         System.out.println(file.getAbsolutePath());
     }
 
-    public void save_news(){
+    public void save_news() {
         issaved = true;
         this.invalidateOptionsMenu();
         Toast.makeText(getApplicationContext(), "收藏成功", Toast.LENGTH_SHORT).show();
 
         News SavedNews = getNews();
 //        File file = new File(getExternalFilesDir(null)+File.separator+"SavedNews" +File.separator+id);
-        try
-        {
-            FileOutputStream fos = mContext.openFileOutput( id+".txt", Context.MODE_PRIVATE);
+        try {
+            FileOutputStream fos = mContext.openFileOutput(id + ".txt", Context.MODE_PRIVATE);
             ObjectOutputStream oos = new ObjectOutputStream(fos);
             oos.writeObject(SavedNews);
             oos.flush();
             oos.close();
             fos.close();
-        }
-        catch (IOException e)
-        {
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
@@ -713,10 +707,10 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
         num++;
         e.putInt("num", num);
         e.commit();//提交修改
-        System.out.println("*****总共收藏了*****"+num+"*****条新闻*****");
+        System.out.println("*****总共收藏了*****" + num + "*****条新闻*****");
     }
 
-    public void del_news(){
+    public void del_news() {
         issaved = false;
         this.invalidateOptionsMenu();
         Toast.makeText(getApplicationContext(), "取消收藏", Toast.LENGTH_SHORT).show();
@@ -728,20 +722,21 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
         SharedPreferences shared = getSharedPreferences("saved_news_num", Context.MODE_PRIVATE); //私有数据
         SharedPreferences.Editor e = shared.edit();//获取编辑器
         int num = shared.getInt("num", 0);
-        System.out.println("*****在删除之前，总共收藏了*****"+num+"*****条新闻*****");
+        System.out.println("*****在删除之前，总共收藏了*****" + num + "*****条新闻*****");
         num--;
-        if ( num < 0 ) num = 0;
+        if (num < 0) num = 0;
         e.putInt("num", num);
         e.commit();
     }
 
-    public void voice_begin(){
+    public void voice_begin() {
         speaker.setCur(this);
         speaker.start();
         isread = true;
         this.invalidateOptionsMenu();
     }
-    public void voice_stop(){
+
+    public void voice_stop() {
         speaker.stop();
         isread = false;
         this.invalidateOptionsMenu();
@@ -757,6 +752,7 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
             this.invalidateOptionsMenu();
         }
     }
+
     @Override
     public void onThemeChanged() {
         //日间模式下的颜色
