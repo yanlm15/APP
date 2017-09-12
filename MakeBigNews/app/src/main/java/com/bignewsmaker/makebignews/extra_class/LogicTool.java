@@ -10,6 +10,10 @@ import com.bignewsmaker.makebignews.basic_class.ConstData;
 import com.bignewsmaker.makebignews.basic_class.News;
 import com.bignewsmaker.makebignews.basic_class.NewsList;
 
+import java.util.Map;
+import java.util.StringTokenizer;
+import java.util.TreeMap;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -96,7 +100,8 @@ public class LogicTool implements SuccessCallBack<NewsList> {
     {
         SearchService service = retrofitTool.getRetrofit().create(SearchService.class);
 
-        Call<NewsList> repos = service.listRepos(str);
+        Map<String,Integer> map = new TreeMap<String,Integer>();
+        Call<NewsList> repos = service.listReposbymap(str,map);
 
         repos.enqueue(new Callback<NewsList>() {
             @Override
