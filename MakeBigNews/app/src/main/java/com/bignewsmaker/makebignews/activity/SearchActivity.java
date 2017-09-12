@@ -13,6 +13,9 @@ import com.bignewsmaker.makebignews.basic_class.NewsList;
 import com.bignewsmaker.makebignews.extra_class.RetrofitTool;
 import com.bignewsmaker.makebignews.extra_class.Speaker;
 
+import java.util.Map;
+import java.util.TreeMap;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -70,8 +73,8 @@ public class SearchActivity  extends AppCompatActivity {
     private void callData(String str)
     {
         SearchService service = retrofitTool.getRetrofit().create(SearchService.class);
-
-        Call<NewsList> repos = service.listRepos(str);
+        Map<String ,Integer> m = new TreeMap<String, Integer>() ;
+        Call<NewsList> repos = service.listReposbymap(str,m);
 
         repos.enqueue(new Callback<NewsList>() {
             @Override

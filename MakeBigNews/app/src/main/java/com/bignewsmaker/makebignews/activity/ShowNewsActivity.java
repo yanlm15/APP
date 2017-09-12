@@ -4,16 +4,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.Html;
-import android.text.method.LinkMovementMethod;
-import android.text.style.ClickableSpan;
-import android.util.Log;
+
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -44,9 +40,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.TreeSet;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -54,8 +48,6 @@ import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-
-import static android.support.v7.appcompat.R.styleable.View;
 
 /**
  * Created by liminyan on 06/09/2017.
@@ -95,10 +87,10 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
     private Speaker speaker = Speaker.getInstance();// 设置语音系统接口
     private RetrofitTool retrofitTool = RetrofitTool.getInstance();
     private NewsList mNewsList = new  NewsList();
-    TextView []m = new  TextView[3];
+    private TextView []m = new  TextView[3];
+    private int []place = new int[]{0,1,2};
 
-    class MyLogicTool extends LogicTool implements SuccessCallBack<NewsList>
-    {
+    class MyLogicTool extends LogicTool implements SuccessCallBack<NewsList> {
         @Override
         public void onSuccess(NewsList a) {
             mNewsList = a;
@@ -108,24 +100,39 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
             m[0] = (TextView)findViewById(R.id.r_1);
             m[1] = (TextView)findViewById(R.id.r_2);
             m[2] = (TextView)findViewById(R.id.r_3);
-            for (News e : a.getList())
-            {
-                System.out.println(e.getNews_Title());
-                System.out.println(e.getNews_Intro());
-                if(e.getNews_Title().endsWith(title) == false)
-                {
+            for (int k =0; k<a.getList().size();k++) {
+                News e = a.getList().get(k);
+
+                boolean flag =true;
+
+                if (title .equals(e.getNews_Title()) ) {
+                    flag = false;
+                }
+
+                for (int j = 0;j<k;j++) {
+                    if (a.getList().get(j).getNews_ID().equals( e.getNews_ID()) ) {
+                        flag = false;
+                        break;
+                    }
+                }
+
+                if(flag == true) {
                     m[i].setText("\n"+e.getNews_Title()+"\n");
+                    place[i]= k;
                     i++;
                 }
                 if (i>2)
                     break;
 
             }
-
         }
     }
 
-    MyLogicTool myLogicTool = new MyLogicTool();
+    private News getNews()
+    {
+        return myNews.formNews(myNews);
+    }
+    private MyLogicTool myLogicTool = new MyLogicTool();
 
     public void setContext_rec()
     {
@@ -171,10 +178,6 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
         first_init(); // 获取当前新闻信息
         //设置输入监控
         //设置更新函数
-//        const_data.setLike("app");
-//        System.out.println("app");
-//
-//        System.out.println(const_data.getLike().get("app"));
         getText(id);
         TextView t = (TextView)findViewById(R.id.r_1);
         t.setOnClickListener(new android.view.View.OnClickListener() {
@@ -183,7 +186,7 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
 
                 if (arg0.getContext().equals("") == false)
                 {
-                    const_data.setCur_ID(mNewsList.getList().get(0).getNews_ID());
+                    const_data.setCur_ID(mNewsList.getList().get(place[0]).getNews_ID());
                     Intent intent=new Intent(ShowNewsActivity.this,ShowNewsActivity.class);// 新建一个界面
                     startActivity(intent);
                 }
@@ -196,7 +199,7 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
 
                 if (arg0.getContext().equals("") == false)
                 {
-                    const_data.setCur_ID(mNewsList.getList().get(0).getNews_ID());
+                    const_data.setCur_ID(mNewsList.getList().get(place[1]).getNews_ID());
                     Intent intent=new Intent(ShowNewsActivity.this,ShowNewsActivity.class);// 新建一个界面
                     startActivity(intent);
                 }
@@ -209,7 +212,7 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
 
                 if (arg0.getContext().equals("") == false)
                 {
-                    const_data.setCur_ID(mNewsList.getList().get(0).getNews_ID());
+                    const_data.setCur_ID(mNewsList.getList().get(place[2]).getNews_ID());
                     Intent intent=new Intent(ShowNewsActivity.this,ShowNewsActivity.class);// 新建一个界面
                     startActivity(intent);
                 }
@@ -370,8 +373,6 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
         et2.setText("");
 
     }
-
-
 
     public void setText(){
         int i = 0;

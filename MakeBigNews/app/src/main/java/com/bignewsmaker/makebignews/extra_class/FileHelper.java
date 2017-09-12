@@ -23,7 +23,7 @@ public class FileHelper {
     }
     /*
     * 定义文件保存的方法，写入到文件中，所以是输出流
-    * */
+    */
     public void save(String name, String content) throws Exception {
         //Context.MODE_PRIVATE权限，只有自身程序才能访问，而且写入的内容会覆盖文本内原有内容
         FileOutputStream output = mContext.openFileOutput(name, Context.MODE_PRIVATE);

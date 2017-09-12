@@ -15,20 +15,20 @@ public class MyNews{
 //    String crawl_Source;
 //    String crawl_Time;
 //    String inborn_KeyWords;
-//    String lang_Type;
+    public String lang_Type;
 //    List<item2> locations;
-//    String newsClassTag;
-//    String news_Author;
+    String newsClassTag;
+   public   String news_Author;
 //    String news_Category;
    public String news_Content;
-//    String news_ID;
+    String news_ID;
 //    String news_Journal;
    public String news_Pictures;
-//    String news_Source;
+   public String news_Source;
    public String news_Time;
    public String news_Title = "1";
-//    String news_URL;
-//    String news_Video;
+    String news_URL;
+    String news_Video;
 //    List<item2> organizations;
     public ArrayList<Item2> persons;
     public String repeat_ID;
@@ -37,6 +37,24 @@ public class MyNews{
 //    String wordCountOfContent;
 //    String  wordCountOfTitle;
 
+
+    public News formNews(MyNews a)
+    {
+        News b = new News();
+        b.setLang_Type(a.lang_Type);
+        b.setNews_Author(a.news_Author);
+        b.setNews_ID(a.news_ID);
+        b.setNews_Intro(a.news_Content.substring(0,20)+"...");
+        b.setNews_Pictures(a.news_Pictures);
+        b.setNews_Source(a.news_Source);
+        b.setNews_Time(a.news_Time);
+        b.setNews_Title(a.news_Title);
+        b.setNews_URL(a.news_URL);
+        b.setNews_Video(a.news_Video);
+        b.setNewsClassTag(a.newsClassTag);
+        b.setRead(true);
+        return  b;
+    }
 
     public ArrayList<String> getSeggedPListOfContent() {
         return seggedPListOfContent;
