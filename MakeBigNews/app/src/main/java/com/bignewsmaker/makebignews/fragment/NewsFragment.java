@@ -5,8 +5,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -17,20 +15,21 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.bignewsmaker.makebignews.Interface.NetService;
 import com.bignewsmaker.makebignews.R;
 import com.bignewsmaker.makebignews.activity.ShowNewsActivity;
 import com.bignewsmaker.makebignews.adapter.NewsAdapter;
 import com.bignewsmaker.makebignews.basic_class.ConstData;
 import com.bignewsmaker.makebignews.basic_class.NewsList;
+import com.bignewsmaker.makebignews.extra_class.RetrofitTool;
 import com.bignewsmaker.makebignews.extra_class.Speaker;
-import com.google.gson.Gson;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class NewsFragment extends Fragment {
     private static final String TAG = "makebignews";
@@ -44,6 +43,7 @@ public class NewsFragment extends Fragment {
     private View view;
     private ConstData const_data = ConstData.getInstance();// 设置访问全局变量接口
     private Speaker speaker = Speaker.getInstance();// 设置语音系统接口
+    private RetrofitTool retrofitTool = RetrofitTool.getInstance();//设置接收器
 
     public NewsFragment() {
         // Required empty public constructor
@@ -53,7 +53,6 @@ public class NewsFragment extends Fragment {
     public static NewsFragment newInstance(int category) {
         Bundle bundle = new Bundle();
         bundle.putInt("category", category);
-
         NewsFragment fragment = new NewsFragment();
         fragment.setArguments(bundle);
         return fragment;
@@ -63,7 +62,6 @@ public class NewsFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
-
 
     @Override
     public void onResume() {
@@ -120,7 +118,7 @@ public class NewsFragment extends Fragment {
                     swipeRefresh.setRefreshing(false);
                     return;
                 }
-                refreshNews();
+                loadNews(true);
             }
         });
         if (!checkNetworkState()) {
@@ -128,7 +126,7 @@ public class NewsFragment extends Fragment {
                 Toast.makeText(getActivity(), "未联网，无法加载", Toast.LENGTH_SHORT).show();
             swipeRefresh.setRefreshing(false);
         } else
-            refreshNews();
+            loadNews(true);
 
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -143,9 +141,8 @@ public class NewsFragment extends Fragment {
                             adapter.notifyDataSetChanged();
                             return;
                         }
-                        loadMoreNews();
+                        loadNews(false);
                     }
-
                 }
             }
 
@@ -155,89 +152,62 @@ public class NewsFragment extends Fragment {
                 lastVisibleItem = mLayoutManager.findLastVisibleItemPosition();
             }
         });
-
         return view;
     }
 
-    private void refreshNews() {
-        new Thread(new Runnable() {
+    private void loadNews(final boolean isRefresh ) {
+        NetService service = retrofitTool.getRetrofit().create(NetService.class);
+        Map<String, String> url = new HashMap<String, String>() {{
+            put("pageNo", String.valueOf(newsList == null ? 1 : newsList.getPageNo() + 1));
+            put("pageSize", const_data.getCur_pageSize());
+            if(category!=0)
+            put("category",String.valueOf(category));
+
+        }};
+        Call<NewsList> repos = service.listReposbymap("latest", url);
+        repos.enqueue(new Callback<NewsList>() {
             @Override
-            public void run() {
-                try {
-                    Thread.sleep(150);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+            public void onResponse(Call<NewsList> call, Response<NewsList> response) {
+                if (response.isSuccessful()) {
+                    newsList = response.body();
+                    if(isRefresh)
+                        refreshNews();
+                    else
+                        loadMoreNews();
                 }
-                loadNews();
-                Message msg = new Message();
-                refresh.sendMessage(msg);
             }
-        }).start();
+
+            @Override
+            public void onFailure(Call<NewsList> call, Throwable t) {
+                t.printStackTrace();
+            }
+        });
     }
 
-    Handler refresh = new Handler() {
-        public void handleMessage(Message msg) {
-            adapter = new NewsAdapter((newsList == null ? null : newsList.getList()), getActivity().getApplicationContext(), true);
-            recyclerView.setLayoutManager(mLayoutManager);
-            recyclerView.setAdapter(adapter);
-            adapter.setOnItemClickListener(mOnItemClickListener);
-            swipeRefresh.setRefreshing(false);
-        }
-    };
+    private void refreshNews(){
+        adapter = new NewsAdapter((newsList == null ? null : newsList.getList()), getActivity().getApplicationContext(), true);
+        recyclerView.setLayoutManager(mLayoutManager);
+        recyclerView.setAdapter(adapter);
+        adapter.setOnItemClickListener(mOnItemClickListener);
+        swipeRefresh.setRefreshing(false);
+    }
 
     private void loadMoreNews() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                loadNews();
-                Message msg = new Message();
-                loadmore.sendMessage(msg);
+        if (newsList == null || newsList.getList().size() == 0) {
+            adapter.setHasMore(false);
+            adapter.setFadeTips(true);
+        } else {
+            if (newsList.getList().size() < Integer.parseInt(const_data.getCur_pageSize())) {
+                adapter.setHasMore(false);
+                adapter.setFadeTips(true);
             }
-        }).start();
+            adapter.add(newsList.getList());
+        }
+        adapter.notifyDataSetChanged();
     }
 
 
-    Handler loadmore = new Handler() {
-        public void handleMessage(Message msg) {
-            if (newsList != null)
-                adapter.add(newsList.getList());
-            adapter.notifyDataSetChanged();
-        }
-    };
 
-    private void loadNews() {
-        String s = "";
-        try {
-            HttpURLConnection conn;
-            String pageNo = String.valueOf(newsList == null ? 1 : newsList.getPageNo() + 1);
-            String url = "http://166.111.68.66:2042/news/action/query/latest?pageNo=" + pageNo +
-                    "&pageSize=" + const_data.getCur_pageSize() + (category == 0 ? "" : ("&category=" + category));
-            URL u = new URL(url);
-            conn = (HttpURLConnection) u.openConnection();
-            InputStream inputStream = conn.getInputStream();
-            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-            byte[] buffer = new byte[1024];
-            int len = -1;
-            while ((len = inputStream.read(buffer)) != -1)
-                outputStream.write(buffer, 0, len);
-            byte[] data = outputStream.toByteArray();
-            s += new String(data, "utf-8");
-            outputStream.close();
-            inputStream.close();
-            conn.disconnect();
-            Gson gson = new Gson();
-            newsList = gson.fromJson(s, NewsList.class);
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {

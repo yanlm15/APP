@@ -1,4 +1,3 @@
-/*
 package com.bignewsmaker.makebignews.activity;
 
 import android.content.Intent;
@@ -6,23 +5,14 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.SearchView;
 
-import com.bignewsmaker.makebignews.Interface.NetService;
-import com.bignewsmaker.makebignews.basic_class.ConstData;
 import com.bignewsmaker.makebignews.R;
+import com.bignewsmaker.makebignews.basic_class.ConstData;
 import com.bignewsmaker.makebignews.basic_class.News;
 import com.bignewsmaker.makebignews.basic_class.NewsList;
 import com.bignewsmaker.makebignews.extra_class.RetrofitTool;
 import com.bignewsmaker.makebignews.extra_class.Speaker;
 
-import java.util.Map;
-import java.util.TreeMap;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-
-
-*/
 /**
  * Created by liminyan on 06/09/2017.
  * 搜索界面
@@ -30,8 +20,7 @@ import retrofit2.Response;
  * 请求的结果我放在了const—data的searchresult里面
  * 你直接用就行
  *
- *//*
-
+ */
 
 public class SearchActivity  extends AppCompatActivity {
 
@@ -57,7 +46,7 @@ public class SearchActivity  extends AppCompatActivity {
                 {
                     const_data.setSearch_message(query);
                     System.out.println(query);
-                    callData(query);
+//                    callData(query);
                     return true;
                 }
             }
@@ -73,7 +62,7 @@ public class SearchActivity  extends AppCompatActivity {
         //设置更新函数
     }
 
-    private void callData(String str)
+    /*private void callData(String str)
     {
         NetService service = retrofitTool.getRetrofit().create(NetService.class);
         Map<String ,Integer> m = new TreeMap<String, Integer>() ;
@@ -103,7 +92,7 @@ public class SearchActivity  extends AppCompatActivity {
 
             }
         });
-    }
+    }*/
 
     private void reCall(NewsList a){
         const_data.setSearch_result(a);
@@ -114,4 +103,4 @@ public class SearchActivity  extends AppCompatActivity {
         Intent intent=new Intent(SearchActivity.this,SearchResultActivity.class);// 新建一个界面
         startActivity(intent);//跳转界面
     }
-}*/
+}

@@ -3,8 +3,6 @@ package com.bignewsmaker.makebignews.activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -38,7 +36,6 @@ import static com.bignewsmaker.makebignews.activity.MainActivity.setStatusBarCol
 
 public class SearchResultActivity extends AppCompatActivity {
     private static final String TAG = "makebignews";
-    private String totalrecords;
     private int lastVisibleItem = 0;
     private Toolbar toolbar;
     private LinearLayoutManager mLayoutManager;
@@ -67,19 +64,15 @@ public class SearchResultActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setAdapter(adapter);
         adapter.setOnItemClickListener(mOnItemClickListener);
-        loadMoreNews();
+        loadNews(true);
 
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-
-                    if (adapter.isFadeTips() == false && lastVisibleItem + 1 == adapter.getItemCount()) {
-                        loadMoreNews();
-
-                    }
-
+                    if (adapter.isFadeTips() == false && lastVisibleItem + 1 == adapter.getItemCount())
+                        loadNews(false);
                 }
             }
 
@@ -102,105 +95,43 @@ public class SearchResultActivity extends AppCompatActivity {
         }
     };
 
-    private void loadMoreNews() {
-       /* new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-//                loadNews();
-//                Message msg = new Message();
-//                loadmore.sendMessage(msg);
-            }
-        }).start();*/
-        loadNews();
-//        Message msg = new Message();
-//        loadmore.sendMessage(msg);
-    }
-
-
-    Handler loadmore = new Handler() {
-        public void handleMessage(Message msg) {
-//            if (newsList == null || newsList.getList().size() == 0) {
-//                adapter.setHasMore(false);
-//                adapter.setFadeTips(true);
-//            } else {
-                if (newsList.getList().size() < Integer.parseInt(const_data.getCur_pageSize())) {
-                    adapter.setHasMore(false);
-                    adapter.setFadeTips(true);
-                }
-                adapter.add(newsList.getList());
-//            }
-            adapter.notifyDataSetChanged();
-            getSupportActionBar().setTitle("搜索结果(共" + totalrecords + "条新闻）");
-        }
-    };
-
-
-    private void loadNews() {
+    private void loadNews(final boolean isFirst) {
         NetService service = retrofitTool.getRetrofit().create(NetService.class);
         Map<String, String> url = new HashMap<String, String>() {{
             put("keyword", keyword);
             put("pageNo", String.valueOf(newsList == null ? 1 : newsList.getPageNo() + 1));
-            put("pageSize",const_data.getCur_pageSize());
+            put("pageSize", const_data.getCur_pageSize());
         }};
-        Call<NewsList> repos = service.listReposbymap("search",url);
+        Call<NewsList> repos = service.listReposbymap("search", url);
         repos.enqueue(new Callback<NewsList>() {
             @Override
             public void onResponse(Call<NewsList> call, Response<NewsList> response) {
                 if (response.isSuccessful()) {
                     newsList = response.body();
-                    adapter.add(newsList.getList());
-                    adapter.notifyDataSetChanged();
-                    totalrecords=String.valueOf(newsList.getTotalRecords());
-                    getSupportActionBar().setTitle("搜索结果(共" + totalrecords + "条新闻）");
+                    if (isFirst)
+                        getSupportActionBar().setTitle("搜索结果(共" + newsList.getTotalRecords() + "条新闻）");
+                    loadMoreNews();
                 }
             }
 
             @Override
             public void onFailure(Call<NewsList> call, Throwable t) {
-
+                t.printStackTrace();
             }
         });
-
-        totalrecords=String.valueOf(newsList.getTotalRecords());
-
-        /*String s = "";
-        try {
-            HttpURLConnection conn;
-            String pageNo = String.valueOf(newsList == null ? 1 : newsList.getPageNo() + 1);
-            //http://166.111.68.66:2042/news/action/query/search?keyword=%E6%9D%AD%E5%B7%9E&pageNo=1&pageSize=10
-            String url = "http://166.111.68.66:2042/news/action/query/search?keyword=" + keyword + "&pageNo=" + pageNo +
-                    "&pageSize=" + const_data.getCur_pageSize();
-            URL u = new URL(url);
-            conn = (HttpURLConnection) u.openConnection();
-            InputStream inputStream = conn.getInputStream();
-            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-            byte[] buffer = new byte[1024];
-            int len = -1;
-            while ((len = inputStream.read(buffer)) != -1)
-                outputStream.write(buffer, 0, len);
-            byte[] data = outputStream.toByteArray();
-            s += new String(data, "utf-8");
-            outputStream.close();
-            inputStream.close();
-            conn.disconnect();
-            Gson gson = new Gson();
-            newsList = gson.fromJson(s, NewsList.class);
-            totalrecords=String.valueOf(newsList.getTotalRecords());
-            System.out.println("><");
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-            System.out.println("><");
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.out.println(":><");
-        }*/
-
-
     }
 
+    private void loadMoreNews() {
+        if (newsList == null || newsList.getList().size() == 0) {
+            adapter.setHasMore(false);
+            adapter.setFadeTips(true);
+        } else {
+            if (newsList.getList().size() < Integer.parseInt(const_data.getCur_pageSize())) {
+                adapter.setHasMore(false);
+                adapter.setFadeTips(true);
+            }
+            adapter.add(newsList.getList());
+        }
+        adapter.notifyDataSetChanged();
+    }
 }
