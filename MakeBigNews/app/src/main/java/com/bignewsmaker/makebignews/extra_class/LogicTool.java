@@ -7,6 +7,7 @@ import com.bignewsmaker.makebignews.basic_class.News;
 import com.bignewsmaker.makebignews.basic_class.NewsList;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
 import retrofit2.Call;
@@ -24,11 +25,16 @@ import retrofit2.Response;
 
 public class LogicTool implements SuccessCallBack<NewsList> {
 
-    protected ConstData const_data = ConstData.getCur();
+    private ConstData const_data = ConstData.getInstance();// 设置访问全局变量接口
     protected RetrofitTool retrofitTool = RetrofitTool.getInstance();
     protected int const_number = 3;
     protected String type ="";
-    static LogicTool cur;
+    private static LogicTool cur;
+    public static LogicTool getInstance(){
+        if (cur == null)
+            cur = new LogicTool();
+        return cur;
+    }
 
     public void setConst_number(int const_number) {
         this.const_number = const_number;
@@ -40,26 +46,31 @@ public class LogicTool implements SuccessCallBack<NewsList> {
 
 
 
-    public static NewsList filter_dislike(NewsList old_list)//过滤dislike
+    public NewsList filter_dislike(NewsList old_list)//过滤dislike
     {
         NewsList new_list = new NewsList();
-//
+        HashSet<String> filtered=const_data.getFiltered();
         for (News cur:old_list.getList())
         {
             boolean flag = true;
             for (String e: ConstData.getInstance().getDislike().keySet())
             {
-                if (cur.getNews_Intro().contains(e))
+                if (cur.getNews_Intro().contains(e)||cur.getNews_Title().contains(e))
                 {
                     flag =false;
                     break;
                 }
             }
-            if (flag =true)
+            if(filtered.contains(cur.getNews_ID()))
+                flag=false;
+            if (flag ==true)
             {
                 new_list.add_news(cur);
             }
         }
+        new_list.setPageNo(old_list.getPageNo());
+        new_list.setPageSize(old_list.getPageSize());
+        new_list.setTotalPages(old_list.getTotalPages());
         return new_list;
     }
 

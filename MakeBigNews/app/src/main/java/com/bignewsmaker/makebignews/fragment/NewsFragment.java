@@ -43,6 +43,7 @@ public class NewsFragment extends Fragment {
     private NewsAdapter adapter;
     private View view;
     private ConstData const_data = ConstData.getInstance();// 设置访问全局变量接口
+    private LogicTool logic_tool=LogicTool.getInstance();
     private Speaker speaker = Speaker.getInstance();// 设置语音系统接口
     private RetrofitTool retrofitTool = RetrofitTool.getInstance();//设置接收器
 
@@ -169,7 +170,7 @@ public class NewsFragment extends Fragment {
             @Override
             public void onResponse(Call<NewsList> call, Response<NewsList> response) {
                 if (response.isSuccessful()) {
-                    newsList = LogicTool.filter_dislike(response.body());
+                    newsList = logic_tool.filter_dislike(response.body());
                     if (isRefresh)
                         refreshNews();
                     else

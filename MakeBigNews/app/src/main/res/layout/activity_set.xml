@@ -7,7 +7,7 @@
     android:background="#EDEDED"
     android:orientation="vertical"
 
-    tools:context="com.bignewsmaker.makebignews.activity.SearchActivity">
+    tools:context="com.bignewsmaker.makebignews.activity.SetActivity">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/fanhui"

@@ -26,6 +26,16 @@ public class ConstData {
     private NewsList cur_news = null ;// 当前新闻列表
     private News cur_list = null ;// 当前选中新闻
     private NewsList search_result = null ;// 当前的搜索结果
+
+    public HashSet<String> getFiltered() {
+        return filtered;
+    }
+
+    public void addFiltered(String filtering) {
+       filtered.add(filtering);
+    }
+
+    private HashSet<String> filtered=new HashSet<>();
     private static ConstData cur;
     private TreeMap<String,Integer> like1 = new TreeMap<String, Integer>();
     private TreeMap<String,Integer> like = new TreeMap<String, Integer>(new Comparator<String>() {
@@ -128,10 +138,6 @@ public class ConstData {
 
     public String getCur_ID() {
         return cur_ID;
-    }
-
-    public static ConstData getCur() {
-        return cur;
     }
 
     public void setSearch_message(String search_message) {

@@ -113,6 +113,8 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             public void onClick(View view) {
                 final int position = holder.getAdapterPosition();
                 final News news = mNewsList.get(position);
+                const_data.addFiltered(news.getNews_ID());
+
                 mNewsList.remove(position);
                 notifyDataSetChanged();
 //                Toast.makeText(context, "已屏蔽新闻\""+news.getNews_Title()+"\"", Toast.LENGTH_SHORT).show();
@@ -128,7 +130,6 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                             for (int i = 0; i < keywords.length; i++)
                                 keywords[i] = item1.get(i).word;
                             addToDislike(keywords,news,position);
-
                         }
                     }
 

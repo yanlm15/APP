@@ -37,13 +37,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.SearchActivity" />
         <activity
             android:name=".activity.SetActivity"
             android:parentActivityName=".activity.MainActivity" />
-        <activity android:name=".activity.ShareActivity" />
         <activity android:name=".activity.ShowNewsActivity" />
-        <activity android:name=".activity.ShowSharedListActivity" />
         <activity android:name=".activity.SearchResultActivity" />
         <activity android:name=".activity.SavedActivity" />
         <activity android:name=".activity.AboutActivity">
