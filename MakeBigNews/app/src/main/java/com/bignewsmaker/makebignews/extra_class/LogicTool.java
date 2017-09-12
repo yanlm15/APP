@@ -1,18 +1,13 @@
 package com.bignewsmaker.makebignews.extra_class;
 
-import android.content.Intent;
-
-import com.bignewsmaker.makebignews.Interface.SearchService;
+import com.bignewsmaker.makebignews.Interface.NetService;
 import com.bignewsmaker.makebignews.Interface.SuccessCallBack;
-import com.bignewsmaker.makebignews.activity.SearchActivity;
-import com.bignewsmaker.makebignews.activity.SearchResultActivity;
 import com.bignewsmaker.makebignews.basic_class.ConstData;
 import com.bignewsmaker.makebignews.basic_class.News;
 import com.bignewsmaker.makebignews.basic_class.NewsList;
 
+import java.util.HashMap;
 import java.util.Map;
-import java.util.StringTokenizer;
-import java.util.TreeMap;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -96,12 +91,14 @@ public class LogicTool implements SuccessCallBack<NewsList> {
 
     }
 
-    protected void callData(String str)
+    protected void callData(final String str)
     {
-        SearchService service = retrofitTool.getRetrofit().create(SearchService.class);
+        NetService service = retrofitTool.getRetrofit().create(NetService.class);
 
-        Map<String,Integer> map = new TreeMap<String,Integer>();
-        Call<NewsList> repos = service.listReposbymap(str,map);
+        Map<String, String> url = new HashMap<String, String>() {{
+            put("keyword", str);
+        }};
+        Call<NewsList> repos = service.listReposbymap("search",url);
 
         repos.enqueue(new Callback<NewsList>() {
             @Override

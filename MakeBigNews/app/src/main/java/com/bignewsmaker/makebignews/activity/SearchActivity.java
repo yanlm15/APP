@@ -1,3 +1,4 @@
+/*
 package com.bignewsmaker.makebignews.activity;
 
 import android.content.Intent;
@@ -5,7 +6,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.SearchView;
 
-import com.bignewsmaker.makebignews.Interface.SearchService;
+import com.bignewsmaker.makebignews.Interface.NetService;
 import com.bignewsmaker.makebignews.basic_class.ConstData;
 import com.bignewsmaker.makebignews.R;
 import com.bignewsmaker.makebignews.basic_class.News;
@@ -21,6 +22,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 
+*/
 /**
  * Created by liminyan on 06/09/2017.
  * 搜索界面
@@ -28,7 +30,8 @@ import retrofit2.Response;
  * 请求的结果我放在了const—data的searchresult里面
  * 你直接用就行
  *
- */
+ *//*
+
 
 public class SearchActivity  extends AppCompatActivity {
 
@@ -72,7 +75,7 @@ public class SearchActivity  extends AppCompatActivity {
 
     private void callData(String str)
     {
-        SearchService service = retrofitTool.getRetrofit().create(SearchService.class);
+        NetService service = retrofitTool.getRetrofit().create(NetService.class);
         Map<String ,Integer> m = new TreeMap<String, Integer>() ;
         Call<NewsList> repos = service.listReposbymap(str,m);
 
@@ -111,4 +114,4 @@ public class SearchActivity  extends AppCompatActivity {
         Intent intent=new Intent(SearchActivity.this,SearchResultActivity.class);// 新建一个界面
         startActivity(intent);//跳转界面
     }
-}
+}*/

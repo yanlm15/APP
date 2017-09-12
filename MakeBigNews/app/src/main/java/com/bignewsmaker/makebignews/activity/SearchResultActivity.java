@@ -12,19 +12,20 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
+import com.bignewsmaker.makebignews.Interface.NetService;
 import com.bignewsmaker.makebignews.R;
 import com.bignewsmaker.makebignews.adapter.NewsAdapter;
 import com.bignewsmaker.makebignews.basic_class.ConstData;
 import com.bignewsmaker.makebignews.basic_class.NewsList;
+import com.bignewsmaker.makebignews.extra_class.RetrofitTool;
 import com.bignewsmaker.makebignews.extra_class.Speaker;
-import com.google.gson.Gson;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import static com.bignewsmaker.makebignews.activity.MainActivity.setStatusBarColor;
 
@@ -47,6 +48,7 @@ public class SearchResultActivity extends AppCompatActivity {
     private ConstData const_data = ConstData.getInstance();// 设置访问全局变量接口
     private Speaker speaker = Speaker.getInstance();// 设置语音系统接口
     private String keyword = const_data.getSearch_message();
+    private RetrofitTool retrofitTool = RetrofitTool.getInstance();//设置接收器
 
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,7 +56,6 @@ public class SearchResultActivity extends AppCompatActivity {
         setContentView(R.layout.activity_search_result);
         setStatusBarColor(SearchResultActivity.this, Color.parseColor("#303F9F"));
         toolbar = (Toolbar) findViewById(R.id.toolbar3);
-        toolbar.setTitle("搜索结果");
         setSupportActionBar(toolbar);
 
         newsList = new NewsList();
@@ -102,7 +103,7 @@ public class SearchResultActivity extends AppCompatActivity {
     };
 
     private void loadMoreNews() {
-        new Thread(new Runnable() {
+       /* new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
@@ -110,34 +111,64 @@ public class SearchResultActivity extends AppCompatActivity {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                loadNews();
-                Message msg = new Message();
-                loadmore.sendMessage(msg);
+//                loadNews();
+//                Message msg = new Message();
+//                loadmore.sendMessage(msg);
             }
-        }).start();
+        }).start();*/
+        loadNews();
+//        Message msg = new Message();
+//        loadmore.sendMessage(msg);
     }
 
 
     Handler loadmore = new Handler() {
         public void handleMessage(Message msg) {
-            if (newsList == null || newsList.getList().size() == 0) {
-                adapter.setHasMore(false);
-                adapter.setFadeTips(true);
-            } else {
+//            if (newsList == null || newsList.getList().size() == 0) {
+//                adapter.setHasMore(false);
+//                adapter.setFadeTips(true);
+//            } else {
                 if (newsList.getList().size() < Integer.parseInt(const_data.getCur_pageSize())) {
                     adapter.setHasMore(false);
                     adapter.setFadeTips(true);
                 }
                 adapter.add(newsList.getList());
-            }
+//            }
             adapter.notifyDataSetChanged();
-            getSupportActionBar().setTitle("搜索结果(共"+totalrecords+"条新闻）");
+            getSupportActionBar().setTitle("搜索结果(共" + totalrecords + "条新闻）");
         }
     };
 
 
     private void loadNews() {
-        String s = "";
+        NetService service = retrofitTool.getRetrofit().create(NetService.class);
+        Map<String, String> url = new HashMap<String, String>() {{
+            put("keyword", keyword);
+            put("pageNo", String.valueOf(newsList == null ? 1 : newsList.getPageNo() + 1));
+            put("pageSize",const_data.getCur_pageSize());
+        }};
+        Call<NewsList> repos = service.listReposbymap("search",url);
+        repos.enqueue(new Callback<NewsList>() {
+            @Override
+            public void onResponse(Call<NewsList> call, Response<NewsList> response) {
+                if (response.isSuccessful()) {
+                    newsList = response.body();
+                    adapter.add(newsList.getList());
+                    adapter.notifyDataSetChanged();
+                    totalrecords=String.valueOf(newsList.getTotalRecords());
+                    getSupportActionBar().setTitle("搜索结果(共" + totalrecords + "条新闻）");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<NewsList> call, Throwable t) {
+
+            }
+        });
+
+        totalrecords=String.valueOf(newsList.getTotalRecords());
+
+        /*String s = "";
         try {
             HttpURLConnection conn;
             String pageNo = String.valueOf(newsList == null ? 1 : newsList.getPageNo() + 1);
@@ -167,7 +198,9 @@ public class SearchResultActivity extends AppCompatActivity {
         } catch (IOException e) {
             e.printStackTrace();
             System.out.println(":><");
-        }
+        }*/
+
+
     }
 
 }
