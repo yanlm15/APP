@@ -22,8 +22,8 @@ import com.bignewsmaker.makebignews.extra_class.RetrofitTool;
 import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -35,7 +35,7 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private boolean hasMore = true;   // 变量，是否有更多数据
     private boolean fadeTips = false; // 变量，是否隐藏了底部的提示
     private RetrofitTool retrofitTool = RetrofitTool.getInstance();//设置接收器
-    private HashSet<String> hs;
+    private Set<String> hs;
     private OnItemClickListener onItemClickListener;
     private ConstData const_data = ConstData.getInstance();// 设置访问全局变量接口
     private List<News> mNewsList;
@@ -241,8 +241,8 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         }
     }
 
-    public String getId(int position) {
-        return mNewsList.get(position).getNews_ID();
+    public News getNews(int position) {
+        return mNewsList.get(position);
     }
 
     private void addToDislike(final String[] keywords,final News news, final int position) {
