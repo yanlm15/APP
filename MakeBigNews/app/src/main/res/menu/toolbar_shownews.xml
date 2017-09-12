@@ -11,6 +11,17 @@
         android:title="收藏"
         app:showAsAction="never" />
     <item
+        android:id="@+id/download"
+        android:icon="@android:drawable/ic_menu_save"
+        android:title="下载"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/delete"
+        android:icon="@android:drawable/ic_menu_save"
+        android:title="删除"
+        android:visible="false"
+        app:showAsAction="never" />
+    <item
         android:id="@+id/cancel_save"
         android:icon="@android:drawable/ic_menu_save"
         android:title="取消收藏"
