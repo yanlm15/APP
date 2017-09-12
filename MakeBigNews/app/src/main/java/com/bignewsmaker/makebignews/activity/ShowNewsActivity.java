@@ -278,6 +278,14 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
         Pattern p = Pattern.compile("\\[[^\\],\\[]*\\]");
         Matcher m = p.matcher(s);
         s=m.replaceAll("");
+
+        p = Pattern.compile("\\|[^\\|]*\\|");
+        m = p.matcher(s);
+        s=m.replaceAll("");
+
+        p = Pattern.compile("相关新闻");
+        m = p.matcher(s);
+        s=m.replaceAll("</p><p>");
         return s;
     }
 
@@ -355,7 +363,9 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
                 s+=strs[i]+"</p><p>";
 //            k++;
         }
-        if (strs[strs.length-1].contains("下一页") == false)
+        if (strs[strs.length-1].contains("下一页") == false
+                && strs[strs.length-1].contains("严禁转载") == false
+               )
             s+=strs[strs.length-1];
         return s;
     }
@@ -474,18 +484,12 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
                         context = setEmptyP(context);
                         showText();
 
-//                        System.out.println(myNews.);
-//                        for (String e : myNews.getSeggedPListOfContent())
-//                        {
-//                            System.out.println(e);
-//                        }
                         setText();
                         getContext_rec();//请求关键词
 
 
                     }
                 } else {
-                    System.out.println("fuck");
                 }
 
             }
