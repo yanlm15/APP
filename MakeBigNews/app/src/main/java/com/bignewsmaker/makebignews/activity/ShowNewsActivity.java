@@ -156,12 +156,14 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
     private boolean isDay = const_data.isModel_day();
     private LinearLayout linearLayout;
     private Toolbar toolbar;
-    private MenuItem item_voice, item_stop, item_saved, item_cancel_saved;
+    private MenuItem item_voice, item_stop, item_saved, item_cancel_saved, item_download, item_delete;
     private WebView et1;
     private boolean isread = false;
+    private boolean isdownload = false;
     private Context mContext;
     private boolean issaved = false;
     private String news_content = "";  //新闻标题 + 内容
+    private String shared_content = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -495,44 +497,44 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
             InputStream inputStream = null;
             OutputStream outputStream = null;
 
-        try {
-            byte[] fileReader = new byte[4096];
+            try {
+                byte[] fileReader = new byte[4096];
 
-            long fileSize = body.contentLength();
-            long fileSizeDownloaded = 0;
+                long fileSize = body.contentLength();
+                long fileSizeDownloaded = 0;
 
-            inputStream = body.byteStream();
-            outputStream = new FileOutputStream(futureStudioIconFile);
-            while (true)
+                inputStream = body.byteStream();
+                outputStream = new FileOutputStream(futureStudioIconFile);
+                while (true)
+                {
+                    int read = inputStream.read(fileReader);
+
+                    if (read == -1){
+                        break;
+                    }
+
+                    outputStream.write(fileReader,0,read);
+
+                    fileSizeDownloaded += read;
+
+                }
+                outputStream.flush();
+                return true;
+
+            }catch (Exception e)
             {
-                int read = inputStream.read(fileReader);
 
-                if (read == -1){
-                    break;
+                return false;
+            }finally {
+                if (inputStream != null){
+                    inputStream.close();
                 }
 
-                outputStream.write(fileReader,0,read);
-
-                fileSizeDownloaded += read;
-
-            }
-            outputStream.flush();
-            return true;
-
-        }catch (Exception e)
-        {
-
-            return false;
-        }finally {
-            if (inputStream != null){
-                inputStream.close();
-            }
-
-            if (outputStream != null){
-                outputStream.close();
-            }
-        }}catch (IOException e){
-        return  false;
+                if (outputStream != null){
+                    outputStream.close();
+                }
+            }}catch (IOException e){
+            return  false;
         }
 
     }
@@ -544,6 +546,8 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
         item_stop = menu.findItem(R.id.stop);
         item_saved = menu.findItem(R.id.save);
         item_cancel_saved = menu.findItem(R.id.cancel_save);
+        item_download = menu.findItem(R.id.download);
+        item_delete = menu.findItem(R.id.delete);
         if ( isread )
         {
             item_voice.setVisible(false);
@@ -563,6 +567,16 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
         {
             item_saved.setVisible(true);
             item_cancel_saved.setVisible(false);
+        }
+        if ( isdownload )
+        {
+            item_download.setVisible(false);
+            item_delete.setVisible(true);
+        }
+        else
+        {
+            item_delete.setVisible(false);
+            item_download.setVisible(true);
         }
         return super.onCreateOptionsMenu(menu);
     }
@@ -597,13 +611,24 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.share:
-                shareMsg("分享图片和文字", "Share", "img and text", null);
+                News aa = getNews();
+                shared_content = aa.getNews_Title() + "\r\n" + aa.getNews_URL();
+                shareMsg("分享图片和文字", "Share", shared_content, null);
                 return true;
             case R.id.save:
                 save_news();
                 break;
             case R.id.cancel_save:
                 del_news();
+                break;
+            case R.id.download:
+                download();
+                break;
+            case R.id.delete:
+                deleteFile(id+".txt");
+                isdownload = false;
+                this.invalidateOptionsMenu();
+                Toast.makeText(getApplicationContext(), "删除成功", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.voice:
                 voice_begin();
@@ -618,32 +643,31 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
         return false;
     }
 
-    public void save_news(){
-        issaved = true;
+    public void download(){
+        isdownload = true;
         this.invalidateOptionsMenu();
         FileHelper fHelper = new FileHelper(mContext);
         try {
             //保存文件名和内容
             fHelper.save(id+".txt", news_content);
-            Toast.makeText(getApplicationContext(), "收藏成功", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "下载成功", Toast.LENGTH_SHORT).show();
         } catch (Exception e) {
             //写入异常时
             e.printStackTrace();
-            Toast.makeText(getApplicationContext(), "收藏失败", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "下载失败", Toast.LENGTH_SHORT).show();
         }
-        SharedPreferences sharedPreferences = getSharedPreferences("saved_news_id_list", Context.MODE_PRIVATE); //私有数据
-        SharedPreferences.Editor editor = sharedPreferences.edit();//获取编辑器
-
         File file = new File(Environment.getExternalStorageDirectory(),
                 id+".txt");
         System.out.println(file.getAbsolutePath());
-//        //2、读取所有数据
-//        String content = "";
-//        Map<String, ?> allContent = sharedPreferences.getAll();
-//        //注意遍历map的方法
-//        for(Map.Entry<String, ?>  entry : allContent.entrySet()){
-//            content+=(entry.getKey()+entry.getValue());
-//        }
+    }
+
+    public void save_news(){
+        issaved = true;
+        this.invalidateOptionsMenu();
+        Toast.makeText(getApplicationContext(), "收藏成功", Toast.LENGTH_SHORT).show();
+
+        SharedPreferences sharedPreferences = getSharedPreferences("saved_news_id_list", Context.MODE_PRIVATE); //私有数据
+        SharedPreferences.Editor editor = sharedPreferences.edit();//获取编辑器
 
         editor.putString(id, id);
         editor.commit();//提交修改
@@ -653,7 +677,6 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
         issaved = false;
         this.invalidateOptionsMenu();
         Toast.makeText(getApplicationContext(), "取消收藏", Toast.LENGTH_SHORT).show();
-        deleteFile(id+".txt");
         SharedPreferences sharedPreferences = getSharedPreferences("saved_news_id_list", Context.MODE_PRIVATE); //私有数据
         SharedPreferences.Editor editor = sharedPreferences.edit();//获取编辑器
         editor.putString(id, "");
