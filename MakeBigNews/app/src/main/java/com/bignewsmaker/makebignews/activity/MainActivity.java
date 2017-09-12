@@ -4,6 +4,7 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -21,6 +22,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 import com.bignewsmaker.makebignews.R;
 import com.bignewsmaker.makebignews.adapter.FragmentNewsAdapter;
@@ -162,20 +164,17 @@ public class MainActivity extends AppCompatActivity {
             public boolean onQueryTextChange(String queryText) {
                 return false;
             }
+
             @Override
             public boolean onQueryTextSubmit(String queryText) {
-               /* if (mSearchView != null) {
-                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                    if (imm != null) {
-                        imm.hideSoftInputFromWindow(mSearchView.getWindowToken(), 0); // 输入法如果是显示状态，那么就隐藏输入法
-                    }
-                    mSearchView.clearFocus(); // 不获取焦点
-                }*/
                 if (queryText == null) {
                     return false;
                 } else {
                     const_data.setSearch_message(queryText);
-//                    callData(queryText);
+                    if(!checkNetworkState()){
+                        Toast.makeText(MainActivity.this, "未联网，无法搜索", Toast.LENGTH_SHORT).show();
+                        return false;
+                    }
                     Intent intent = new Intent(MainActivity.this, SearchResultActivity.class);// 新建一个界面
                     startActivity(intent);
                     return true;
@@ -215,4 +214,17 @@ public class MainActivity extends AppCompatActivity {
                 }
         }
     }
+
+    private boolean checkNetworkState() {
+        boolean flag = false;
+        //得到网络连接信息
+        ConnectivityManager manager = (ConnectivityManager) getSystemService(Activity.CONNECTIVITY_SERVICE);
+        //去进行判断网络是否连接
+        if (manager.getActiveNetworkInfo() != null) {
+            flag = manager.getActiveNetworkInfo().isAvailable();
+        }
+        return flag;
+    }
 }
+
+

@@ -36,6 +36,8 @@ import static com.bignewsmaker.makebignews.activity.MainActivity.setStatusBarCol
  */
 
 public class SearchResultActivity extends AppCompatActivity {
+    private static final String TAG = "makebignews";
+    private String totalrecords;
     private int lastVisibleItem = 0;
     private Toolbar toolbar;
     private LinearLayoutManager mLayoutManager;
@@ -71,14 +73,12 @@ public class SearchResultActivity extends AppCompatActivity {
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+
                     if (adapter.isFadeTips() == false && lastVisibleItem + 1 == adapter.getItemCount()) {
                         loadMoreNews();
-                    }
-
-                    if (adapter.isFadeTips() == true && lastVisibleItem + 2 == adapter.getItemCount()) {
-                        loadMoreNews();
 
                     }
+
                 }
             }
 
@@ -131,6 +131,7 @@ public class SearchResultActivity extends AppCompatActivity {
                 adapter.add(newsList.getList());
             }
             adapter.notifyDataSetChanged();
+            getSupportActionBar().setTitle("搜索结果(共"+totalrecords+"条新闻）");
         }
     };
 
@@ -158,6 +159,7 @@ public class SearchResultActivity extends AppCompatActivity {
             conn.disconnect();
             Gson gson = new Gson();
             newsList = gson.fromJson(s, NewsList.class);
+            totalrecords=String.valueOf(newsList.getTotalRecords());
             System.out.println("><");
         } catch (MalformedURLException e) {
             e.printStackTrace();

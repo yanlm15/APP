@@ -161,29 +161,10 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         } else {
             ((FootHolder) holder).tips.setVisibility(View.VISIBLE);
             if (hasMore == true) {
-                // 不隐藏footView提示
                 fadeTips = false;
                 if (mNewsList.size() > 0) {
                     // 如果查询数据发现增加之后，就显示正在加载更多
                     ((FootHolder) holder).tips.setText("正在加载...");
-                }
-            } else {
-                if (mNewsList.size() > 0) {
-                    // 如果查询数据发现并没有增加时，就显示没有更多数据了
-                    ((FootHolder) holder).tips.setText("没有更多数据了");
-
-                    // 然后通过延时加载模拟网络请求的时间，在500ms后执行
-                    mHandler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            // 隐藏提示条
-                            ((FootHolder) holder).tips.setVisibility(View.GONE);
-                            // 将fadeTips设置true
-                            fadeTips = true;
-                            // hasMore设为true是为了让再次拉到底时，会先显示正在加载更多
-                            hasMore = true;
-                        }
-                    }, 100);
                 }
             }
         }
@@ -205,10 +186,6 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public int getItemCount() {
         int begin = fadeTips ? 0 : 1;
         return mNewsList.size() + begin;
-    }
-
-    public int getRealLastPosition() {
-        return mNewsList.size();
     }
 
     @Override

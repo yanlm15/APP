@@ -1,7 +1,9 @@
 package com.bignewsmaker.makebignews.fragment;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -13,6 +15,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.bignewsmaker.makebignews.R;
 import com.bignewsmaker.makebignews.activity.ShowNewsActivity;
@@ -75,6 +78,10 @@ public class NewsFragment extends Fragment {
     private NewsAdapter.OnItemClickListener mOnItemClickListener = new NewsAdapter.OnItemClickListener() {
         @Override
         public void onClick(View view, int position) {
+            if (!checkNetworkState()) {
+                Toast.makeText(getActivity(), "未联网，您可查看已保存新闻", Toast.LENGTH_SHORT).show();
+                return;
+            }
             Intent i = new Intent(getContext(), ShowNewsActivity.class);
             String id = adapter.getId(position);
             const_data.setCur_ID(id);
@@ -108,10 +115,20 @@ public class NewsFragment extends Fragment {
             public void onRefresh() {
                 swipeRefresh.setRefreshing(true);
                 newsList = null;
+                if (!checkNetworkState()) {
+                    Toast.makeText(getActivity(), "未联网，无法加载", Toast.LENGTH_SHORT).show();
+                    swipeRefresh.setRefreshing(false);
+                    return;
+                }
                 refreshNews();
             }
         });
-        refreshNews();
+        if (!checkNetworkState()) {
+            if (category == 0)
+                Toast.makeText(getActivity(), "未联网，无法加载", Toast.LENGTH_SHORT).show();
+            swipeRefresh.setRefreshing(false);
+        } else
+            refreshNews();
 
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -119,13 +136,16 @@ public class NewsFragment extends Fragment {
                 super.onScrollStateChanged(recyclerView, newState);
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                     if (adapter.isFadeTips() == false && lastVisibleItem + 1 == adapter.getItemCount()) {
+                        if (!checkNetworkState()) {
+                            Toast.makeText(getActivity(), "未联网，无法加载", Toast.LENGTH_SHORT).show();
+                            adapter.setHasMore(false);
+                            adapter.setFadeTips(true);
+                            adapter.notifyDataSetChanged();
+                            return;
+                        }
                         loadMoreNews();
                     }
 
-                    if (adapter.isFadeTips() == true && lastVisibleItem + 2 == adapter.getItemCount()) {
-                        loadMoreNews();
-
-                    }
                 }
             }
 
@@ -157,7 +177,7 @@ public class NewsFragment extends Fragment {
 
     Handler refresh = new Handler() {
         public void handleMessage(Message msg) {
-            adapter = new NewsAdapter(newsList.getList(), getActivity().getApplicationContext(), true);
+            adapter = new NewsAdapter((newsList == null ? null : newsList.getList()), getActivity().getApplicationContext(), true);
             recyclerView.setLayoutManager(mLayoutManager);
             recyclerView.setAdapter(adapter);
             adapter.setOnItemClickListener(mOnItemClickListener);
@@ -184,11 +204,9 @@ public class NewsFragment extends Fragment {
 
     Handler loadmore = new Handler() {
         public void handleMessage(Message msg) {
-            adapter.add(newsList.getList());
-//            recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-//            recyclerView.setAdapter(adapter);
+            if (newsList != null)
+                adapter.add(newsList.getList());
             adapter.notifyDataSetChanged();
-            swipeRefresh.setRefreshing(false);
         }
     };
 
@@ -227,12 +245,23 @@ public class NewsFragment extends Fragment {
         switch (requestCode) {
             case 2:
                 adapter.notifyDataSetChanged();
-                if(const_data.isSetChanged()){
+                if (const_data.isSetChanged()) {
                     const_data.setSetChanged(false);
                     getActivity().recreate();
                 }
         }
 
+    }
+
+    private boolean checkNetworkState() {
+        boolean flag = false;
+        //得到网络连接信息
+        ConnectivityManager manager = (ConnectivityManager) getActivity().getSystemService(Activity.CONNECTIVITY_SERVICE);
+        //去进行判断网络是否连接
+        if (manager.getActiveNetworkInfo() != null) {
+            flag = manager.getActiveNetworkInfo().isAvailable();
+        }
+        return flag;
     }
 }
 
