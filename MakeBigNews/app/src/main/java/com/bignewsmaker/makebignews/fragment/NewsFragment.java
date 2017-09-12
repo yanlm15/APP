@@ -21,6 +21,7 @@ import com.bignewsmaker.makebignews.activity.ShowNewsActivity;
 import com.bignewsmaker.makebignews.adapter.NewsAdapter;
 import com.bignewsmaker.makebignews.basic_class.ConstData;
 import com.bignewsmaker.makebignews.basic_class.NewsList;
+import com.bignewsmaker.makebignews.extra_class.LogicTool;
 import com.bignewsmaker.makebignews.extra_class.RetrofitTool;
 import com.bignewsmaker.makebignews.extra_class.Speaker;
 
@@ -77,7 +78,7 @@ public class NewsFragment extends Fragment {
         @Override
         public void onClick(View view, int position) {
             if (!checkNetworkState()) {
-                Toast.makeText(getActivity(), "未联网，您可查看已保存新闻", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "网络不可用，您可查看已保存新闻", Toast.LENGTH_SHORT).show();
                 return;
             }
             Intent i = new Intent(getContext(), ShowNewsActivity.class);
@@ -114,19 +115,19 @@ public class NewsFragment extends Fragment {
                 swipeRefresh.setRefreshing(true);
                 newsList = null;
                 if (!checkNetworkState()) {
-                    Toast.makeText(getActivity(), "未联网，无法加载", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "网络不可用，无法刷新", Toast.LENGTH_SHORT).show();
                     swipeRefresh.setRefreshing(false);
                     return;
                 }
-                loadNews(true);
+                loadNews(true, null, null);
             }
         });
         if (!checkNetworkState()) {
             if (category == 0)
-                Toast.makeText(getActivity(), "未联网，无法加载", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "网络不可用，无法加载新闻", Toast.LENGTH_SHORT).show();
             swipeRefresh.setRefreshing(false);
         } else
-            loadNews(true);
+            loadNews(true, null, null);
 
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -135,13 +136,13 @@ public class NewsFragment extends Fragment {
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                     if (adapter.isFadeTips() == false && lastVisibleItem + 1 == adapter.getItemCount()) {
                         if (!checkNetworkState()) {
-                            Toast.makeText(getActivity(), "未联网，无法加载", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getActivity(), "网络不可用，无法加载更多", Toast.LENGTH_SHORT).show();
                             adapter.setHasMore(false);
                             adapter.setFadeTips(true);
                             adapter.notifyDataSetChanged();
                             return;
                         }
-                        loadNews(false);
+                        loadNews(false, null, null);
                     }
                 }
             }
@@ -155,22 +156,21 @@ public class NewsFragment extends Fragment {
         return view;
     }
 
-    private void loadNews(final boolean isRefresh ) {
+    private void loadNews(final boolean isRefresh, String tp, Map<String, String> m) {
         NetService service = retrofitTool.getRetrofit().create(NetService.class);
-        Map<String, String> url = new HashMap<String, String>() {{
-            put("pageNo", String.valueOf(newsList == null ? 1 : newsList.getPageNo() + 1));
-            put("pageSize", const_data.getCur_pageSize());
-            if(category!=0)
-            put("category",String.valueOf(category));
+        Map<String, String> url = new HashMap<>();
+        url.put("pageNo", String.valueOf(newsList == null ? 1 : newsList.getPageNo() + 1));
+        url.put("pageSize", const_data.getCur_pageSize());
+        if (category != 0)
+            url.put("category", String.valueOf(category));
 
-        }};
         Call<NewsList> repos = service.listReposbymap("latest", url);
         repos.enqueue(new Callback<NewsList>() {
             @Override
             public void onResponse(Call<NewsList> call, Response<NewsList> response) {
                 if (response.isSuccessful()) {
-                    newsList = response.body();
-                    if(isRefresh)
+                    newsList = LogicTool.filter_dislike(response.body());
+                    if (isRefresh)
                         refreshNews();
                     else
                         loadMoreNews();
@@ -184,7 +184,7 @@ public class NewsFragment extends Fragment {
         });
     }
 
-    private void refreshNews(){
+    private void refreshNews() {
         adapter = new NewsAdapter((newsList == null ? null : newsList.getList()), getActivity().getApplicationContext(), true);
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setAdapter(adapter);
@@ -205,8 +205,6 @@ public class NewsFragment extends Fragment {
         }
         adapter.notifyDataSetChanged();
     }
-
-
 
 
     @Override

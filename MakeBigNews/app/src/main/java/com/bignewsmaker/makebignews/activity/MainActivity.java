@@ -44,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
     private List<Fragment> mFragments;
     private DrawerLayout mDrawerLayout;
     private FragmentNewsAdapter adapter;
+    private NavigationView navView;
     private SearchView mSearchView;
     private ConstData const_data = ConstData.getInstance();// 设置访问全局变量接口
     private Speaker speaker = Speaker.getInstance();// 设置语音系统接口
@@ -58,20 +59,13 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        NavigationView navView = (NavigationView) findViewById(R.id.nav_view);
+        navView = (NavigationView) findViewById(R.id.nav_view);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setHomeAsUpIndicator(R.drawable.ic_menu);
         }
         navView.setCheckedItem(R.id.nav_home);
-        navView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(MenuItem item) {
-                mDrawerLayout.closeDrawers();
-                return true;
-            }
-        });
 
         mViewPager = (ViewPager) findViewById(R.id.viewpager);
         mTabLayout = (TabLayout) findViewById(R.id.tablayout);
@@ -96,17 +90,18 @@ public class MainActivity extends AppCompatActivity {
             setStatusBarColor(MainActivity.this, Color.rgb(66, 66, 66));
         } else {
             mTabLayout.setTabTextColors(Color.rgb(0, 0, 0), Color.rgb(63, 81, 181));
+            mTabLayout.setSelectedTabIndicatorColor(Color.rgb(255, 255, 255));
+
         }
 
         navView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 item.setChecked(false);//设置选项是否选中
-                item.setCheckable(false);//选项是否可选
+                item.setCheckable(true);
                 switch (item.getItemId()) {
                     case R.id.nav_home:
-                        Intent home = new Intent(MainActivity.this, MainActivity.class);
-                        startActivity(home);
+                        item.setChecked(true);
                         break;
                     case R.id.nav_saved:
                         Intent savedIntent = new Intent(MainActivity.this, SavedActivity.class);
@@ -127,6 +122,12 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        navView.setCheckedItem(R.id.nav_home);
     }
 
     @TargetApi(21)
@@ -172,7 +173,7 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     const_data.setSearch_message(queryText);
                     if(!checkNetworkState()){
-                        Toast.makeText(MainActivity.this, "未联网，无法搜索", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MainActivity.this, "网络不可用，无法搜索", Toast.LENGTH_SHORT).show();
                         return false;
                     }
                     Intent intent = new Intent(MainActivity.this, SearchResultActivity.class);// 新建一个界面
@@ -190,10 +191,6 @@ public class MainActivity extends AppCompatActivity {
             case android.R.id.home:
                 mDrawerLayout.openDrawer(GravityCompat.START);
                 break;
-           /* case R.id.search:
-                Intent intent = new Intent(MainActivity.this, SearchActivity.class);
-                startActivity(intent);
-                break;*/
             case R.id.setting:
                 Intent setIntent = new Intent(MainActivity.this, SetActivity.class);
                 startActivityForResult(setIntent, 1);

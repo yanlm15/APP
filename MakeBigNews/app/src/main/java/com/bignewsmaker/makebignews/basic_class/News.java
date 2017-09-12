@@ -1,6 +1,7 @@
 package com.bignewsmaker.makebignews.basic_class;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 public class News implements Serializable {
     protected String lang_Type = null;
@@ -14,7 +15,36 @@ public class News implements Serializable {
     protected String news_URL = null;
     protected String news_Video = null;
     protected String news_Intro = null;
+
+    public String getNews_Content() {
+        return news_Content;
+    }
+
+    public void setNews_Content(String news_Content) {
+        this.news_Content = news_Content;
+    }
+
+    protected String news_Content;
     protected boolean isRead = false;
+    protected ArrayList<Item1> Keywords = new ArrayList<>();
+
+    public ArrayList<Item1> getKeywords() {
+        return Keywords;
+    }
+
+    public void setKeywords(ArrayList<Item1> keywords) {
+        Keywords = keywords;
+    }
+
+    public ArrayList<Item2> getPersons() {
+        return persons;
+    }
+
+    public void setPersons(ArrayList<Item2> persons) {
+        this.persons = persons;
+    }
+
+    protected ArrayList<Item2> persons= new ArrayList<>();
 
     public boolean isRead() {
         return isRead;

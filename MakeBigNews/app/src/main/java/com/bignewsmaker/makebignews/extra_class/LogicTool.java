@@ -40,7 +40,7 @@ public class LogicTool implements SuccessCallBack<NewsList> {
 
 
 
-    public NewsList filter_dislike(NewsList old_list)//过滤dislike
+    public static NewsList filter_dislike(NewsList old_list)//过滤dislike
     {
         NewsList new_list = new NewsList();
 //

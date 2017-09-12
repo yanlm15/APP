@@ -1,7 +1,6 @@
 package com.bignewsmaker.makebignews.activity;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -51,7 +50,7 @@ public class SearchResultActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_result);
-        setStatusBarColor(SearchResultActivity.this, Color.parseColor("#303F9F"));
+        setStatusBarColor(SearchResultActivity.this, R.color.colorPrimaryDark);
         toolbar = (Toolbar) findViewById(R.id.toolbar3);
         setSupportActionBar(toolbar);
 

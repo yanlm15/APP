@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,21 +17,20 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bignewsmaker.makebignews.Interface.NewsService;
 import com.bignewsmaker.makebignews.Interface.SuccessCallBack;
+import com.bignewsmaker.makebignews.Interface.UrlService;
+import com.bignewsmaker.makebignews.R;
 import com.bignewsmaker.makebignews.basic_class.ConstData;
+import com.bignewsmaker.makebignews.basic_class.Item1;
 import com.bignewsmaker.makebignews.basic_class.Item2;
 import com.bignewsmaker.makebignews.basic_class.News;
 import com.bignewsmaker.makebignews.basic_class.NewsList;
 import com.bignewsmaker.makebignews.extra_class.FileHelper;
 import com.bignewsmaker.makebignews.extra_class.LogicTool;
 import com.bignewsmaker.makebignews.extra_class.RetrofitTool;
-import com.bignewsmaker.makebignews.R;
 import com.bignewsmaker.makebignews.extra_class.Speaker;
 import com.bignewsmaker.makebignews.extra_class.ThemeManager;
-import com.bignewsmaker.makebignews.basic_class.Item1;
-import com.bignewsmaker.makebignews.basic_class.MyNews;
-import com.bignewsmaker.makebignews.Interface.NewService;
-import com.bignewsmaker.makebignews.Interface.UrlService;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -41,7 +39,6 @@ import java.io.InputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
-
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -131,7 +128,8 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
 
     private News getNews()
     {
-        return myNews.formNews(myNews);
+//        return myNews.formNews(myNews);
+        return myNews;
     }
     private MyLogicTool myLogicTool = new MyLogicTool();
 
@@ -150,7 +148,7 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
     private String title;
     private String context;
     private String context_rec;
-    private MyNews myNews = new MyNews();
+    private News myNews = new News();
     private ArrayList<String> picture = new ArrayList<String >();
     private ArrayList<Bitmap> mybitmap = new ArrayList<Bitmap>();
 
@@ -450,17 +448,17 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
     public void getText(String id)//请求文本
     {
 
-        NewService service = retrofitTool.getRetrofit().create(NewService.class);
+        NewsService service = retrofitTool.getRetrofit().create(NewsService.class);
 
-        Call<MyNews> repos = service.listRepos(id);
+        Call<News> repos = service.listRepos(id);
 
-        repos.enqueue(new Callback<MyNews>() {
+        repos.enqueue(new Callback<News>() {
             @Override
-            public void onResponse(Call<MyNews> call, Response<MyNews> response) {
+            public void onResponse(Call<News> call, Response<News> response) {
 
                 if (response.isSuccessful()) {
                     System.out.println("news-success");
-                    MyNews data = new MyNews();
+                    News data = new News();
                     data = response.body();
                     if (data != null) {
                         String myt = data.getNews_Title() + "," + data.getNews_Content();
@@ -496,7 +494,7 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
             }
 
             @Override
-            public void onFailure(Call<MyNews> call, Throwable t) {
+            public void onFailure(Call<News> call, Throwable t) {
                 t.printStackTrace();
 
             }

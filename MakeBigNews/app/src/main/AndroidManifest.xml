@@ -29,7 +29,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activity.MainActivity">
+        <activity android:name=".activity.MainActivity"
+            android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -44,12 +45,10 @@
         <activity android:name=".activity.ShowNewsActivity" />
         <activity android:name=".activity.ShowSharedListActivity" />
         <activity android:name=".activity.SearchResultActivity" />
+        <activity android:name=".activity.SavedActivity" />
+        <activity android:name=".activity.AboutActivity">
 
-        <!-- 添加activity的格式 -->
-        <!-- Required SDK核心功能 -->
-
-
-        <!-- Optional 微信分享回调,wxapi必须在包名路径下，否则回调不成功 -->
+        </activity>
 
         <meta-data
             android:name="JPUSH_CHANNEL"
@@ -59,8 +58,6 @@
             android:name="JPUSH_APPKEY"
             android:value="df7a595dd0b3705c38a737f4" />
 
-        <activity android:name=".activity.SavedActivity" />
-        <activity android:name=".activity.AboutActivity"></activity>
     </application>
 
 </manifest>
