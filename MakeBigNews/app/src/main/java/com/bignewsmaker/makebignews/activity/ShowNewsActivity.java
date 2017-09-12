@@ -178,6 +178,8 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
         first_init(); // 获取当前新闻信息
         //设置输入监控
         //设置更新函数
+        System.out.println(">:"+id);
+
         getText(id);
         TextView t = (TextView)findViewById(R.id.r_1);
         t.setOnClickListener(new android.view.View.OnClickListener() {

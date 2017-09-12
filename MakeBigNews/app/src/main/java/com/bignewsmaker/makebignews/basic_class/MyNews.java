@@ -2,6 +2,8 @@ package com.bignewsmaker.makebignews.basic_class;
 
 import java.util.*;
 
+import static java.lang.Math.min;
+
 /**
  * Created by liminyan on 07/09/2017.
  */
@@ -44,7 +46,7 @@ public class MyNews{
         b.setLang_Type(a.lang_Type);
         b.setNews_Author(a.news_Author);
         b.setNews_ID(a.news_ID);
-        b.setNews_Intro(a.news_Content.substring(0,20)+"...");
+        b.setNews_Intro(a.news_Content.substring(0,min(20,news_Content.length()))+"...");
         b.setNews_Pictures(a.news_Pictures);
         b.setNews_Source(a.news_Source);
         b.setNews_Time(a.news_Time);
