@@ -163,6 +163,7 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
     private Context mContext;
     private boolean issaved = false;
     private String news_content = "";  //新闻标题 + 内容
+    private String shared_content = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -494,44 +495,44 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
             InputStream inputStream = null;
             OutputStream outputStream = null;
 
-        try {
-            byte[] fileReader = new byte[4096];
+            try {
+                byte[] fileReader = new byte[4096];
 
-            long fileSize = body.contentLength();
-            long fileSizeDownloaded = 0;
+                long fileSize = body.contentLength();
+                long fileSizeDownloaded = 0;
 
-            inputStream = body.byteStream();
-            outputStream = new FileOutputStream(futureStudioIconFile);
-            while (true)
+                inputStream = body.byteStream();
+                outputStream = new FileOutputStream(futureStudioIconFile);
+                while (true)
+                {
+                    int read = inputStream.read(fileReader);
+
+                    if (read == -1){
+                        break;
+                    }
+
+                    outputStream.write(fileReader,0,read);
+
+                    fileSizeDownloaded += read;
+
+                }
+                outputStream.flush();
+                return true;
+
+            }catch (Exception e)
             {
-                int read = inputStream.read(fileReader);
 
-                if (read == -1){
-                    break;
+                return false;
+            }finally {
+                if (inputStream != null){
+                    inputStream.close();
                 }
 
-                outputStream.write(fileReader,0,read);
-
-                fileSizeDownloaded += read;
-
-            }
-            outputStream.flush();
-            return true;
-
-        }catch (Exception e)
-        {
-
-            return false;
-        }finally {
-            if (inputStream != null){
-                inputStream.close();
-            }
-
-            if (outputStream != null){
-                outputStream.close();
-            }
-        }}catch (IOException e){
-        return  false;
+                if (outputStream != null){
+                    outputStream.close();
+                }
+            }}catch (IOException e){
+            return  false;
         }
 
     }
@@ -608,7 +609,9 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.share:
-                shareMsg("分享图片和文字", "Share", "img and text", null);
+                News aa = getNews();
+                shared_content = aa.getNews_Title() + "\r\n" + aa.getNews_URL();
+                shareMsg("分享图片和文字", "Share", shared_content, null);
                 return true;
             case R.id.save:
                 save_news();
