@@ -29,6 +29,10 @@ public class ConstData {
     private News cur_news = null ;// 当前选中新闻
     private NewsList search_result = null ;// 当前的搜索结果
 
+    public void setFiltered(HashSet<String> filtered) {
+        this.filtered = filtered;
+    }
+
     public HashSet<String> getFiltered() {
         return filtered;
     }
@@ -91,6 +95,10 @@ public class ConstData {
 
     public void addHaveRead(News news) {
         haveRead.put(news.getNews_ID(),news);
+    }
+
+    public void setHaveRead(HashMap<String, News> haveRead) {
+        this.haveRead = haveRead;
     }
 
     public TreeMap<String, Integer> getLike1() {
@@ -171,8 +179,12 @@ public class ConstData {
         this.cur_ID = cur_ID;
     }
 
-    public void setDislike(String name) {
+    public void addDislike(String name) {
         this.dislike.put(name,1);
+    }
+
+    public void setDislike(TreeMap<String, Integer> dislike) {
+        this.dislike = dislike;
     }
 
     public void setLike(String name) {
