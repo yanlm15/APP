@@ -490,59 +490,100 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
     }
 
     public void getText(String id) {//请求文本
+        if (const_data.getHaveRead().contains(id)&&const_data.getHaveReadNewsById(id)!=null) {
+            News data=const_data.getHaveReadNewsById(id);
+            String myt = data.getNews_Title() + "," + data.getNews_Content();
+            speaker.setText(myt);
+            news_content = myt;
+            ArrayList<Item1> a = data.getKeywords();
+            for (Item1 i : a){//添加关键词
+                const_data.setLike1(i.word);
+                const_data.setLike(i.word);
+            }
 
-        NewsService service = retrofitTool.getRetrofit().create(NewsService.class);
+            picture_init(data.getNews_Pictures());
+            System.out.println(data.getNews_Pictures());
 
-        Call<News> repos = service.listRepos(id);
+            title =  data.getNews_Title();
+            context = data.getNews_Content();
+            context = "</p><p>"+context;
 
-        repos.enqueue(new Callback<News>() {
-            @Override
-            public void onResponse(Call<News> call, Response<News> response) {
+            myNews = data;
 
-                if (response.isSuccessful()) {
-                    News data = new News();
-                    data = response.body();
-                    if (data != null) {
-                        String myt = data.getNews_Title() + "," + data.getNews_Content();
-                        speaker.setText(myt);
-                        news_content = myt;
-                        ArrayList<Item1> a = data.getKeywords();
-                        for (Item1 i : a){//添加关键词
-                            const_data.setLike1(i.word);
-                            const_data.setLike(i.word);
+            System.out.println(picture.size()+"here");
+            if(picture.size()>minnumber)
+            {
+                context = clearExtra(context);
+                context = jump_peo(context);
+                context = setbody(context);
+                context = setEmptyP(context);
+                showText();
+                setText(0);
+            }
+            else
+            {
+                okDownload = false;
+                MyTask task = new MyTask();
+                task.execute(title);
+            }
+            getContext_rec();//请求关键词
+
+
+        }
+        else {
+            NewsService service = retrofitTool.getRetrofit().create(NewsService.class);
+
+            Call<News> repos = service.listRepos(id);
+
+            repos.enqueue(new Callback<News>() {
+                @Override
+                public void onResponse(Call<News> call, Response<News> response) {
+
+                    if (response.isSuccessful()) {
+                        News data = new News();
+                        data = response.body();
+                        if (data != null) {
+                            const_data.addHaveRead(data);
+                            String myt = data.getNews_Title() + "," + data.getNews_Content();
+//                            speaker.setText(myt);
+                            news_content = myt;
+                            ArrayList<Item1> a = data.getKeywords();
+                            for (Item1 i : a) {//添加关键词
+                                const_data.setLike1(i.word);
+                                const_data.setLike(i.word);
+                            }
+
+                            picture_init(data.getNews_Pictures());
+                            title = data.getNews_Title();
+                            context = data.getNews_Content();
+                            context = "</p><p>" + context;
+
+                            myNews = data;
+
+                            if (picture.size() > minnumber) {
+                                context = clearExtra(context);
+                                context = jump_peo(context);
+                                context = setbody(context);
+                                context = setEmptyP(context);
+                                showText();
+                                setText(0);
+                            } else {
+                                okDownload = false;
+                                MyTask task = new MyTask();
+                                task.execute(title);
+                            }
+                            getContext_rec();//请求关键词
                         }
-
-                        picture_init(data.getNews_Pictures());
-                        title =  data.getNews_Title();
-                        context = data.getNews_Content();
-                        context = "</p><p>"+context;
-
-                        myNews = data;
-
-                        if(picture.size()>minnumber) {
-                            context = clearExtra(context);
-                            context = jump_peo(context);
-                            context = setbody(context);
-                            context = setEmptyP(context);
-                            showText();
-                            setText(0);
-                        }
-                        else {
-                            okDownload = false;
-                            MyTask task = new MyTask();
-                            task.execute(title);
-                        }
-                        getContext_rec();//请求关键词
+                    } else {
                     }
-                } else {
                 }
-            }
 
-            @Override
-            public void onFailure(Call<News> call, Throwable t) {
-                t.printStackTrace();
-            }
-        });
+                @Override
+                public void onFailure(Call<News> call, Throwable t) {
+                    t.printStackTrace();
+                }
+            });
+        }
     }
 
     private boolean writeResponseBodyToDisk(ResponseBody body,int i) {//图片缓存-写到文件里

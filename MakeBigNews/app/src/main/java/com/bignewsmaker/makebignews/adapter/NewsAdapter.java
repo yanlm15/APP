@@ -108,6 +108,8 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 .inflate(R.layout.item_news, parent, false);
         final ViewHolder holder = new ViewHolder(view, onItemClickListener);
 
+        if(!const_data.getDay())
+            holder.delete.setImageResource(R.mipmap.chahei);
         holder.delete.setOnClickListener(new ImageView.OnClickListener() {
             @Override
             public void onClick(View view) {

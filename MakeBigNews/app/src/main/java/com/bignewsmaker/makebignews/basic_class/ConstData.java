@@ -20,26 +20,21 @@ import java.util.TreeMap;
  */
 
 public class ConstData {
+
+    private ConstData(){
+        show_picture = true;
+        isDay = true;
+        cur_pageSize="20";
+        isFirstCreate = true;
+    }
     private double ligth_rate = 1; //屏幕亮度比例
-    private boolean show_picture = true; //图片显示标签
-    private boolean isDay = true;
+    private boolean show_picture; //图片显示标签
+    private boolean isDay;
     private boolean isSetChanged =false;
     private boolean safe_search = false;
     private NewsList cur_newslist = null ;// 当前新闻列表
     private News cur_news = null ;// 当前选中新闻
     private NewsList search_result = null ;// 当前的搜索结果
-
-    public void setFiltered(HashSet<String> filtered) {
-        this.filtered = filtered;
-    }
-
-    public HashSet<String> getFiltered() {
-        return filtered;
-    }
-
-    public void addFiltered(String filtering) {
-       filtered.add(filtering);
-    }
 
     private HashSet<String> filtered=new HashSet<>();
     private static ConstData cur;
@@ -61,12 +56,36 @@ public class ConstData {
 
     private String  search_message = null;//用户的输入信息
     private String  search_class = null;//用户的搜索标签，默认为空！！
-    private String cur_pageSize = "20";
+    private String cur_pageSize ;
 
     public static final String TAG = "makebignews";
     private HashMap<String,News> haveRead=new HashMap<>();
     private boolean[] istagSelected={true,true,true,true,true,true,true,true,true,true,true,true,true};
 
+    private boolean isFirstCreate;
+
+
+
+
+    public boolean isFirstCreate() {
+        return isFirstCreate;
+    }
+
+    public void setFirstCreate(boolean firstCreate) {
+        isFirstCreate = firstCreate;
+    }
+
+    public void setFiltered(HashSet<String> filtered) {
+        this.filtered = filtered;
+    }
+
+    public HashSet<String> getFiltered() {
+        return filtered;
+    }
+
+    public void addFiltered(String filtering) {
+        filtered.add(filtering);
+    }
     public boolean getIstagSelected(int index) {
         return istagSelected[index];
     }
@@ -86,8 +105,8 @@ public class ConstData {
 
     public boolean isSafe_search() {return safe_search;}
 
-    public HashMap<String,News> getHaveReadNews() {
-        return haveRead;
+    public News getHaveReadNewsById(String id) {
+        return haveRead.get(id);
     }
     public Set<String> getHaveRead(){
         return haveRead.keySet();
@@ -159,8 +178,8 @@ public class ConstData {
 
     public void init()
     {
-        double ligth_rate = 1;
-        boolean show_picture = true;
+        ligth_rate = 1;
+        show_picture = true;
     }
 
     public void setSearch_result(NewsList search_result) {

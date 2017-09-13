@@ -105,6 +105,16 @@ public class SavedActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (!const_data.getDay()) {
+            recyclerView.setBackgroundColor(Color.rgb(66, 66, 66));
+        } else {
+            recyclerView.setBackgroundColor(Color.rgb(255, 255, 255));
+        }
+    }
+
     private NewsAdapter.OnItemClickListener mOnItemClickListener = new NewsAdapter.OnItemClickListener() {
         @Override
         public void onClick(View view, int position) {
