@@ -97,7 +97,6 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
         @Override
         public void onSuccess(NewsList a) {
             mNewsList = a;
-            System.out.println(MyLogicTool.class);
             int i = 0;
 
             m[0] = (TextView)findViewById(R.id.r_1);
@@ -157,13 +156,11 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
             if (picture.size()==0);{
                 for (String  e: InternetPicturetool.getInstance().getResult()) {
                     picture.add(e);
-                    System.out.println(e);
                     i++;
                     if (i>=minnumber) {
                         break;
                     }
                 }
-                System.out.println(picture.size());
                 context = clearExtra(context);
                 context = jump_peo(context);
                 context = setbody(context);
@@ -220,6 +217,8 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
         setContentView(R.layout.activity_show_news);
         toolbar = (Toolbar) findViewById(R.id.toolbar2);
         setSupportActionBar(toolbar);
+
+        speaker.setCur(this);
 
         mContext = getApplicationContext();
         et1 = (WebView) findViewById(R.id.textView);//content
@@ -284,8 +283,7 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
         init_model();    //设置夜间or日间模式
     }
 
-    public String  getDir(int number)
-    {
+    public String  getDir(int number) {
         String mynumber = String.valueOf(number);
 
         File f = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES)+File.separator+id);
@@ -309,7 +307,6 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
 
     private void picture_init(String str){//获取所有图片
         String s = str;
-        System.out.println(str);
         Pattern p = Pattern.compile("http://([^;\\s])*?\\.(jpg|png|jpeg|gif)");
         Matcher m = p.matcher(s);
         while( m.find())
@@ -337,7 +334,6 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
         return s;
     }
 
-
     String setURL(String str,String arm) {//关键字超链接
         String s = str;
         Pattern p = Pattern.compile(arm);
@@ -362,7 +358,6 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
     }
 
     String getPicture_id(int i) {
-        System.out.print(okDownload);
         String s;
         if (okDownload == true)
             s= "<img src=\"file://"+getDir(i)+gettype(i)+ "\"style=\"max-width:100%;\"/>";
@@ -386,7 +381,6 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
             Matcher m = p.matcher(s);
             s=m.replaceAll(getPicture_id(num));
         }
-        System.out.println(str);
         return s;
     }
 
@@ -445,7 +439,6 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
             File file =  new File(getDir(i)+gettype(i));
             String e = picture.get(j);
             if (const_data.getShow_picture() == true){
-                System.out.println(e);
                 if (file.exists()) {
                     //图文混排
                     okDownload = true;
@@ -507,7 +500,6 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
             public void onResponse(Call<News> call, Response<News> response) {
 
                 if (response.isSuccessful()) {
-                    System.out.println("news-success");
                     News data = new News();
                     data = response.body();
                     if (data != null) {
@@ -521,17 +513,13 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
                         }
 
                         picture_init(data.getNews_Pictures());
-                        System.out.println(data.getNews_Pictures());
-
                         title =  data.getNews_Title();
                         context = data.getNews_Content();
                         context = "</p><p>"+context;
 
                         myNews = data;
 
-                        System.out.println(picture.size()+"here");
-                        if(picture.size()>minnumber)
-                        {
+                        if(picture.size()>minnumber) {
                             context = clearExtra(context);
                             context = jump_peo(context);
                             context = setbody(context);
@@ -539,25 +527,20 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
                             showText();
                             setText(0);
                         }
-                        else
-                        {
+                        else {
                             okDownload = false;
                             MyTask task = new MyTask();
                             task.execute(title);
                         }
                         getContext_rec();//请求关键词
-
-
                     }
                 } else {
                 }
-
             }
 
             @Override
             public void onFailure(Call<News> call, Throwable t) {
                 t.printStackTrace();
-
             }
         });
     }
@@ -736,7 +719,6 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
         }
         File file = new File(Environment.getExternalStorageDirectory(),
                 id+".txt");
-        System.out.println(file.getAbsolutePath());
     }
 
     public void save_news(){
@@ -770,7 +752,6 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
         num++;
         e.putInt("num", num);
         e.commit();//提交修改
-        System.out.println("*****总共收藏了*****"+num+"*****条新闻*****");
     }
 
     public void del_news(){
@@ -785,7 +766,6 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
         SharedPreferences shared = getSharedPreferences("saved_news_num", Context.MODE_PRIVATE); //私有数据
         SharedPreferences.Editor e = shared.edit();//获取编辑器
         int num = shared.getInt("num", 0);
-        System.out.println("*****在删除之前，总共收藏了*****"+num+"*****条新闻*****");
         num--;
         if ( num < 0 ) num = 0;
         e.putInt("num", num);

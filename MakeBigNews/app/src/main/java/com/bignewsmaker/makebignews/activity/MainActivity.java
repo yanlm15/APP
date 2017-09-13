@@ -30,6 +30,8 @@ import com.bignewsmaker.makebignews.basic_class.ConstData;
 import com.bignewsmaker.makebignews.extra_class.RetrofitTool;
 import com.bignewsmaker.makebignews.extra_class.Speaker;
 import com.bignewsmaker.makebignews.fragment.NewsFragment;
+import com.iflytek.cloud.SpeechConstant;
+import com.iflytek.cloud.SpeechUtility;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
     private NavigationView navView;
     private SearchView mSearchView;
     private ConstData const_data = ConstData.getInstance();// 设置访问全局变量接口
-    private Speaker speaker = Speaker.getInstance();// 设置语音系统接口
+//    private Speaker speaker = Speaker.getInstance();// 设置语音系统接口
     private RetrofitTool retrofitTool = RetrofitTool.getInstance();//设置接收器
 
 
@@ -57,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        SpeechUtility.createUtility(this.getBaseContext(), SpeechConstant.APPID +"=59b8bd48");
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         navView = (NavigationView) findViewById(R.id.nav_view);
