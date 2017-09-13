@@ -2,9 +2,7 @@ package com.bignewsmaker.makebignews.basic_class;
 
 
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Set;
 import java.util.TreeMap;
 
 /**
@@ -25,8 +23,8 @@ public class ConstData {
     private boolean isDay = true;
     private boolean isSetChanged =false;
     private boolean safe_search = false;
-    private NewsList cur_newslist = null ;// 当前新闻列表
-    private News cur_news = null ;// 当前选中新闻
+    private NewsList cur_news = null ;// 当前新闻列表
+    private News cur_list = null ;// 当前选中新闻
     private NewsList search_result = null ;// 当前的搜索结果
 
     public HashSet<String> getFiltered() {
@@ -60,7 +58,7 @@ public class ConstData {
     private String cur_pageSize = "20";
 
     public static final String TAG = "makebignews";
-    private HashMap<String,News> haveRead=new HashMap<>();
+    private HashSet<String> haveRead=new HashSet<String>();
     private boolean[] istagSelected={true,true,true,true,true,true,true,true,true,true,true,true,true};
 
     public boolean getIstagSelected(int index) {
@@ -82,15 +80,12 @@ public class ConstData {
 
     public boolean isSafe_search() {return safe_search;}
 
-    public HashMap<String,News> getHaveReadNews() {
+    public HashSet<String> getHaveRead() {
         return haveRead;
     }
-    public Set<String> getHaveRead(){
-        return haveRead.keySet();
-    }
 
-    public void addHaveRead(News news) {
-        haveRead.put(news.getNews_ID(),news);
+    public void addHaveRead(String id) {
+        haveRead.add(id);
     }
 
     public TreeMap<String, Integer> getLike1() {
@@ -202,12 +197,12 @@ public class ConstData {
         }
     }
 
-    public void setCur_newslist(NewsList cur_newslist) {
-        this.cur_newslist = cur_newslist;
+    public void setCur_news(NewsList cur_news) {
+        this.cur_news = cur_news;
     }//初始新闻列表
 
-    public void setCur_news(News cur_news) {
-        this.cur_news = cur_news;
+    public void setCur_list(News cur_list) {
+        this.cur_list = cur_list;
     }//初始化选中新闻
 
     public void setLigth_rate(double ligth_rate) {
@@ -222,9 +217,9 @@ public class ConstData {
         return search_result;
     }
 
-    public NewsList getCur_newslist() {return cur_newslist;}
+    public NewsList getCur_news() {return cur_news;}
 
-    public News getCur_news() {return cur_news;}
+    public News getCur_list() {return cur_list;}
 
     public double getLigth_rate() {
         return ligth_rate;

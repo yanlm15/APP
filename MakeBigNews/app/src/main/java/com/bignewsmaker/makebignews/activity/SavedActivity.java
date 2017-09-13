@@ -4,10 +4,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -19,16 +19,23 @@ import com.bignewsmaker.makebignews.adapter.NewsAdapter;
 import com.bignewsmaker.makebignews.basic_class.ConstData;
 import com.bignewsmaker.makebignews.basic_class.News;
 import com.bignewsmaker.makebignews.basic_class.NewsList;
+import com.bignewsmaker.makebignews.extra_class.Speaker;
 import com.google.gson.Gson;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import static com.bignewsmaker.makebignews.activity.MainActivity.setStatusBarColor;
@@ -117,8 +124,9 @@ public class SavedActivity extends AppCompatActivity {
         @Override
         public void onClick(View view, int position) {
             Intent i = new Intent(SavedActivity.this, ShowNewsActivity.class);
-            String id = adapter.getNews(position).getNews_ID();
+            String id = adapter.getId(position);
             const_data.setCur_ID(id);
+            const_data.addHaveRead(id);
             startActivityForResult(i, 2);
         }
     };

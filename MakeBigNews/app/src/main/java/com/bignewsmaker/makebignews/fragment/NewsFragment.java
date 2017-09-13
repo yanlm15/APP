@@ -20,7 +20,6 @@ import com.bignewsmaker.makebignews.R;
 import com.bignewsmaker.makebignews.activity.ShowNewsActivity;
 import com.bignewsmaker.makebignews.adapter.NewsAdapter;
 import com.bignewsmaker.makebignews.basic_class.ConstData;
-import com.bignewsmaker.makebignews.basic_class.News;
 import com.bignewsmaker.makebignews.basic_class.NewsList;
 import com.bignewsmaker.makebignews.extra_class.LogicTool;
 import com.bignewsmaker.makebignews.extra_class.RetrofitTool;
@@ -44,7 +43,7 @@ public class NewsFragment extends Fragment {
     private NewsAdapter adapter;
     private View view;
     private ConstData const_data = ConstData.getInstance();// 设置访问全局变量接口
-    private LogicTool logic_tool = LogicTool.getInstance();
+    private LogicTool logic_tool=LogicTool.getInstance();
     private Speaker speaker = Speaker.getInstance();// 设置语音系统接口
     private RetrofitTool retrofitTool = RetrofitTool.getInstance();//设置接收器
 
@@ -79,15 +78,14 @@ public class NewsFragment extends Fragment {
     private NewsAdapter.OnItemClickListener mOnItemClickListener = new NewsAdapter.OnItemClickListener() {
         @Override
         public void onClick(View view, int position) {
-
-            News cur=adapter.getNews(position);
-            if (!checkNetworkState() && !const_data.getHaveRead().contains(cur.getNews_ID())) {
-                Toast.makeText(getActivity(), "网络不可用，您可查看已保存或已阅读过的新闻", Toast.LENGTH_SHORT).show();
+            if (!checkNetworkState()) {
+                Toast.makeText(getActivity(), "网络不可用，您可查看已保存新闻", Toast.LENGTH_SHORT).show();
                 return;
             }
             Intent i = new Intent(getContext(), ShowNewsActivity.class);
-            const_data.setCur_news(cur);
-            const_data.setCur_ID(cur.getNews_ID());
+            String id = adapter.getId(position);
+            const_data.setCur_ID(id);
+            const_data.addHaveRead(id);
             startActivityForResult(i, 2);
         }
     };
