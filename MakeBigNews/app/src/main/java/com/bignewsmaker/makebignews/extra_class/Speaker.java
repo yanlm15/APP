@@ -113,7 +113,8 @@ public class Speaker {
         if(mEngineType.equals(SpeechConstant.TYPE_CLOUD)) {
             mTts.setParameter(SpeechConstant.ENGINE_TYPE, SpeechConstant.TYPE_CLOUD);
             // 设置在线合成发音人
-            mTts.setParameter(SpeechConstant.VOICE_NAME, "xiaofeng");
+            mTts.setParameter(SpeechConstant.VOICE_NAME, "");
+            mTts.setParameter(SpeechConstant.VOLUME,"50");
         }else {
             mTts.setParameter(SpeechConstant.ENGINE_TYPE, SpeechConstant.TYPE_LOCAL);
             // 设置本地合成发音人 voicer为空，默认通过语记界面指定发音人。
