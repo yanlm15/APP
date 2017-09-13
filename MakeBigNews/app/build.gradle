@@ -65,4 +65,7 @@ dependencies {
     annotationProcessor 'com.github.bumptech.glide:compiler:4.0.0'
     compile files('/Users/liminyan/Desktop/APP/MakeBigNews/libs/Msc.jar')
     compile files('/Users/liminyan/Desktop/APP/MakeBigNews/libs/Sunflower.jar')
+    compile 'org.litepal.android:core:1.6.0'
+    compile files('E:/Java/APP/MakeBigNews/libs/Msc.jar')
+    compile files('E:/Java/APP/MakeBigNews/libs/Sunflower.jar')
 }

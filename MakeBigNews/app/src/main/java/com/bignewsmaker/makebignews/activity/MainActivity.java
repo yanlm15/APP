@@ -27,14 +27,19 @@ import android.widget.Toast;
 import com.bignewsmaker.makebignews.R;
 import com.bignewsmaker.makebignews.adapter.FragmentNewsAdapter;
 import com.bignewsmaker.makebignews.basic_class.ConstData;
+import com.bignewsmaker.makebignews.basic_class.ConstDataForSave;
+import com.bignewsmaker.makebignews.basic_class.News;
 import com.bignewsmaker.makebignews.extra_class.RetrofitTool;
-import com.bignewsmaker.makebignews.extra_class.Speaker;
 import com.bignewsmaker.makebignews.fragment.NewsFragment;
-import com.iflytek.cloud.SpeechConstant;
-import com.iflytek.cloud.SpeechUtility;
+
+import org.litepal.crud.DataSupport;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+
+//import com.iflytek.cloud.SpeechConstant;
+//import com.iflytek.cloud.SpeechUtility;
 /*
 *重载拖动事件实现拖动更新
 */
@@ -56,10 +61,26 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        ConstDataForSave cdfs = DataSupport.findLast(ConstDataForSave.class);
+        if (cdfs != null&&const_data.isFirstCreate()) {
+            const_data.setFiltered(cdfs.getFiltered());
+            HashMap<String,News> hm=new HashMap<>();
+            for(String id:cdfs.getHaveRead())
+                hm.put(id,null);
+            const_data.setHaveRead(hm);
+            const_data.setDislike(cdfs.getDislike());
+            const_data.setDay(cdfs.isDay());
+            const_data.setShow_picture(cdfs.isShow_picture());
+            for (int i = 0; i < 13; i++)
+                const_data.setIstagSelected(i, cdfs.getIstagSelected(i));
+            const_data.setFirstCreate(false);
+        }
+
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        SpeechUtility.createUtility(this.getBaseContext(), SpeechConstant.APPID +"=59b8bd48");
+//        SpeechUtility.createUtility(this.getBaseContext(), SpeechConstant.APPID +"=59b8bd48");
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         navView = (NavigationView) findViewById(R.id.nav_view);
@@ -224,6 +245,26 @@ public class MainActivity extends AppCompatActivity {
             flag = manager.getActiveNetworkInfo().isAvailable();
         }
         return flag;
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        ConstDataForSave cdfs = DataSupport.findFirst(ConstDataForSave.class);
+        if (cdfs == null)
+            cdfs = new ConstDataForSave();
+        cdfs.setHaveRead(const_data.getHaveRead());
+        cdfs.setDislike(const_data.getDislike());
+        cdfs.setDay(const_data.getDay());
+        cdfs.setShow_picture(const_data.getShow_picture());
+
+        for (int i = 0; i < 13; i++)
+            cdfs.setIstagSelected(i, const_data.getIstagSelected(i));
+
+        cdfs.save();
+        cdfs.updateAll();
+
+
     }
 }
 

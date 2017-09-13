@@ -1,6 +1,7 @@
 package com.bignewsmaker.makebignews.activity;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -50,7 +51,7 @@ public class SearchResultActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_result);
-        setStatusBarColor(SearchResultActivity.this, R.color.colorPrimaryDark);
+        setStatusBarColor(SearchResultActivity.this, Color.parseColor("#303F9F"));
         toolbar = (Toolbar) findViewById(R.id.toolbar3);
         setSupportActionBar(toolbar);
 
@@ -81,6 +82,16 @@ public class SearchResultActivity extends AppCompatActivity {
                 lastVisibleItem = mLayoutManager.findLastVisibleItemPosition();
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (!const_data.getDay()) {
+            recyclerView.setBackgroundColor(Color.rgb(66, 66, 66));
+        } else {
+            recyclerView.setBackgroundColor(Color.rgb(255, 255, 255));
+        }
     }
 
     private NewsAdapter.OnItemClickListener mOnItemClickListener = new NewsAdapter.OnItemClickListener() {
