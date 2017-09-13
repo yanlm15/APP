@@ -58,13 +58,7 @@ dependencies {
     testCompile 'junit:junit:4.12'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.0.0'
     compile 'org.litepal.android:core:1.6.0'
-<<<<<<< HEAD
     compile files('libs/Msc.jar')
-<<<<<<< HEAD
     compile files('libs/Sunflower.jar')
-=======
-=======
 
->>>>>>> parent of a9e8b9d... 我错了……libs的包貌似只能直接路径导入
->>>>>>> 0bdca1e9699497ca9747f8ac93f39b4aae86c7aa
 }

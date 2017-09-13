@@ -1,27 +1,17 @@
 package com.bignewsmaker.makebignews.extra_class;
 
-import android.app.Activity;
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
 import android.support.v7.app.AppCompatActivity;
-import android.text.style.TtsSpan;
 import android.util.Log;
-import android.widget.Toast;
-import android.os.Environment;
 
-import com.bignewsmaker.makebignews.R;
 import com.iflytek.cloud.ErrorCode;
 import com.iflytek.cloud.InitListener;
 import com.iflytek.cloud.SpeechConstant;
 import com.iflytek.cloud.SpeechError;
 import com.iflytek.cloud.SpeechSynthesizer;
-import com.iflytek.cloud.SpeechUtility;
 import com.iflytek.cloud.SynthesizerListener;
-import com.iflytek.cloud.util.ResourceUtil;
-
-import java.util.Locale;
 
 import static android.content.ContentValues.TAG;
 
@@ -84,7 +74,7 @@ public class Speaker {
 
     private void showTip(String text, int code)
     {
-        Toast.makeText(cur, "初始化失败,错误码!"+code, 1).show();
+//        Toast.makeText(cur, "初始化失败,错误码!"+code, 1).show();
 
     }
 
@@ -113,10 +103,8 @@ public class Speaker {
         if(mEngineType.equals(SpeechConstant.TYPE_CLOUD)) {
             mTts.setParameter(SpeechConstant.ENGINE_TYPE, SpeechConstant.TYPE_CLOUD);
             // 设置在线合成发音人
-<<<<<<< HEAD
             mTts.setParameter(SpeechConstant.VOICE_NAME, "");
             mTts.setParameter(SpeechConstant.VOLUME,"50");
-=======
             mTts.setParameter(SpeechConstant.VOICE_NAME, "xiaofeng");
             //设置合成语速
             mTts.setParameter(SpeechConstant.SPEED, mSharedPreferences.getString("speed_preference", "50"));
@@ -124,7 +112,6 @@ public class Speaker {
             mTts.setParameter(SpeechConstant.PITCH, mSharedPreferences.getString("pitch_preference", "50"));
             //设置合成音量
             mTts.setParameter(SpeechConstant.VOLUME, mSharedPreferences.getString("volume_preference", "50"));
->>>>>>> 0bdca1e9699497ca9747f8ac93f39b4aae86c7aa
         }else {
             mTts.setParameter(SpeechConstant.ENGINE_TYPE, SpeechConstant.TYPE_LOCAL);
             // 设置本地合成发音人 voicer为空，默认通过语记界面指定发音人。
