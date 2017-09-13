@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.iflytek.cloud.ErrorCode;
 import com.iflytek.cloud.InitListener;
@@ -74,7 +75,7 @@ public class Speaker {
 
     private void showTip(String text, int code)
     {
-//        Toast.makeText(cur, "初始化失败,错误码!"+code, 1).show();
+        Toast.makeText(cur, "初始化失败,错误码!"+code, 1).show();
 
     }
 
@@ -103,15 +104,14 @@ public class Speaker {
         if(mEngineType.equals(SpeechConstant.TYPE_CLOUD)) {
             mTts.setParameter(SpeechConstant.ENGINE_TYPE, SpeechConstant.TYPE_CLOUD);
             // 设置在线合成发音人
-            mTts.setParameter(SpeechConstant.VOICE_NAME, "");
             mTts.setParameter(SpeechConstant.VOLUME,"50");
             mTts.setParameter(SpeechConstant.VOICE_NAME, "xiaofeng");
             //设置合成语速
-            mTts.setParameter(SpeechConstant.SPEED, mSharedPreferences.getString("speed_preference", "50"));
-            //设置合成音调
-            mTts.setParameter(SpeechConstant.PITCH, mSharedPreferences.getString("pitch_preference", "50"));
+//            mTts.setParameter(SpeechConstant.SPEED, mSharedPreferences.getString("speed_preference", "50"));
+//            //设置合成音调
+//            mTts.setParameter(SpeechConstant.PITCH, mSharedPreferences.getString("pitch_preference", "50"));
             //设置合成音量
-            mTts.setParameter(SpeechConstant.VOLUME, mSharedPreferences.getString("volume_preference", "50"));
+            mTts.setParameter(SpeechConstant.VOLUME, "50");
         }else {
             mTts.setParameter(SpeechConstant.ENGINE_TYPE, SpeechConstant.TYPE_LOCAL);
             // 设置本地合成发音人 voicer为空，默认通过语记界面指定发音人。
@@ -119,7 +119,7 @@ public class Speaker {
 
         }
         //设置播放器音频流类型
-        mTts.setParameter(SpeechConstant.STREAM_TYPE, mSharedPreferences.getString("stream_preference", "3"));
+//        mTts.setParameter(SpeechConstant.STREAM_TYPE, mSharedPreferences.getString("stream_preference", "3"));
         // 设置播放合成音频打断音乐播放，默认为true
         mTts.setParameter(SpeechConstant.KEY_REQUEST_FOCUS, "true");
 
@@ -149,7 +149,7 @@ public class Speaker {
         {
             System.out.println("wo cao ni ma");
         }
-//        setParam();
+        setParam();
         int code = mTts.startSpeaking(text, mTtsListener);
 
 

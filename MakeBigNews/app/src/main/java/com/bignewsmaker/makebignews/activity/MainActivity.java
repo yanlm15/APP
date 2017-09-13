@@ -83,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        SpeechUtility.createUtility(this.getBaseContext(), SpeechConstant.APPID +"=59b8bd48");
+        SpeechUtility.createUtility(this.getBaseContext(), SpeechConstant.APPID +"=59aa4e19");
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         navView = (NavigationView) findViewById(R.id.nav_view);
