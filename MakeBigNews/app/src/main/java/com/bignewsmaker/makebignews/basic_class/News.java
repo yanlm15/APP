@@ -2,6 +2,7 @@ package com.bignewsmaker.makebignews.basic_class;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 
 public class News implements Serializable {
     protected String lang_Type = null;
@@ -26,13 +27,13 @@ public class News implements Serializable {
 
     protected String news_Content;
     protected boolean isRead = false;
-    protected ArrayList<Item1> Keywords = new ArrayList<>();
+    protected List<Item1> Keywords = new ArrayList<>();
 
-    public ArrayList<Item1> getKeywords() {
+    public List<Item1> getKeywords() {
         return Keywords;
     }
 
-    public void setKeywords(ArrayList<Item1> keywords) {
+    public void setKeywords(List<Item1> keywords) {
         Keywords = keywords;
     }
 

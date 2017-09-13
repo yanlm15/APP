@@ -107,11 +107,10 @@ public class SearchResultActivity extends AppCompatActivity {
 
     private void loadNews(final boolean isFirst) {
         NetService service = retrofitTool.getRetrofit().create(NetService.class);
-        Map<String, String> url = new HashMap<String, String>() {{
-            put("keyword", keyword);
-            put("pageNo", String.valueOf(newsList == null ? 1 : newsList.getPageNo() + 1));
-            put("pageSize", const_data.getCur_pageSize());
-        }};
+        Map<String, String> url = new HashMap<>();
+        url.put("keyword", keyword);
+        url.put("pageNo", String.valueOf(newsList == null ? 1 : newsList.getPageNo() + 1));
+        url.put("pageSize", const_data.getCur_pageSize());
         Call<NewsList> repos = service.listReposbymap("search", url);
         repos.enqueue(new Callback<NewsList>() {
             @Override

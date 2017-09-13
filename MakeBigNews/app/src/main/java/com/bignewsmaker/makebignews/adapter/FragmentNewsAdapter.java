@@ -10,7 +10,7 @@ import java.util.List;
 
 public class FragmentNewsAdapter extends FragmentPagerAdapter {
     private ConstData const_data = ConstData.getInstance();// 设置访问全局变量接口
-    private String[] titles = new String[]{"全部", "科技", "教育", "军事", "国内", "社会", "文化", "汽车", "国际", "体育", "财经", "健康", "娱乐"};
+    private String[] titles = new String[]{"全部", "推荐","科技", "教育", "军事", "国内", "社会", "文化", "汽车", "国际", "体育", "财经", "健康", "娱乐"};
     private List<Fragment> list;
 
 
@@ -34,7 +34,7 @@ public class FragmentNewsAdapter extends FragmentPagerAdapter {
     @Override
     public CharSequence getPageTitle(int position) {
         int i,temp=0;
-        for (i = 0; i < 13; i++){
+        for (i = 0; i < 14; i++){
             if (const_data.getIstagSelected(i))
                 temp++;
             if(temp==position+1)

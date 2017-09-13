@@ -75,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
             const_data.setDislike(cdfs.getDislike());
             const_data.setDay(cdfs.isDay());
             const_data.setShow_picture(cdfs.isShow_picture());
-            for (int i = 0; i < 13; i++)
+            for (int i = 0; i < 14; i++)
                 const_data.setIstagSelected(i, cdfs.getIstagSelected(i));
             const_data.setFirstCreate(false);
         }
@@ -98,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
         mTabLayout = (TabLayout) findViewById(R.id.tablayout);
         mFragments = new ArrayList<>();
         int j = 0;
-        for (int i = 0; i < 13; i++) {
+        for (int i = 0; i < 14; i++) {
             if (const_data.getIstagSelected(i)) {
                 mFragments.add(NewsFragment.newInstance(j));
                 j++;
@@ -261,7 +261,7 @@ public class MainActivity extends AppCompatActivity {
         cdfs.setDay(const_data.getDay());
         cdfs.setShow_picture(const_data.getShow_picture());
 
-        for (int i = 0; i < 13; i++)
+        for (int i = 0; i < 14; i++)
             cdfs.setIstagSelected(i, const_data.getIstagSelected(i));
 
         cdfs.save();

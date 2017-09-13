@@ -1,7 +1,6 @@
 package com.bignewsmaker.makebignews.basic_class;
 
 
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
@@ -38,17 +37,7 @@ public class ConstData {
 
     private HashSet<String> filtered=new HashSet<>();
     private static ConstData cur;
-    private TreeMap<String,Integer> like1 = new TreeMap<String, Integer>();
-    private TreeMap<String,Integer> like = new TreeMap<String, Integer>(new Comparator<String>() {
-        @Override
-        public int compare(String s, String t1) {
-                if (like1.get(s) < like1.get(t1))
-                    return 1;
-                if (like1.get(s) > like1.get(t1))
-                    return -1;
-            return 0;
-        }
-    });
+    private TreeMap<String,Integer> like = new TreeMap<String, Integer>();
 
     private String cur_ID = "201608090432c815a85453c34d8ca43a591258701e9b";
 
@@ -60,9 +49,10 @@ public class ConstData {
 
     public static final String TAG = "makebignews";
     private HashMap<String,News> haveRead=new HashMap<>();
-    private boolean[] istagSelected={true,true,true,true,true,true,true,true,true,true,true,true,true};
+    private boolean[] istagSelected={true,true,true,true,true,true,true,true,true,true,true,true,true,true};
 
     private boolean isFirstCreate;
+
 
 
 
@@ -118,10 +108,6 @@ public class ConstData {
 
     public void setHaveRead(HashMap<String, News> haveRead) {
         this.haveRead = haveRead;
-    }
-
-    public TreeMap<String, Integer> getLike1() {
-        return like1;
     }
 
     public boolean isSetChanged() {
@@ -206,32 +192,11 @@ public class ConstData {
         this.dislike = dislike;
     }
 
-    public void setLike(String name) {
-        boolean e = this.like.containsKey(name);
-        if (e == true)
-        {
-            String s_name = name;
-            int number = this.like.get(s_name);
-            number ++;
-            this.like.put(s_name,number);
-        }else {
-            this.like.put(name,0);
-        }
+    public void addLike(String name,Integer value) {
+        like.put(name,like.containsKey(name)?like.get(name)+value:value);
     }
 
-    public void setLike1(String  name) {
 
-        boolean e = this.like1.containsKey(name);
-        if (e == true)
-        {
-            String s_name = name;
-            int number = this.like1.get(s_name);
-            number ++;
-            this.like1.put(s_name,number);
-        }else {
-            this.like1.put(name,0);
-        }
-    }
 
     public void setCur_newslist(NewsList cur_newslist) {
         this.cur_newslist = cur_newslist;

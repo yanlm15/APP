@@ -107,7 +107,7 @@ public class SetActivity extends AppCompatActivity {
                 AlertDialog.Builder builder = new AlertDialog.Builder(SetActivity.this);
                 builder.setIcon(R.mipmap.ic_launcher);
                 builder.setTitle("请选择您喜好的类别");
-                final String[] category = {"科技", "教育", "军事", "国内", "社会", "文化", "汽车", "国际", "体育", "财经", "健康", "娱乐"};
+                final String[] category = {"推荐","科技", "教育", "军事", "国内", "社会", "文化", "汽车", "国际", "体育", "财经", "健康", "娱乐"};
                 //    设置一个单项选择下拉框
                 /**
                  * 第一个参数指定我们要显示的一组下拉多选框的数据集合
@@ -115,7 +115,7 @@ public class SetActivity extends AppCompatActivity {
                  * 需要传递一个boolean[]数组进去，其长度要和第一个参数的长度相同，例如 {true, false, false, true};
                  * 第三个参数给每一个多选项绑定一个监听器
                  */
-                final boolean[] isSeleted = new boolean[12];
+                final boolean[] isSeleted = new boolean[13];
                 for (int i = 0; i < isSeleted.length; i++)
                     isSeleted[i] = const_data.getIstagSelected(i + 1);
 

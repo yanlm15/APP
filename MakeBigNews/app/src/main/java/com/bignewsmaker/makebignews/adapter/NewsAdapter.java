@@ -21,7 +21,6 @@ import com.bignewsmaker.makebignews.basic_class.News;
 import com.bignewsmaker.makebignews.extra_class.RetrofitTool;
 import com.bumptech.glide.Glide;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -126,7 +125,7 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     @Override
                     public void onResponse(Call<News> call, Response<News> response) {
                         if (response.isSuccessful()) {
-                            ArrayList<Item1> item1 = response.body().getKeywords();
+                            List<Item1> item1 = response.body().getKeywords();
                             String[] keywords = new String[item1.size()>5?5:item1.size()];
                             for (int i = 0; i < keywords.length; i++)
                                 keywords[i] = item1.get(i).word;

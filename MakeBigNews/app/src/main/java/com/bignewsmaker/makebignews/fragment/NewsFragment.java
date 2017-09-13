@@ -26,8 +26,13 @@ import com.bignewsmaker.makebignews.extra_class.LogicTool;
 import com.bignewsmaker.makebignews.extra_class.RetrofitTool;
 import com.bignewsmaker.makebignews.extra_class.Speaker;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -80,7 +85,7 @@ public class NewsFragment extends Fragment {
         @Override
         public void onClick(View view, int position) {
 
-            News cur=adapter.getNews(position);
+            News cur = adapter.getNews(position);
             if (!checkNetworkState() && !const_data.getHaveRead().contains(cur.getNews_ID())) {
                 Toast.makeText(getActivity(), "网络不可用，您可查看已保存或已阅读过的新闻", Toast.LENGTH_SHORT).show();
                 return;
@@ -161,30 +166,71 @@ public class NewsFragment extends Fragment {
 
     private void loadNews(final boolean isRefresh, String tp, Map<String, String> m) {
         NetService service = retrofitTool.getRetrofit().create(NetService.class);
-        Map<String, String> url = new HashMap<>();
-        url.put("pageNo", String.valueOf(newsList == null ? 1 : newsList.getPageNo() + 1));
-        url.put("pageSize", const_data.getCur_pageSize());
-        if (category != 0)
-            url.put("category", String.valueOf(category));
 
-        Call<NewsList> repos = service.listReposbymap("latest", url);
-        repos.enqueue(new Callback<NewsList>() {
-            @Override
-            public void onResponse(Call<NewsList> call, Response<NewsList> response) {
-                if (response.isSuccessful()) {
-                    newsList = logic_tool.filter_dislike(response.body());
-                    if (isRefresh)
-                        refreshNews();
-                    else
-                        loadMoreNews();
+        if (category != 1) {
+            Map<String, String> url = new HashMap<>();
+            url.put("pageNo", String.valueOf(newsList == null ? 1 : newsList.getPageNo() + 1));
+            url.put("pageSize", const_data.getCur_pageSize());
+            if (category != 0)
+                url.put("category", String.valueOf(category - 1));
+
+            Call<NewsList> repos = service.listReposbymap("latest", url);
+            repos.enqueue(new Callback<NewsList>() {
+                @Override
+                public void onResponse(Call<NewsList> call, Response<NewsList> response) {
+                    if (response.isSuccessful()) {
+                        newsList = logic_tool.filter_dislike(response.body());
+                        if (isRefresh)
+                            refreshNews();
+                        else
+                            loadMoreNews();
+                    }
                 }
-            }
 
-            @Override
-            public void onFailure(Call<NewsList> call, Throwable t) {
-                t.printStackTrace();
+                @Override
+                public void onFailure(Call<NewsList> call, Throwable t) {
+                    t.printStackTrace();
+                }
+            });
+        } else {
+            TreeMap<String,Integer> key = const_data.getLike();
+            String keyword;
+            if (key.size() == 0) {
+                keyword = "java java java java java";
+            } else{
+                List<Map.Entry<String, Integer>> list = new ArrayList<>(key.entrySet());
+                Collections.sort(list,new Comparator<Map.Entry<String,Integer>>() {
+                    @Override
+                    public int compare(Map.Entry<String, Integer> o1, Map.Entry<String, Integer> o2) {
+                        return -o1.getValue().compareTo(o2.getValue());
+                    }
+                });
+                keyword=list.get(0).getKey()+" "+list.get(1).getKey()+" "+list.get(2).getKey()+" "
+                        +list.get(3).getKey()+" "+list.get(4).getKey()+" ";
             }
-        });
+            Map<String, String> url = new HashMap<String, String>();
+            url.put("keyword", keyword);
+            url.put("pageNo", String.valueOf(newsList == null ? 1 : newsList.getPageNo() + 1));
+            url.put("pageSize", const_data.getCur_pageSize());
+            Call<NewsList> repos = service.listReposbymap("search",url);
+            repos.enqueue(new Callback<NewsList>() {
+                @Override
+                public void onResponse(Call<NewsList> call, Response<NewsList> response) {
+                    if (response.isSuccessful()) {
+                        newsList = logic_tool.filter_dislike(response.body());
+                        if (isRefresh)
+                            refreshNews();
+                        else
+                            loadMoreNews();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<NewsList> call, Throwable t) {
+                    t.printStackTrace();
+                }
+            });
+        }
     }
 
     private void refreshNews() {

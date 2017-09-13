@@ -41,6 +41,7 @@ import java.io.InputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -495,11 +496,6 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
             String myt = data.getNews_Title() + "," + data.getNews_Content();
             speaker.setText(myt);
             news_content = myt;
-            ArrayList<Item1> a = data.getKeywords();
-            for (Item1 i : a){//添加关键词
-                const_data.setLike1(i.word);
-                const_data.setLike(i.word);
-            }
 
             picture_init(data.getNews_Pictures());
             System.out.println(data.getNews_Pictures());
@@ -547,11 +543,11 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
                             String myt = data.getNews_Title() + "," + data.getNews_Content();
 //                            speaker.setText(myt);
                             news_content = myt;
-                            ArrayList<Item1> a = data.getKeywords();
+                            List<Item1> a = data.getKeywords();
                             for (Item1 i : a) {//添加关键词
-                                const_data.setLike1(i.word);
-                                const_data.setLike(i.word);
+                                const_data.addLike(i.word,Double.valueOf(i.score).intValue());
                             }
+
 
                             picture_init(data.getNews_Pictures());
                             title = data.getNews_Title();

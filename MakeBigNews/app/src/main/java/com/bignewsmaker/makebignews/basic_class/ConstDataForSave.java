@@ -17,7 +17,7 @@ public class ConstDataForSave extends DataSupport {
     private boolean isDay = true;
     private HashSet<String> filtered=new HashSet<>();
     private TreeMap<String,Integer> dislike = new TreeMap<String,Integer>();// 不喜欢的词条
-    private boolean[] istagSelected={true,true,true,true,true,true,true,true,true,true,true,true,true};
+    private boolean[] istagSelected={true,true,true,true,true,true,true,true,true,true,true,true,true,true};
     private Set<String> haveRead=new HashSet<>();
 
 
