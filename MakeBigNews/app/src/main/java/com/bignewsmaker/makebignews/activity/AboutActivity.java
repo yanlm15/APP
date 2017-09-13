@@ -7,7 +7,7 @@ import android.widget.TextView;
 import com.bignewsmaker.makebignews.R;
 import com.bignewsmaker.makebignews.basic_class.ConstData;
 
-import java.util.HashSet;
+import java.util.Set;
 
 public class AboutActivity extends AppCompatActivity {
     private ConstData const_data = ConstData.getInstance();// 设置访问全局变量接口
@@ -16,7 +16,7 @@ public class AboutActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_about);
         TextView textView=(TextView)findViewById(R.id.about);
-        HashSet<String> hs= const_data.getHaveRead();
+        Set<String> hs= const_data.getHaveRead();
         String s="";
         for(String e:hs)
             s+=e+"  ";

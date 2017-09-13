@@ -87,9 +87,9 @@ public class SearchResultActivity extends AppCompatActivity {
         @Override
         public void onClick(View view, int position) {
             Intent i = new Intent(SearchResultActivity.this, ShowNewsActivity.class);
-            String id = adapter.getId(position);
+            String id = adapter.getNews(position).getNews_ID();
             const_data.setCur_ID(id);
-            const_data.addHaveRead(id);
+//            const_data.addHaveRead(adapter.getNews(position));
             startActivityForResult(i, 2);
         }
     };
