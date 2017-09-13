@@ -115,7 +115,6 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             public void onClick(View view) {
                 final int position = holder.getAdapterPosition();
                 final News news = mNewsList.get(position);
-                const_data.addFiltered(news.getNews_ID());
 
                 mNewsList.remove(position);
                 notifyDataSetChanged();
@@ -263,8 +262,9 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             public void onClick(DialogInterface dialog, int which) {
                 for(int i=0;i<keywords.length;i++){
                     if(checked[i])
-                        const_data.setDislike(keywords[i]);
+                        const_data.addDislike(keywords[i]);
                 }
+                const_data.addFiltered(news.getNews_ID());
                 Toast.makeText(context, "已屏蔽相关新闻，刷新后生效", Toast.LENGTH_SHORT).show();
 
             }

@@ -5,8 +5,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -14,22 +12,24 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
+import com.bignewsmaker.makebignews.Interface.NetService;
 import com.bignewsmaker.makebignews.R;
 import com.bignewsmaker.makebignews.adapter.NewsAdapter;
 import com.bignewsmaker.makebignews.basic_class.ConstData;
 import com.bignewsmaker.makebignews.basic_class.News;
 import com.bignewsmaker.makebignews.basic_class.NewsList;
-import com.google.gson.Gson;
+import com.bignewsmaker.makebignews.extra_class.RetrofitTool;
 
-import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.ObjectInputStream;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import static com.bignewsmaker.makebignews.activity.MainActivity.setStatusBarColor;
 
@@ -40,9 +40,11 @@ public class SavedActivity extends AppCompatActivity {
     private LinearLayoutManager mLayoutManager;
     private RecyclerView recyclerView;
     private NewsAdapter adapter;
+    private List<News> listnews;
     private NewsList newsList;
     private Context mContext;
     private ConstData const_data = ConstData.getInstance();// 设置访问全局变量接口
+    private RetrofitTool retrofitTool = RetrofitTool.getInstance();//设置接收器
     private String id_list[];
     private int count;
     private int category;
@@ -58,13 +60,9 @@ public class SavedActivity extends AppCompatActivity {
 
 
         mContext = getApplicationContext();
-        newsList = new NewsList();
         mLayoutManager = new LinearLayoutManager(this);
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view_saved);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-
-
-
 
         //收藏上限
         id_list = new String[20];
@@ -79,16 +77,9 @@ public class SavedActivity extends AppCompatActivity {
                 count++;
             }
         }
-
         System.out.println("收藏新闻ID： " + id_list[0]);
 
-
-
-        adapter = new NewsAdapter(newsList.getList(), this, true);
-        recyclerView.setLayoutManager(mLayoutManager);
-        recyclerView.setAdapter(adapter);
-        adapter.setOnItemClickListener(mOnItemClickListener);
-        loadMoreNews();
+        loadNews();
 
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -96,12 +87,13 @@ public class SavedActivity extends AppCompatActivity {
                 super.onScrollStateChanged(recyclerView, newState);
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                     if (adapter.isFadeTips() == false && lastVisibleItem + 1 == adapter.getItemCount()) {
-                        loadMoreNews();
+//                        loadMoreNews();
+                        adapter.setHasMore(false);
+                        adapter.setFadeTips(true);
+                        adapter.notifyDataSetChanged();
+
                     }
 
-                    if (adapter.isFadeTips() == true && lastVisibleItem + 2 == adapter.getItemCount()) {
-                        loadMoreNews();
-                    }
                 }
             }
 
@@ -133,112 +125,60 @@ public class SavedActivity extends AppCompatActivity {
         }
     };
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        recreate();
-    }
-
-    private void loadMoreNews() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-
-
-                loadNews();
-
-
-
-
-                Message msg = new Message();
-                loadmore.sendMessage(msg);
-            }
-        }).start();
-    }
-
-
-    Handler loadmore = new Handler() {
-        public void handleMessage(Message msg) {
-            if (newsList == null || newsList.getList().size() == 0) {
-                adapter.setHasMore(false);
-                adapter.setFadeTips(true);
-            } else {
-                if (newsList.getList().size() < Integer.parseInt(const_data.getCur_pageSize())) {
-                    adapter.setHasMore(false);
-                    adapter.setFadeTips(true);
-                }
-//                adapter.add(newsList.getList());
-            }
-            adapter.notifyDataSetChanged();
-        }
-    };
-
     private void loadNews() {
-
 
         int cnt = 0;
         SharedPreferences shared = getSharedPreferences("saved_news_num", Context.MODE_PRIVATE);
         cnt = shared.getInt("num", 0);
         System.out.println("总共收藏了  " + cnt + "   条新闻");
-
-        if (cnt == 0) {
-            String s = "";
-            try {
-                HttpURLConnection conn;
-                String pageNo = String.valueOf(newsList == null ? 1 : newsList.getPageNo() + 1);
-                String url = "http://166.111.68.66:2042/news/action/query/search?keyword=" + "123456789" + "&pageNo=" + pageNo +
-                        "&pageSize=" + const_data.getCur_pageSize();
-                URL u = new URL(url);
-                conn = (HttpURLConnection) u.openConnection();
-                InputStream inputStream = conn.getInputStream();
-                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-                byte[] buffer = new byte[1024];
-                int len = -1;
-                while ((len = inputStream.read(buffer)) != -1)
-                    outputStream.write(buffer, 0, len);
-                byte[] data = outputStream.toByteArray();
-                s += new String(data, "utf-8");
-                outputStream.close();
-                inputStream.close();
-                conn.disconnect();
-                Gson gson = new Gson();
-                newsList = gson.fromJson(s, NewsList.class);
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        else if ( cnt > 0 ){
-            for ( int k = 0; k < cnt; k++ ){
-                try
-                {
+        if (true) {
+            for (int k = 0; k < cnt; k++) {
+                try {
                     //Student对象反序列化过程
-                    FileInputStream fis = mContext.openFileInput(id_list[k]+".txt");
+                    FileInputStream fis = mContext.openFileInput(id_list[k] + ".txt");
                     ObjectInputStream ois = new ObjectInputStream(fis);
                     News news = (News) ois.readObject();
 
-                    System.out.println("###收藏###"+k+news.getNews_ID());
+                    System.out.println("###收藏###" + k + news.getNews_ID());
 
-                    newsList.add_news(news);
+                    listnews.add(news);
                     ois.close();
                     fis.close();
-                }
-                catch(ClassNotFoundException e)
-                {
+                } catch (ClassNotFoundException e) {
                     e.printStackTrace();
-                }
-                catch (IOException e)
+                } catch (IOException e)
                 {
                     e.printStackTrace();
                 }
             }
         }
+        if (true) {
+            NetService service = retrofitTool.getRetrofit().create(NetService.class);
+            Map<String, String> url = new HashMap<String, String>() {{
+                put("keyword", "123");
+                put("pageNo", String.valueOf(newsList == null ? 1 : newsList.getPageNo() + 1));
+                put("pageSize", const_data.getCur_pageSize());
+            }};
+            Call<NewsList> repos = service.listReposbymap("search", url);
+            repos.enqueue(new Callback<NewsList>() {
+                @Override
+                public void onResponse(Call<NewsList> call, Response<NewsList> response) {
+                    if (response.isSuccessful()) {
+                        newsList = response.body();
+                        adapter = new NewsAdapter(listnews==null?newsList.getList():listnews, mContext, true);
+                        recyclerView.setLayoutManager(mLayoutManager);
+                        recyclerView.setAdapter(adapter);
+                        adapter.setOnItemClickListener(mOnItemClickListener);
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<NewsList> call, Throwable t) {
+                    t.printStackTrace();
+                }
+            });
+        }
+
     }
 
 }
