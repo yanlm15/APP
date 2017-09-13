@@ -199,6 +199,24 @@ public class MainActivity extends AppCompatActivity {
                 currentBackPressedTime = System.currentTimeMillis();
                 Toast.makeText(this, "再按一次返回键退出程序", Toast.LENGTH_SHORT).show();
             } else {
+                ConstDataForSave cdfs;
+                if (DataSupport.isExist(ConstDataForSave.class))
+                    cdfs = DataSupport.findLast(ConstDataForSave.class);
+                else
+                    cdfs = new ConstDataForSave();
+                cdfs.setHaveRead(const_data.getHaveRead());
+                cdfs.setDislike(const_data.getDislike());
+                cdfs.setFiltered(const_data.getFiltered());
+                cdfs.setDay(const_data.getDay());
+                cdfs.setShow_picture(const_data.getShow_picture());
+
+                for (int i = 0; i < 14; i++)
+                    cdfs.setIstagSelected(i, const_data.getIstagSelected(i));
+
+                cdfs.setLike(const_data.getLikeWord());
+
+                cdfs.save();
+                cdfs.updateAll();
                 finish();
             }
         }
@@ -276,26 +294,9 @@ public class MainActivity extends AppCompatActivity {
 
 
     @Override
-    protected void onPause() {
-        super.onPause();
-        ConstDataForSave cdfs;
-        if (DataSupport.isExist(ConstDataForSave.class))
-            cdfs = DataSupport.findLast(ConstDataForSave.class);
-        else
-            cdfs = new ConstDataForSave();
-        cdfs.setHaveRead(const_data.getHaveRead());
-        cdfs.setDislike(const_data.getDislike());
-        cdfs.setFiltered(const_data.getFiltered());
-        cdfs.setDay(const_data.getDay());
-        cdfs.setShow_picture(const_data.getShow_picture());
+    protected void onDestroy() {
+        super.onDestroy();
 
-        for (int i = 0; i < 14; i++)
-            cdfs.setIstagSelected(i, const_data.getIstagSelected(i));
-
-        cdfs.setLike(const_data.getLikeWord());
-
-        cdfs.save();
-        cdfs.updateAll();
     }
 }
 

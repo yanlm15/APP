@@ -204,8 +204,7 @@ public class NewsFragment extends Fragment {
                         return -o1.getValue().compareTo(o2.getValue());
                     }
                 });
-                keyword=list.get(0).getKey()+" "+list.get(1).getKey()+" "+list.get(2).getKey()+" "
-                        +list.get(3).getKey()+" "+list.get(4).getKey()+" ";
+                keyword=list.get(0).getKey()+" "+list.get(1).getKey()+" "+list.get(2).getKey()+" " +list.get(3).getKey();
             }
             Map<String, String> url = new HashMap<String, String>();
             url.put("keyword", keyword);

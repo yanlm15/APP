@@ -87,6 +87,7 @@ public class SearchResultActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        adapter.notifyDataSetChanged();
         if (!const_data.getDay()) {
             recyclerView.setBackgroundColor(Color.rgb(66, 66, 66));
         } else {

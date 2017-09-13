@@ -544,8 +544,11 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
 //                            speaker.setText(myt);
                             news_content = myt;
                             List<Item1> a = data.getKeywords();
+                            int j=10;
                             for (Item1 i : a) {//添加关键词
                                 const_data.addLike(i.word,Double.valueOf(i.score).intValue());
+                                if(--j==0)
+                                    break;
                             }
 
 
