@@ -141,12 +141,11 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
             String jstr = "";
             try
             {
-                System.out.println(">as<");
                 jstr= InternetPicturetool.getInstance().getHTML(title);
 
             }
             catch (Exception e){
-//                System.out.println(e);
+                System.out.println(e);
             }
 
             return jstr;
@@ -155,24 +154,12 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
         protected void onPostExecute(String result) {
 
             int i = 0;
-            for (String  e: InternetPicturetool.getInstance().getResult())
-            {
-                System.out.println(e);
-            }
-            System.out.println(picture.size());
-
-
-            if (picture.size()==0);
-            {
-                System.out.println("in");
-                for (String  e: InternetPicturetool.getInstance().getResult())
-                {
+            if (picture.size()==0);{
+                for (String  e: InternetPicturetool.getInstance().getResult()) {
                     picture.add(e);
                     System.out.println(e);
                     i++;
-
-                    if (i>=minnumber)
-                    {
+                    if (i>=minnumber) {
                         break;
                     }
                 }
@@ -192,21 +179,16 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
 
     }
 
-    private News getNews()
-    {
-//        return myNews.formNews(myNews);
+    private News getNews() {
         return myNews;
     }
     private MyLogicTool myLogicTool = new MyLogicTool();
 
-    public void setContext_rec()
-    {
+    public void setContext_rec() {
         getContext_rec();
     }
 
-    public void getContext_rec()
-    {
-        System.out.println( ">>>" + myNews.getNews_Title());
+    public void getContext_rec() {
         myLogicTool.recommend_by_tytle(myNews.getNews_Title(),3);
     }
 
@@ -334,12 +316,12 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
             picture.add(m.group());
 
     }
+
     public void onSuccess(int k){
         setText(k);
     }
 
-    String clearExtra(String  str)
-    {
+    String clearExtra(String  str) {
         String s = str;
         Pattern p = Pattern.compile("\\[[^\\],\\[]*\\]");
         Matcher m = p.matcher(s);
@@ -356,8 +338,7 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
     }
 
 
-    String setURL(String str,String arm) //关键字超链接
-    {
+    String setURL(String str,String arm) {//关键字超链接
         String s = str;
         Pattern p = Pattern.compile(arm);
         Matcher m = p.matcher(s);
@@ -365,8 +346,7 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
         return s;
     }
 
-    String jump_peo (String str)
-    {
+    String jump_peo (String str) {
         String s = str;
         for (Item2 e : myNews.getPersons() )
         {
@@ -375,15 +355,13 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
         return  s;
     }
 
-    String empty_i(int i)
-    {
+    String empty_i(int i) {
         String s ="<img src=\"file://"+"/android_res/drawable/t.jpg\""+ "alt=\""+String.valueOf(i)+"\" " + "/>";
 
         return s;
     }
 
-    String getPicture_id(int i)
-    {
+    String getPicture_id(int i) {
         System.out.print(okDownload);
         String s;
         if (okDownload == true)
@@ -393,8 +371,7 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
         return s;
     }
 
-    String setbody(String str)
-    {
+    String setbody(String str) {
         String s = str;
         Pattern p = Pattern.compile("\\s{2,1000}");
         Matcher m = p.matcher(s);
@@ -402,11 +379,8 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
         return s;
     }
 
-    String setP(String str,int num)// 添加图片，图片标号
-    {
+    String setP(String str,int num) {// 添加图片，图片标号
         String s=str;
-        System.out.println("do _ add");
-
         if(num < picture.size()) {
             Pattern p = Pattern.compile(empty_i(num));
             Matcher m = p.matcher(s);
@@ -416,35 +390,28 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
         return s;
     }
 
-    String setEmptyP(String str)
-    {
+    String setEmptyP(String str) {
         String s =str;
         String[] strs = s.split("</p><p>");
         s = "";
         double asd = strs.length *1.0 / picture.size();
         int k = 0 ;
-        System.out.println("---------->"+asd+"f:"+strs.length+"p:"+picture.size());
-        for (int i=0 ; (i < strs.length-1)  ;i++)
-        {
-            if(k<picture.size() && k*asd<=i)
-            {
+        for (int i=0 ; (i < strs.length-1)  ;i++) {
+            if(k<picture.size() && k*asd<=i) {
                 s+=strs[i]+"</p>"+ empty_i(k) +"<p>";
                 k++;
             }
             else
                 s+=strs[i]+"</p><p>";
-//            k++;
         }
         if (strs[strs.length-1].contains("下一页") == false
                 && strs[strs.length-1].contains("严禁转载") == false
                 )
             s+=strs[strs.length-1];
-        System.out.println(s);
         return s;
     }
 
-    String gettype(int num)// 清除多余标签
-    {
+    String gettype(int num) {// 清除多余标签
         String s = picture.get(num);
         Pattern p = Pattern.compile("(jpg|png|jpeg|gif)");
         Matcher m = p.matcher(s);
@@ -453,9 +420,7 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
 
     }
 
-
-    void  showText()
-    {
+    void  showText() {
         TextView et2 = (TextView) findViewById(R.id.textView2);
         String ccontext =
                 "<html>"
@@ -506,11 +471,9 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
         showText();
     }//请求结束后设置显示格式
 
-    public void getpicture(final String url,final int i)//请求图片
-    {
+    public void getpicture(final String url,final int i) {//请求图片
         UrlService service = RetrofitTool.getInstance().getRetrofit().create(UrlService.class);
         Call<ResponseBody> urepos = service.downloadPicFromNet(url);
-        System.out.println("load");
         urepos.enqueue(new Callback<ResponseBody>() {
 
             @Override
@@ -519,10 +482,8 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
                 {
                     writeResponseBodyToDisk(response.body(), i);
                     File file = new File(getDir(i));
-                    System.out.println("okLoad : "+url);
                     onSuccess(0);
                 }else {
-                    System.out.println("fLoad"+ i +":"+url);
                     okDownload = false;
                     setP(context,i);
                     onSuccess(i+1);
@@ -535,8 +496,7 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
         });
     }
 
-    public void getText(String id)//请求文本
-    {
+    public void getText(String id) {//请求文本
 
         NewsService service = retrofitTool.getRetrofit().create(NewsService.class);
 
@@ -602,12 +562,9 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
         });
     }
 
-    private boolean writeResponseBodyToDisk(ResponseBody body,int i)//图片缓存-写到文件里
-    {
+    private boolean writeResponseBodyToDisk(ResponseBody body,int i) {//图片缓存-写到文件里
 
         try{
-//            BitmapFactory.Options options = new BitmapFactory.Options();
-//            options.inPreferredConfig = Bitmap.Config.RGB_565;//质量压缩;
             File futureStudioIconFile = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES) +File.separator+id);
             if (futureStudioIconFile.exists()==false)
             {
@@ -788,7 +745,6 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
         Toast.makeText(getApplicationContext(), "收藏成功", Toast.LENGTH_SHORT).show();
 
         News SavedNews = getNews();
-//        File file = new File(getExternalFilesDir(null)+File.separator+"SavedNews" +File.separator+id);
         try
         {
             FileOutputStream fos = mContext.openFileOutput( id+".txt", Context.MODE_PRIVATE);
@@ -842,6 +798,7 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
         isread = true;
         this.invalidateOptionsMenu();
     }
+
     public void voice_stop(){
         speaker.stop();
         isread = false;

@@ -1,8 +1,12 @@
 package com.bignewsmaker.makebignews.extra_class;
 
+import android.content.Context;
 import android.speech.tts.TextToSpeech;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
+
+import com.iflytek.cloud.SpeechConstant;
+import com.iflytek.cloud.SpeechUtility;
 
 import java.util.Locale;
 
@@ -28,6 +32,8 @@ public class Speaker {
     }
 
     public void setCur(AppCompatActivity cur) {
+        SpeechUtility.createUtility(cur.getBaseContext(), SpeechConstant.APPID +"=12345678");
+        System.out.println(SpeechConstant.APPID +"=12345678");
         this.cur = cur;
     }
 
