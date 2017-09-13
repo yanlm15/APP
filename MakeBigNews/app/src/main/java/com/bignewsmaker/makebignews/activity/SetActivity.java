@@ -16,12 +16,7 @@ import android.widget.Toast;
 
 import com.bignewsmaker.makebignews.R;
 import com.bignewsmaker.makebignews.basic_class.ConstData;
-import com.bignewsmaker.makebignews.basic_class.News;
 import com.bignewsmaker.makebignews.extra_class.Speaker;
-
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.TreeMap;
 
 /**
  * Created by liminyan on 06/09/2017.
@@ -139,34 +134,6 @@ public class SetActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         Toast.makeText(SetActivity.this, "设置未保存", Toast.LENGTH_SHORT).show();
-                    }
-                });
-                builder.show();
-
-            }
-        });
-
-        LinearLayout lineclear=(LinearLayout)findViewById(R.id.lineclear);
-        lineclear.setOnClickListener(new LinearLayout.OnClickListener(){
-            @Override
-            public void onClick(View view) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(SetActivity.this);
-                builder.setIcon(R.mipmap.ic_launcher);
-                builder.setTitle("您确定要清除吗");
-                builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        const_data.setDislike(new TreeMap<String, Integer>());
-                        const_data.setHaveRead(new HashMap<String, News>());
-                        const_data.setFiltered(new HashSet<String>());
-                        Toast.makeText(SetActivity.this, "已成功清除", Toast.LENGTH_SHORT).show();
-                        const_data.setSetChanged(true);
-
-                    }
-                });
-                builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
                     }
                 });
                 builder.show();
