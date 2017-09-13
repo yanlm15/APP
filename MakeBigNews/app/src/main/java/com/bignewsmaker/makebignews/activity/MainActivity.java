@@ -48,6 +48,13 @@ import java.util.List;
 */
 
 public class MainActivity extends AppCompatActivity {
+    //退出时间
+
+    private long currentBackPressedTime = 0;
+
+//退出间隔
+
+    private static final int BACK_PRESSED_INTERVAL = 2000;
     private static final String TAG = "makebignews";
     private TabLayout mTabLayout;
     private ViewPager mViewPager;
@@ -65,25 +72,36 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        ConstDataForSave cdfs = DataSupport.findLast(ConstDataForSave.class);
-        if (cdfs != null&&const_data.isFirstCreate()) {
-            const_data.setFiltered(cdfs.getFiltered());
-            HashMap<String,News> hm=new HashMap<>();
-            for(String id:cdfs.getHaveRead())
-                hm.put(id,null);
+        if (DataSupport.isExist(ConstDataForSave.class) && const_data.isFirstCreate()) {
+            ConstDataForSave cdfs = DataSupport.findLast(ConstDataForSave.class);
+
+            for (String e : cdfs.getFiltered())
+                const_data.addFiltered(e);
+
+            HashMap<String, News> hm = new HashMap<>();
+            for (String id : cdfs.getHaveRead())
+                hm.put(id, null);
             const_data.setHaveRead(hm);
-            const_data.setDislike(cdfs.getDislike());
+
+            for (String e : cdfs.getDislike())
+                const_data.addDislike(e);
+
             const_data.setDay(cdfs.isDay());
             const_data.setShow_picture(cdfs.isShow_picture());
             for (int i = 0; i < 14; i++)
                 const_data.setIstagSelected(i, cdfs.getIstagSelected(i));
+
+            HashMap<String, Integer> tm = new HashMap<>();
+            for (String e :cdfs.getLike())
+                tm.put(e,((Double)(Math.random()*100)).intValue());
+            const_data.setLike(tm);
             const_data.setFirstCreate(false);
         }
 
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        SpeechUtility.createUtility(this.getBaseContext(), SpeechConstant.APPID +"=59aa4e19");
+        SpeechUtility.createUtility(this.getBaseContext(), SpeechConstant.APPID + "=59aa4e19");
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         navView = (NavigationView) findViewById(R.id.nav_view);
@@ -176,7 +194,13 @@ public class MainActivity extends AppCompatActivity {
         if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
             mDrawerLayout.closeDrawer(GravityCompat.START);
         } else {
-            super.onBackPressed();
+//            super.onBackPressed();
+            if (System.currentTimeMillis() - currentBackPressedTime > BACK_PRESSED_INTERVAL) {
+                currentBackPressedTime = System.currentTimeMillis();
+                Toast.makeText(this, "再按一次返回键退出程序", Toast.LENGTH_SHORT).show();
+            } else {
+                finish();
+            }
         }
     }
 
@@ -199,7 +223,7 @@ public class MainActivity extends AppCompatActivity {
                     return false;
                 } else {
                     const_data.setSearch_message(queryText);
-                    if(!checkNetworkState()){
+                    if (!checkNetworkState()) {
                         Toast.makeText(MainActivity.this, "网络不可用，无法搜索", Toast.LENGTH_SHORT).show();
                         return false;
                     }
@@ -250,24 +274,28 @@ public class MainActivity extends AppCompatActivity {
         return flag;
     }
 
+
     @Override
-    protected void onStop() {
-        super.onStop();
-        ConstDataForSave cdfs = DataSupport.findFirst(ConstDataForSave.class);
-        if (cdfs == null)
+    protected void onPause() {
+        super.onPause();
+        ConstDataForSave cdfs;
+        if (DataSupport.isExist(ConstDataForSave.class))
+            cdfs = DataSupport.findLast(ConstDataForSave.class);
+        else
             cdfs = new ConstDataForSave();
         cdfs.setHaveRead(const_data.getHaveRead());
         cdfs.setDislike(const_data.getDislike());
+        cdfs.setFiltered(const_data.getFiltered());
         cdfs.setDay(const_data.getDay());
         cdfs.setShow_picture(const_data.getShow_picture());
 
         for (int i = 0; i < 14; i++)
             cdfs.setIstagSelected(i, const_data.getIstagSelected(i));
 
+        cdfs.setLike(const_data.getLikeWord());
+
         cdfs.save();
         cdfs.updateAll();
-
-
     }
 }
 

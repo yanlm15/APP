@@ -53,7 +53,7 @@ public class LogicTool implements SuccessCallBack<NewsList> {
         for (News cur:old_list.getList())
         {
             boolean flag = true;
-            for (String e: ConstData.getInstance().getDislike().keySet())
+            for (String e: ConstData.getInstance().getDislike())
             {
                 if (cur.getNews_Intro().contains(e)||cur.getNews_Title().contains(e))
                 {

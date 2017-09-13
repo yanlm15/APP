@@ -3,6 +3,7 @@ package com.bignewsmaker.makebignews.basic_class;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
@@ -37,11 +38,11 @@ public class ConstData {
 
     private HashSet<String> filtered=new HashSet<>();
     private static ConstData cur;
-    private TreeMap<String,Integer> like = new TreeMap<String, Integer>();
+    private Map<String,Integer> like = new TreeMap<String, Integer>();
 
     private String cur_ID = "201608090432c815a85453c34d8ca43a591258701e9b";
 
-    private TreeMap<String,Integer> dislike = new TreeMap<String,Integer>();// 不喜欢的词条
+    private HashSet<String> dislike = new HashSet<>();// 不喜欢的词条
 
     private String  search_message = null;//用户的输入信息
     private String  search_class = null;//用户的搜索标签，默认为空！！
@@ -100,6 +101,10 @@ public class ConstData {
     }
     public Set<String> getHaveRead(){
         return haveRead.keySet();
+    }
+
+    public Set<String> getLikeWord(){
+        return like.keySet();
     }
 
     public void addHaveRead(News news) {
@@ -172,11 +177,15 @@ public class ConstData {
         this.search_result = search_result;
     }//初始化搜索结果
 
-    public TreeMap<String, Integer> getDislike() {
+    public HashSet<String>  getDislike() {
         return dislike;
     }
 
-    public TreeMap<String, Integer> getLike() {
+    public void setLike(Map<String, Integer> like) {
+        this.like = like;
+    }
+
+    public Map<String, Integer> getLike() {
         return like;
     }
 
@@ -185,10 +194,10 @@ public class ConstData {
     }
 
     public void addDislike(String name) {
-        this.dislike.put(name,1);
+        this.dislike.add(name);
     }
 
-    public void setDislike(TreeMap<String, Integer> dislike) {
+    public void setDislike(HashSet<String> dislike) {
         this.dislike = dislike;
     }
 

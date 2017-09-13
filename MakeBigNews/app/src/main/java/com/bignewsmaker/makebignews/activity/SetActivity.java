@@ -156,9 +156,10 @@ public class SetActivity extends AppCompatActivity {
                 builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        const_data.setDislike(new TreeMap<String, Integer>());
+                        const_data.setDislike(new HashSet<String>() );
                         const_data.setHaveRead(new HashMap<String, News>());
                         const_data.setFiltered(new HashSet<String>());
+                        const_data.setLike(new TreeMap<String,Integer>());
                         Toast.makeText(SetActivity.this, "已成功清除", Toast.LENGTH_SHORT).show();
                         const_data.setSetChanged(true);
 

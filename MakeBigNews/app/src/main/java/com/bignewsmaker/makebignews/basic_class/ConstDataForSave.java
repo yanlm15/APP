@@ -4,7 +4,6 @@ import org.litepal.crud.DataSupport;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.TreeMap;
 
 /**
  * Created by Dell on 2017/9/13.
@@ -15,11 +14,21 @@ public class ConstDataForSave extends DataSupport {
     //6
     private boolean show_picture = true; //图片显示标签
     private boolean isDay = true;
-    private HashSet<String> filtered=new HashSet<>();
-    private TreeMap<String,Integer> dislike = new TreeMap<String,Integer>();// 不喜欢的词条
+    private Set<String> filtered=new HashSet<>();
+    private Set<String>  dislike = new HashSet<>();// 不喜欢的词条
     private boolean[] istagSelected={true,true,true,true,true,true,true,true,true,true,true,true,true,true};
     private Set<String> haveRead=new HashSet<>();
+    private Set<String> like=new HashSet<>();
 
+
+
+    public Set<String> getLike() {
+        return like;
+    }
+
+    public void setLike(Set<String> like) {
+        this.like = like;
+    }
 
     public boolean isShow_picture() {
         return show_picture;
@@ -37,19 +46,19 @@ public class ConstDataForSave extends DataSupport {
         isDay = day;
     }
 
-    public HashSet<String> getFiltered() {
+    public Set<String> getFiltered() {
         return filtered;
     }
 
-    public void setFiltered(HashSet<String> filtered) {
+    public void setFiltered(Set<String> filtered) {
         this.filtered = filtered;
     }
 
-    public TreeMap<String, Integer> getDislike() {
+    public Set<String>  getDislike() {
         return dislike;
     }
 
-    public void setDislike(TreeMap<String, Integer> dislike) {
+    public void setDislike(Set<String>  dislike) {
         this.dislike = dislike;
     }
 

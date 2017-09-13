@@ -32,7 +32,6 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -193,7 +192,7 @@ public class NewsFragment extends Fragment {
                 }
             });
         } else {
-            TreeMap<String,Integer> key = const_data.getLike();
+            Map<String,Integer> key = const_data.getLike();
             String keyword;
             if (key.size() == 0) {
                 keyword = "java java java java java";
