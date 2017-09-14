@@ -192,25 +192,25 @@ public class NewsFragment extends Fragment {
                 }
             });
         } else {
-            Map<String,Integer> key = const_data.getLike();
+            Map<String, Integer> key = const_data.getLike();
             String keyword;
             if (key.size() == 0) {
                 keyword = "java java java java java";
-            } else{
+            } else {
                 List<Map.Entry<String, Integer>> list = new ArrayList<>(key.entrySet());
-                Collections.sort(list,new Comparator<Map.Entry<String,Integer>>() {
+                Collections.sort(list, new Comparator<Map.Entry<String, Integer>>() {
                     @Override
                     public int compare(Map.Entry<String, Integer> o1, Map.Entry<String, Integer> o2) {
                         return -o1.getValue().compareTo(o2.getValue());
                     }
                 });
-                keyword=list.get(0).getKey()+" "+list.get(1).getKey()+" "+list.get(2).getKey()+" " +list.get(3).getKey();
+                keyword = list.get(0).getKey() + " " + list.get(1).getKey() + " " + list.get(2).getKey() + " " + list.get(3).getKey();
             }
             Map<String, String> url = new HashMap<String, String>();
             url.put("keyword", keyword);
             url.put("pageNo", String.valueOf(newsList == null ? 1 : newsList.getPageNo() + 1));
             url.put("pageSize", const_data.getCur_pageSize());
-            Call<NewsList> repos = service.listReposbymap("search",url);
+            Call<NewsList> repos = service.listReposbymap("search", url);
             repos.enqueue(new Callback<NewsList>() {
                 @Override
                 public void onResponse(Call<NewsList> call, Response<NewsList> response) {
@@ -245,7 +245,7 @@ public class NewsFragment extends Fragment {
             adapter.setFadeTips(true);
         } else {
             if (newsList.getList().size() < Integer.parseInt(const_data.getCur_pageSize())
-                    ||newsList.getPageNo()>=Integer.valueOf(const_data.getCur_pageSize())) {
+                    || newsList.getPageNo() >= Integer.valueOf(const_data.getCur_pageSize())) {
                 adapter.setHasMore(false);
                 adapter.setFadeTips(true);
             }
@@ -266,7 +266,6 @@ public class NewsFragment extends Fragment {
                     getActivity().recreate();
                 }
         }
-
     }
 
     private boolean checkNetworkState() {
@@ -277,6 +276,7 @@ public class NewsFragment extends Fragment {
         if (manager.getActiveNetworkInfo() != null) {
             flag = manager.getActiveNetworkInfo().isAvailable();
         }
+        const_data.setConnect(flag);
         return flag;
     }
 }

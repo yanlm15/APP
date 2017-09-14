@@ -101,6 +101,7 @@ public class MainActivity extends AppCompatActivity {
             const_data.setLike(tm);
             const_data.setFirstCreate(false);
             const_data.setCur_pageSize(cdfs.getCur_pageSize()!=null&&Integer.valueOf(cdfs.getCur_pageSize())!=0?cdfs.getCur_pageSize():"20");
+            const_data.setIsDownload(cdfs.getIsDownload());
         }
 
         setContentView(R.layout.activity_main);
@@ -138,9 +139,11 @@ public class MainActivity extends AppCompatActivity {
             mTabLayout.setSelectedTabIndicatorColor(Color.rgb(255, 255, 255));
             toolbar.setBackgroundColor(Color.rgb(66, 66, 66));
             setStatusBarColor(MainActivity.this, Color.rgb(66, 66, 66));
+            mDrawerLayout.setBackgroundColor(Color.rgb(66, 66, 66));
         } else {
-            mTabLayout.setTabTextColors(Color.rgb(128, 128, 128), Color.rgb(255, 255, 255));
+            mTabLayout.setTabTextColors(Color.rgb(0, 0, 0), Color.rgb(63, 81, 181));
             mTabLayout.setSelectedTabIndicatorColor(Color.rgb(255, 255, 255));
+            mDrawerLayout.setBackgroundColor(Color.rgb(255,255 , 255));
 
         }
 
@@ -281,7 +284,6 @@ public class MainActivity extends AppCompatActivity {
         return flag;
     }
 
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -305,6 +307,7 @@ public class MainActivity extends AppCompatActivity {
 
             cdfs.setLike(const_data.getLikeWord());
             cdfs.setCur_pageSize(const_data.getCur_pageSize());
+            cdfs.setIsDownload(const_data.getIsDownload());
             cdfs.save();
             cdfs.updateAll();
         }

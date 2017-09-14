@@ -33,6 +33,7 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private final int FOOT_TYPE = 1;
     private boolean hasMore = true;   // 变量，是否有更多数据
     private boolean fadeTips = false; // 变量，是否隐藏了底部的提示
+    private boolean isShowPicture = true;
     private RetrofitTool retrofitTool = RetrofitTool.getInstance();//设置接收器
     private Set<String> hs;
     private OnItemClickListener onItemClickListener;
@@ -40,10 +41,11 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private List<News> mNewsList;
     private Context context;
 
-    public NewsAdapter(List<News> newsList, Context context, boolean hasMore) {
+    public NewsAdapter(List<News> newsList, Context context, boolean isShowPicture) {
         mNewsList = newsList;
         this.context = context;
-        this.hasMore = hasMore;
+        this.hasMore = true;
+        this.isShowPicture=isShowPicture;
     }
 
     public void add(List<News> news) {
@@ -158,7 +160,7 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             String[] urls = news.getNews_Pictures().split(";|\\s");
 
             ((ViewHolder) holder).newsTitle.setText(news.getNews_Title());
-//            ((ViewHolder) holder).newsIntro.setText(news.getNews_Intro().replaceAll("\\s", ""));
+            ((ViewHolder) holder).newsIntro.setText(news.getNews_Intro().replaceAll("\\s", ""));
             ((ViewHolder) holder).newsSource.setText("\n"
                     + (!news.getNews_Author().equals("") ? news.getNews_Author() : news.getNews_Source()));
             if (!const_data.isModel_day()) {
@@ -178,8 +180,7 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 ((ViewHolder) holder).newsIntro.setTextColor(Color.rgb(128, 128, 128));
                 ((ViewHolder) holder).newsSource.setTextColor(Color.rgb(128, 128, 128));
             }
-
-            if (urls.length == 0 || !urls[0].contains("h") || !const_data.getShow_picture())
+            if (urls.length == 0 || !urls[0].contains("h") || !const_data.getShow_picture()||!isShowPicture)
                 return;
             else if (urls.length == 1) {
                 if (urls[0].toLowerCase().contains("logo") || urls[0].toLowerCase().contains("icocopy"))

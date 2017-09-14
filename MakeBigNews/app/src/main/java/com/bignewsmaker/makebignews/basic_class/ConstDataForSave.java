@@ -22,7 +22,16 @@ public class ConstDataForSave extends DataSupport {
     private Set<String> haveRead=new HashSet<>();
     private Set<String> like=new HashSet<>();
     private String cur_pageSize =null;
+    private Set<String> isDownload=new HashSet<>();
 
+
+    public Set<String> getIsDownload() {
+        return isDownload;
+    }
+
+    public void setIsDownload(Set<String> isDownload) {
+        this.isDownload = isDownload;
+    }
 
     public List<Integer> getIstagselected() {
         return istagselected;

@@ -9,11 +9,13 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.LinearLayout;
 
 import com.bignewsmaker.makebignews.Interface.NetService;
 import com.bignewsmaker.makebignews.R;
 import com.bignewsmaker.makebignews.adapter.NewsAdapter;
 import com.bignewsmaker.makebignews.basic_class.ConstData;
+import com.bignewsmaker.makebignews.basic_class.News;
 import com.bignewsmaker.makebignews.basic_class.NewsList;
 import com.bignewsmaker.makebignews.extra_class.RetrofitTool;
 import com.bignewsmaker.makebignews.extra_class.Speaker;
@@ -39,6 +41,7 @@ public class SearchResultActivity extends AppCompatActivity {
     private int lastVisibleItem = 0;
     private Toolbar toolbar;
     private LinearLayoutManager mLayoutManager;
+    private LinearLayout mL;
     private RecyclerView recyclerView;
     private NewsAdapter adapter;
     private NewsList newsList;
@@ -56,6 +59,7 @@ public class SearchResultActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         newsList = new NewsList();
+        mL=(LinearLayout)findViewById(R.id.sr);
         mLayoutManager = new LinearLayoutManager(this);
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view2);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -90,8 +94,10 @@ public class SearchResultActivity extends AppCompatActivity {
         adapter.notifyDataSetChanged();
         if (!const_data.getDay()) {
             recyclerView.setBackgroundColor(Color.rgb(66, 66, 66));
+            mL.setBackgroundColor(Color.rgb(66, 66, 66));
         } else {
             recyclerView.setBackgroundColor(Color.rgb(255, 255, 255));
+            mL.setBackgroundColor(Color.rgb(255, 255, 255));
         }
     }
 
@@ -99,8 +105,10 @@ public class SearchResultActivity extends AppCompatActivity {
         @Override
         public void onClick(View view, int position) {
             Intent i = new Intent(SearchResultActivity.this, ShowNewsActivity.class);
-            String id = adapter.getNews(position).getNews_ID();
-            const_data.setCur_ID(id);
+            News cur = adapter.getNews(position);
+            const_data.setCur_news(cur);
+
+            const_data.setCur_ID(cur.getNews_ID());
 //            const_data.addHaveRead(adapter.getNews(position));
             startActivityForResult(i, 2);
         }

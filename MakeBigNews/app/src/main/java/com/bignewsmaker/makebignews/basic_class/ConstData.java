@@ -30,7 +30,7 @@ public class ConstData {
     private double ligth_rate = 1; //屏幕亮度比例
     private boolean show_picture; //图片显示标签
     private boolean isDay;
-    private boolean connect;
+    private boolean connect=true;
 
     public void setConnect(boolean connect) {
         this.connect = connect;
@@ -64,7 +64,23 @@ public class ConstData {
 
     private boolean isFirstCreate;
     private boolean isExit;
+    private Set<String> isDownload=new HashSet<>();
 
+    public void removeDownload(String id){
+        isDownload.remove(id);
+    }
+
+    public void addDownload(String id){
+        isDownload.add(id);
+    }
+
+    public Set<String> getIsDownload() {
+        return isDownload;
+    }
+
+    public void setIsDownload(Set<String> isDownload) {
+        this.isDownload = isDownload;
+    }
 
     public boolean isExit() {
         return isExit;

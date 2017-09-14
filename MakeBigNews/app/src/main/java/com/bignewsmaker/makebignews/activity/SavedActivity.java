@@ -107,11 +107,22 @@ public class SavedActivity extends AppCompatActivity {
         @Override
         public void onClick(View view, int position) {
             Intent i = new Intent(SavedActivity.this, ShowNewsActivity.class);
-            String id = adapter.getNews(position).getNews_ID();
-            const_data.setCur_ID(id);
+            News cur = adapter.getNews(position);
+            const_data.setCur_news(cur);
+            const_data.setCur_ID(cur.getNews_ID());
+//            const_data.addHaveRead(adapter.getNews(position));
             startActivityForResult(i, 2);
         }
     };
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case 2:
+                loadNews();
+        }
+    }
 
     private void loadNews() {
 
@@ -145,12 +156,19 @@ public class SavedActivity extends AppCompatActivity {
                     System.out.println(" >> " + listnews.get(0).getNews_Title());
                     ois.close();
                     fis.close();
-                    adapter = new NewsAdapter(listnews, mContext, false);
+                    System.out.println(" >> " + listnews.get(0).getNews_Title());
+                    if (!const_data.isConnect())
+                        adapter = new NewsAdapter(listnews, mContext, false);
+                    else
+                        adapter = new NewsAdapter(listnews, mContext, true);
+                    adapter.setHasMore(false);
                     recyclerView.setLayoutManager(mLayoutManager);
                     recyclerView.setAdapter(adapter);
                     adapter.setOnItemClickListener(mOnItemClickListener);
                     adapter.setFadeTips(true);
                     adapter.notifyDataSetChanged();
+                    System.out.println(" >> " + listnews.get(0).getNews_Title());
+
                 } catch (Exception e) {
                     e.printStackTrace();
                     System.out.println(">" + e);
