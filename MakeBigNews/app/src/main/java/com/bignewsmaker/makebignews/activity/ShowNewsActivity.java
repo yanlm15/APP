@@ -392,7 +392,7 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
         double asd = strs.length *1.0 / picture.size();
         int k = 0 ;
         for (int i=0 ; (i < strs.length-1)  ;i++) {
-            if(k<picture.size() && k*asd<=i) {
+            if(k<picture.size() && k*asd<=i && const_data.getShow_picture() == true) {
                 s+=strs[i]+"</p>"+ empty_i(k) +"<p>";
                 k++;
             }
@@ -518,9 +518,18 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
             }
             else
             {
-                okDownload = false;
-                MyTask task = new MyTask();
-                task.execute(title);
+                if (const_data.getShow_picture() == true) {
+                    okDownload = false;
+                    MyTask task = new MyTask();
+                    task.execute(title);}
+                else {
+                    context = clearExtra(context);
+                    context = jump_peo(context);
+                    context = setbody(context);
+                    context = setEmptyP(context);
+                    showText();
+                    setText(0);
+                }
             }
             getContext_rec();//请求关键词
 
@@ -568,8 +577,20 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
                                 setText(0);
                             } else {
                                 okDownload = false;
-                                MyTask task = new MyTask();
-                                task.execute(title);
+                                if (const_data.getShow_picture() == true)
+                                {
+                                    MyTask task = new MyTask();
+                                    task.execute(title);
+                                }
+                                else {
+                                    context = clearExtra(context);
+                                    context = jump_peo(context);
+                                    context = setbody(context);
+                                    context = setEmptyP(context);
+                                    showText();
+                                    setText(0);
+
+                                }
                             }
                             getContext_rec();//请求关键词
                         }
