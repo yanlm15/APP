@@ -89,8 +89,12 @@ public class SetActivity extends AppCompatActivity {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 String p = String.valueOf(progress);
                 textView.setText(p);
-                const_data.setCur_pageSize(p);
-                const_data.setSetChanged(true);
+                if(progress<=5)
+                    Toast.makeText(SetActivity.this, "每页新闻不应小于5，请重设", Toast.LENGTH_SHORT).show();
+                else{
+                    const_data.setCur_pageSize(p);
+                    const_data.setSetChanged(true);
+                }
 
             }
 
