@@ -16,6 +16,9 @@ public class News implements Serializable {
     protected String news_URL = null;
     protected String news_Video = null;
     protected String news_Intro = null;
+    protected String news_Content = null;
+    protected boolean isRead = false;
+    protected List<Item1> Keywords = new ArrayList<>();
 
     public String getNews_Content() {
         return news_Content;
@@ -25,9 +28,7 @@ public class News implements Serializable {
         this.news_Content = news_Content;
     }
 
-    protected String news_Content;
-    protected boolean isRead = false;
-    protected List<Item1> Keywords = new ArrayList<>();
+
 
     public List<Item1> getKeywords() {
         return Keywords;

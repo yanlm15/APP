@@ -790,15 +790,20 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
         News SavedNews = getNews();
         try
         {
+
             FileOutputStream fos = mContext.openFileOutput( id+".txt", Context.MODE_PRIVATE);
+            System.out.println("show news Save + :"+SavedNews.getNews_ID());
+
             ObjectOutputStream oos = new ObjectOutputStream(fos);
             oos.writeObject(SavedNews);
+            System.out.println("wo cao ni ma ");
             oos.flush();
             oos.close();
             fos.close();
         }
         catch (IOException e)
         {
+            System.out.println("File lost");
             e.printStackTrace();
         }
 

@@ -1,7 +1,9 @@
 package com.bignewsmaker.makebignews.basic_class;
 
 
-public class Item2
+import java.io.Serializable;
+
+public class Item2 implements Serializable
 {
    public String word;
     public   String count;

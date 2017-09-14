@@ -23,6 +23,7 @@ import com.bignewsmaker.makebignews.extra_class.RetrofitTool;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,8 +41,8 @@ public class SavedActivity extends AppCompatActivity {
     private LinearLayoutManager mLayoutManager;
     private RecyclerView recyclerView;
     private NewsAdapter adapter;
-    private List<News> listnews;
-    private NewsList newsList;
+    private List<News> listnews = new ArrayList<News>();
+    private NewsList newsList = new NewsList();
     private Context mContext;
     private ConstData const_data = ConstData.getInstance();// 设置访问全局变量接口
     private RetrofitTool retrofitTool = RetrofitTool.getInstance();//设置接收器
@@ -131,31 +132,42 @@ public class SavedActivity extends AppCompatActivity {
         SharedPreferences shared = getSharedPreferences("saved_news_num", Context.MODE_PRIVATE);
         cnt = shared.getInt("num", 0);
         System.out.println("总共收藏了  " + cnt + "   条新闻");
-        if (true) {
+        if (cnt > 0) {
+            System.out.println(">>1");
+
             for (int k = 0; k < cnt; k++) {
                 try {
                     //Student对象反序列化过程
-                    FileInputStream fis = mContext.openFileInput(id_list[k] + ".txt");
-                    ObjectInputStream ois = new ObjectInputStream(fis);
-                    News news = (News) ois.readObject();
+                    System.out.println("###收藏###" + k +id_list[k]);
 
-                    System.out.println("###收藏###" + k + news.getNews_ID());
+                    System.out.println(">1>");
+                    FileInputStream fis = mContext.openFileInput(id_list[k] + ".txt");
+
+                    System.out.println("2");
+
+                    ObjectInputStream ois = new ObjectInputStream(fis);
+                    System.out.println("3");
+
+                    News newsmy = new News();
+                    newsmy.setNews_ID(id_list[k]);
+                    News news = (News) ois.readObject();
+                    System.out.println("33");
 
                     listnews.add(news);
+                    System.out.println(" >> "+ listnews.get(0).getNews_Title());
+                    newsList.add_news(news);
                     ois.close();
                     fis.close();
-                } catch (ClassNotFoundException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
-                } catch (IOException e)
-                {
-                    e.printStackTrace();
+                    System.out.println(">" + e);
                 }
             }
         }
-        if (true) {
+       else  {
             NetService service = retrofitTool.getRetrofit().create(NetService.class);
             Map<String, String> url = new HashMap<String, String>() {{
-                put("keyword", "123");
+                put("keyword", "123456789");
                 put("pageNo", String.valueOf(newsList == null ? 1 : newsList.getPageNo() + 1));
                 put("pageSize", const_data.getCur_pageSize());
             }};
