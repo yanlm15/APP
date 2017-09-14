@@ -30,6 +30,16 @@ public class ConstData {
     private double ligth_rate = 1; //屏幕亮度比例
     private boolean show_picture; //图片显示标签
     private boolean isDay;
+    private boolean connect;
+
+    public void setConnect(boolean connect) {
+        this.connect = connect;
+    }
+
+    public boolean isConnect() {
+        return connect;
+    }
+
     private boolean isSetChanged =false;
     private boolean safe_search = false;
     private NewsList cur_newslist = null ;// 当前新闻列表

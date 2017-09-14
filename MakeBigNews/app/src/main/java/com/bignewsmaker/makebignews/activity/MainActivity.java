@@ -277,6 +277,7 @@ public class MainActivity extends AppCompatActivity {
         if (manager.getActiveNetworkInfo() != null) {
             flag = manager.getActiveNetworkInfo().isAvailable();
         }
+        const_data.setConnect(flag);
         return flag;
     }
 

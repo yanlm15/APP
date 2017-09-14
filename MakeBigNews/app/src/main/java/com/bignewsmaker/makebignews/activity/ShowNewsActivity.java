@@ -435,6 +435,9 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
 
     public void setText(int k){
         int i = k;
+
+
+
         for (int j=k;j<picture.size();j++)
         {
             File file =  new File(getDir(i)+gettype(i));
@@ -531,7 +534,8 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
                     setText(0);
                 }
             }
-            getContext_rec();//请求关键词
+            if (const_data.isConnect())
+                getContext_rec();//请求关键词
 
 
         }
@@ -550,7 +554,7 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
                         if (data != null) {
                             const_data.addHaveRead(data);
                             String myt = data.getNews_Title() + "," + data.getNews_Content();
-//                            speaker.setText(myt);
+                            speaker.setText(myt);
                             news_content = myt;
                             List<Item1> a = data.getKeywords();
                             int j=10;
@@ -592,7 +596,8 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
 
                                 }
                             }
-                            getContext_rec();//请求关键词
+                            if (const_data.isConnect())
+                                 getContext_rec();//请求关键词
                         }
                     } else {
                     }
