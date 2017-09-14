@@ -86,6 +86,11 @@ public class SearchResultActivity extends AppCompatActivity {
                 lastVisibleItem = mLayoutManager.findLastVisibleItemPosition();
             }
         });
+
+        if (!const_data.getDay()) {
+            toolbar.setBackgroundColor(Color.rgb(66, 66, 66));
+            setStatusBarColor(SearchResultActivity.this, Color.rgb(66, 66, 66));
+        }
     }
 
     @Override

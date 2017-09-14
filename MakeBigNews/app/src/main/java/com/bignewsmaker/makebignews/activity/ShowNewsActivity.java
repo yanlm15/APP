@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -49,6 +50,8 @@ import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+import static com.bignewsmaker.makebignews.activity.MainActivity.setStatusBarColor;
 
 /**
  * Created by liminyan on 06/09/2017.
@@ -279,6 +282,10 @@ public class ShowNewsActivity extends AppCompatActivity implements ThemeManager.
         }
 
         init_model();    //设置夜间or日间模式
+        if (!const_data.getDay()) {
+            toolbar.setBackgroundColor(Color.rgb(66, 66, 66));
+            setStatusBarColor(ShowNewsActivity.this, Color.rgb(66, 66, 66));
+        }
     }
 
     public String getDir(int number) {

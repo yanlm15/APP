@@ -34,6 +34,7 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private boolean hasMore = true;   // 变量，是否有更多数据
     private boolean fadeTips = false; // 变量，是否隐藏了底部的提示
     private boolean isShowPicture = true;
+    private boolean isBlock=false;
     private RetrofitTool retrofitTool = RetrofitTool.getInstance();//设置接收器
     private Set<String> hs;
     private OnItemClickListener onItemClickListener;
@@ -41,11 +42,19 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private List<News> mNewsList;
     private Context context;
 
+    public NewsAdapter(List<News> newsList, Context context, boolean isShowPicture,boolean isBlock) {
+        mNewsList = newsList;
+        this.context = context;
+        this.hasMore = true;
+        this.isShowPicture=isShowPicture;
+        this.isBlock=isBlock;
+    }
     public NewsAdapter(List<News> newsList, Context context, boolean isShowPicture) {
         mNewsList = newsList;
         this.context = context;
         this.hasMore = true;
         this.isShowPicture=isShowPicture;
+        this.isBlock=false;
     }
 
     public void add(List<News> news) {
@@ -111,6 +120,8 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         if(!const_data.getDay())
             holder.delete.setImageResource(R.mipmap.chahei);
+        if(isBlock)
+            holder.delete.setVisibility(View.GONE);
         holder.delete.setOnClickListener(new ImageView.OnClickListener() {
             @Override
             public void onClick(View view) {

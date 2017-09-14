@@ -16,7 +16,6 @@ import com.bignewsmaker.makebignews.R;
 import com.bignewsmaker.makebignews.adapter.NewsAdapter;
 import com.bignewsmaker.makebignews.basic_class.ConstData;
 import com.bignewsmaker.makebignews.basic_class.News;
-import com.bignewsmaker.makebignews.basic_class.NewsList;
 import com.bignewsmaker.makebignews.extra_class.RetrofitTool;
 
 import java.io.FileInputStream;
@@ -35,7 +34,6 @@ public class SavedActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private NewsAdapter adapter;
     private List<News> listnews = new ArrayList<News>();
-    private NewsList newsList = new NewsList();
     private Context mContext;
     private ConstData const_data = ConstData.getInstance();// 设置访问全局变量接口
     private RetrofitTool retrofitTool = RetrofitTool.getInstance();//设置接收器
@@ -91,6 +89,11 @@ public class SavedActivity extends AppCompatActivity {
                 lastVisibleItem = mLayoutManager.findLastVisibleItemPosition();
             }
         });*/
+
+        if (!const_data.getDay()) {
+            toolbar.setBackgroundColor(Color.rgb(66, 66, 66));
+            setStatusBarColor(SavedActivity.this, Color.rgb(66, 66, 66));
+        }
     }
 
     @Override
@@ -120,7 +123,7 @@ public class SavedActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
             case 2:
-                loadNews();
+                recreate();
         }
     }
 
@@ -158,9 +161,9 @@ public class SavedActivity extends AppCompatActivity {
                     fis.close();
                     System.out.println(" >> " + listnews.get(0).getNews_Title());
                     if (!const_data.isConnect())
-                        adapter = new NewsAdapter(listnews, mContext, false);
+                        adapter = new NewsAdapter(listnews, mContext, false,true);
                     else
-                        adapter = new NewsAdapter(listnews, mContext, true);
+                        adapter = new NewsAdapter(listnews, mContext, true,true);
                     adapter.setHasMore(false);
                     recyclerView.setLayoutManager(mLayoutManager);
                     recyclerView.setAdapter(adapter);

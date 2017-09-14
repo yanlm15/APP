@@ -1,6 +1,7 @@
 package com.bignewsmaker.makebignews.activity;
 
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -22,6 +23,8 @@ import com.bignewsmaker.makebignews.extra_class.Speaker;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.TreeMap;
+
+import static com.bignewsmaker.makebignews.activity.MainActivity.setStatusBarColor;
 
 /**
  * Created by liminyan on 06/09/2017.
@@ -175,7 +178,10 @@ public class SetActivity extends AppCompatActivity {
             }
         });
 
-
+        if (!const_data.getDay()) {
+            toolbar.setBackgroundColor(Color.rgb(66, 66, 66));
+            setStatusBarColor(SetActivity.this, Color.rgb(66, 66, 66));
+        }
         //设置输入监控
         //设置更新函数
 
