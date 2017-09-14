@@ -139,7 +139,7 @@ public class MainActivity extends AppCompatActivity {
             toolbar.setBackgroundColor(Color.rgb(66, 66, 66));
             setStatusBarColor(MainActivity.this, Color.rgb(66, 66, 66));
         } else {
-            mTabLayout.setTabTextColors(Color.rgb(0, 0, 0), Color.rgb(63, 81, 181));
+            mTabLayout.setTabTextColors(Color.rgb(128, 128, 128), Color.rgb(255, 255, 255));
             mTabLayout.setSelectedTabIndicatorColor(Color.rgb(255, 255, 255));
 
         }

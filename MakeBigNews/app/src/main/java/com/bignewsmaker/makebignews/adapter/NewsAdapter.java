@@ -158,7 +158,7 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             String[] urls = news.getNews_Pictures().split(";|\\s");
 
             ((ViewHolder) holder).newsTitle.setText(news.getNews_Title());
-            ((ViewHolder) holder).newsIntro.setText(news.getNews_Intro().replaceAll("\\s", ""));
+//            ((ViewHolder) holder).newsIntro.setText(news.getNews_Intro().replaceAll("\\s", ""));
             ((ViewHolder) holder).newsSource.setText("\n"
                     + (!news.getNews_Author().equals("") ? news.getNews_Author() : news.getNews_Source()));
             if (!const_data.isModel_day()) {

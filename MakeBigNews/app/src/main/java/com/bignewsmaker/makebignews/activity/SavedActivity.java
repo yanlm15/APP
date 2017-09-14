@@ -12,7 +12,6 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
-import com.bignewsmaker.makebignews.Interface.NetService;
 import com.bignewsmaker.makebignews.R;
 import com.bignewsmaker.makebignews.adapter.NewsAdapter;
 import com.bignewsmaker.makebignews.basic_class.ConstData;
@@ -21,16 +20,10 @@ import com.bignewsmaker.makebignews.basic_class.NewsList;
 import com.bignewsmaker.makebignews.extra_class.RetrofitTool;
 
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 import static com.bignewsmaker.makebignews.activity.MainActivity.setStatusBarColor;
 
@@ -59,7 +52,6 @@ public class SavedActivity extends AppCompatActivity {
         toolbar.setTitle("我的收藏");
         setSupportActionBar(toolbar);
 
-
         mContext = getApplicationContext();
         mLayoutManager = new LinearLayoutManager(this);
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view_saved);
@@ -72,17 +64,15 @@ public class SavedActivity extends AppCompatActivity {
         Map<String, ?> allContent = sharedPreferences.getAll();
         //注意遍历map的方法
         count = 0;
-        for(Map.Entry<String, ?>  entry : allContent.entrySet()){
-            if ( !entry.getValue().equals("") ){
+        for (Map.Entry<String, ?> entry : allContent.entrySet()) {
+            if (!entry.getValue().equals("")) {
                 id_list[count] = entry.getKey();
                 count++;
             }
         }
         System.out.println("收藏新闻ID： " + id_list[0]);
-
         loadNews();
-
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+       /* recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
@@ -92,18 +82,15 @@ public class SavedActivity extends AppCompatActivity {
                         adapter.setHasMore(false);
                         adapter.setFadeTips(true);
                         adapter.notifyDataSetChanged();
-
                     }
-
                 }
             }
-
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
                 lastVisibleItem = mLayoutManager.findLastVisibleItemPosition();
             }
-        });
+        });*/
     }
 
     @Override
@@ -138,7 +125,7 @@ public class SavedActivity extends AppCompatActivity {
             for (int k = 0; k < cnt; k++) {
                 try {
                     //Student对象反序列化过程
-                    System.out.println("###收藏###" + k +id_list[k]);
+                    System.out.println("###收藏###" + k + id_list[k]);
 
                     System.out.println(">1>");
                     FileInputStream fis = mContext.openFileInput(id_list[k] + ".txt");
@@ -154,17 +141,22 @@ public class SavedActivity extends AppCompatActivity {
                     System.out.println("33");
 
                     listnews.add(news);
-                    System.out.println(" >> "+ listnews.get(0).getNews_Title());
-                    newsList.add_news(news);
+
+                    System.out.println(" >> " + listnews.get(0).getNews_Title());
                     ois.close();
                     fis.close();
+                    adapter = new NewsAdapter(listnews, mContext, false);
+                    recyclerView.setLayoutManager(mLayoutManager);
+                    recyclerView.setAdapter(adapter);
+                    adapter.setOnItemClickListener(mOnItemClickListener);
+                    adapter.setFadeTips(true);
+                    adapter.notifyDataSetChanged();
                 } catch (Exception e) {
                     e.printStackTrace();
                     System.out.println(">" + e);
                 }
             }
-        }
-       else  {
+        } /*else {
             NetService service = retrofitTool.getRetrofit().create(NetService.class);
             Map<String, String> url = new HashMap<String, String>() {{
                 put("keyword", "123456789");
@@ -177,10 +169,6 @@ public class SavedActivity extends AppCompatActivity {
                 public void onResponse(Call<NewsList> call, Response<NewsList> response) {
                     if (response.isSuccessful()) {
                         newsList = response.body();
-                        adapter = new NewsAdapter(listnews==null?newsList.getList():listnews, mContext, true);
-                        recyclerView.setLayoutManager(mLayoutManager);
-                        recyclerView.setAdapter(adapter);
-                        adapter.setOnItemClickListener(mOnItemClickListener);
                     }
                 }
 
@@ -189,7 +177,8 @@ public class SavedActivity extends AppCompatActivity {
                     t.printStackTrace();
                 }
             });
-        }
+        }*/
+
 
     }
 
