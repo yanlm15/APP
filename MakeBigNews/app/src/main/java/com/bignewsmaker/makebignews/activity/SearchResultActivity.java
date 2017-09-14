@@ -136,7 +136,8 @@ public class SearchResultActivity extends AppCompatActivity {
             adapter.setHasMore(false);
             adapter.setFadeTips(true);
         } else {
-            if (newsList.getList().size() < Integer.parseInt(const_data.getCur_pageSize())) {
+            if (newsList.getList().size() < Integer.parseInt(const_data.getCur_pageSize())
+                    ||newsList.getPageNo()>=Integer.valueOf(const_data.getCur_pageSize())) {
                 adapter.setHasMore(false);
                 adapter.setFadeTips(true);
             }

@@ -53,10 +53,16 @@ public class ConstData {
     private boolean[] istagSelected={true,true,true,true,true,true,true,true,true,true,true,true,true,true};
 
     private boolean isFirstCreate;
+    private boolean isExit;
 
 
+    public boolean isExit() {
+        return isExit;
+    }
 
-
+    public void setExit(boolean exit) {
+        isExit = exit;
+    }
 
     public boolean isFirstCreate() {
         return isFirstCreate;

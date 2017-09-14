@@ -88,14 +88,19 @@ public class MainActivity extends AppCompatActivity {
 
             const_data.setDay(cdfs.isDay());
             const_data.setShow_picture(cdfs.isShow_picture());
-            for (int i = 0; i < 14; i++)
-                const_data.setIstagSelected(i, cdfs.getIstagSelected(i));
+
+            int i=0;
+            for (Integer e:cdfs.getIstagselected()){
+                const_data.setIstagSelected(i,(i==0&&e==0)?true:(e==0?false:true));
+                i++;
+            }
 
             HashMap<String, Integer> tm = new HashMap<>();
             for (String e :cdfs.getLike())
                 tm.put(e,((Double)(Math.random()*100)).intValue());
             const_data.setLike(tm);
             const_data.setFirstCreate(false);
+            const_data.setCur_pageSize(cdfs.getCur_pageSize()!=null&&Integer.valueOf(cdfs.getCur_pageSize())!=0?cdfs.getCur_pageSize():"20");
         }
 
         setContentView(R.layout.activity_main);
@@ -199,24 +204,7 @@ public class MainActivity extends AppCompatActivity {
                 currentBackPressedTime = System.currentTimeMillis();
                 Toast.makeText(this, "再按一次返回键退出程序", Toast.LENGTH_SHORT).show();
             } else {
-                ConstDataForSave cdfs;
-                if (DataSupport.isExist(ConstDataForSave.class))
-                    cdfs = DataSupport.findLast(ConstDataForSave.class);
-                else
-                    cdfs = new ConstDataForSave();
-                cdfs.setHaveRead(const_data.getHaveRead());
-                cdfs.setDislike(const_data.getDislike());
-                cdfs.setFiltered(const_data.getFiltered());
-                cdfs.setDay(const_data.getDay());
-                cdfs.setShow_picture(const_data.getShow_picture());
-
-                for (int i = 0; i < 14; i++)
-                    cdfs.setIstagSelected(i, const_data.getIstagSelected(i));
-
-                cdfs.setLike(const_data.getLikeWord());
-
-                cdfs.save();
-                cdfs.updateAll();
+                const_data.setExit(true);
                 finish();
             }
         }
@@ -296,7 +284,29 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        if(const_data.isExit()){
+            const_data.setExit(false);
+            ConstDataForSave cdfs;
+            if (DataSupport.isExist(ConstDataForSave.class))
+                cdfs = DataSupport.findLast(ConstDataForSave.class);
+            else
+                cdfs = new ConstDataForSave();
+            cdfs.setHaveRead(const_data.getHaveRead());
+            cdfs.setDislike(const_data.getDislike());
+            cdfs.setFiltered(const_data.getFiltered());
+            cdfs.setDay(const_data.getDay());
+            cdfs.setShow_picture(const_data.getShow_picture());
 
+            List<Integer> sb=new ArrayList<>();
+            for (int i = 0; i < 14; i++)
+                sb.add(const_data.getIstagSelected(i)==true?1:0);
+            cdfs.setIstagselected(sb);
+
+            cdfs.setLike(const_data.getLikeWord());
+            cdfs.setCur_pageSize(const_data.getCur_pageSize());
+            cdfs.save();
+            cdfs.updateAll();
+        }
     }
 }
 

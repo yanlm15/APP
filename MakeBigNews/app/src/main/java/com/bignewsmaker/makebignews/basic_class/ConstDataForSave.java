@@ -2,7 +2,9 @@ package com.bignewsmaker.makebignews.basic_class;
 
 import org.litepal.crud.DataSupport;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -16,9 +18,27 @@ public class ConstDataForSave extends DataSupport {
     private boolean isDay = true;
     private Set<String> filtered=new HashSet<>();
     private Set<String>  dislike = new HashSet<>();// 不喜欢的词条
-    private boolean[] istagSelected={true,true,true,true,true,true,true,true,true,true,true,true,true,true};
+    private List<Integer> istagselected = new ArrayList<>();
     private Set<String> haveRead=new HashSet<>();
     private Set<String> like=new HashSet<>();
+    private String cur_pageSize =null;
+
+
+    public List<Integer> getIstagselected() {
+        return istagselected;
+    }
+
+    public void setIstagselected(List<Integer> istagselected) {
+        this.istagselected = istagselected;
+    }
+
+    public String getCur_pageSize() {
+        return cur_pageSize;
+    }
+
+    public void setCur_pageSize(String cur_pageSize) {
+        this.cur_pageSize = cur_pageSize;
+    }
 
 
 
@@ -60,14 +80,6 @@ public class ConstDataForSave extends DataSupport {
 
     public void setDislike(Set<String>  dislike) {
         this.dislike = dislike;
-    }
-
-    public boolean getIstagSelected(int index) {
-        return istagSelected[index];
-    }
-
-    public void setIstagSelected(int index, boolean isSelected) {
-        istagSelected[index] = isSelected;
     }
 
     public Set<String> getHaveRead() {
